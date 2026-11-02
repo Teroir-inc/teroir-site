@@ -1,0 +1,14 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Horton;Wyatt;;;
+FN:Wyatt Horton
+ORG:Teroir
+TITLE:Founder & CEO
+TEL;TYPE=CELL,VOICE:+1-801-835-9054
+EMAIL;TYPE=INTERNET,PREF:hortonwyatt@outlook.com
+URL;TYPE=WORK:https://teroir.com
+X-SOCIALPROFILE;TYPE=linkedin:https://www.linkedin.com/in/wyatt-horton
+item1.URL:https://www.linkedin.com/in/wyatt-horton
+item1.X-ABLabel:LinkedIn
+NOTE:Teroir: the AI operating system for every business. 70-second demo: https://teroir.com/demo
+END:VCARD
