@@ -103,24 +103,111 @@ function toSimInput(answers) {
   if (params.get('submitted') === '1') {thanks();$('#simulate').hidden=true;}
   function add(parent,tag,text) {const el=document.createElement(tag);el.textContent=text;parent.append(el);return el;}
   function render(result) {
-    const summary=$('#summary'), timeline=$('#timeline');summary.replaceChildren();timeline.replaceChildren();
-    function metrics(object,prefix='') {
-      for (const [key,value] of Object.entries(object || {})) {
-        const label=(prefix + key.replace(/([a-z])([A-Z])/g,'$1 $2')).replace(/_/g,' ');
-        if (value && typeof value === 'object' && !Array.isArray(value)) {metrics(value,label+' · ');continue;}
-        const dl=document.createElement('dl');add(dl,'dt',label);add(dl,'dd',Array.isArray(value) ? value.join('–') : String(value ?? '—'));summary.append(dl);
+    const summary=$('#summary'), timeline=$('#timeline');
+    summary.replaceChildren();timeline.replaceChildren();
+    const {portfolio,events,summary:s}=result;
+    const whole=n=>Math.round(Number(n) || 0).toLocaleString('en-US');
+    const dollars=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD',maximumFractionDigits:0}).format(Number(n) || 0);
+    const dateLabel=value=>new Intl.DateTimeFormat('en-US',{weekday:'long',month:'short',day:'numeric',timeZone:'UTC'}).format(new Date(value+'T12:00:00Z'));
+    const members=new Map(), houses=new Map();
+    portfolio.houses.forEach((house,i)=>{
+      houses.set(house.id,`House ${i+1}`);
+      house.members.forEach(member=>members.set(member.id,member));
+    });
+    // Engine copy includes machine dates and decimal currency; format these before display.
+    const readable=value=>String(value ?? '')
+      .replace(/\b\d{4}-\d{2}-\d{2}\b/g,dateLabel)
+      .replace(/\$([\d,]+(?:\.\d+)?)/g,(_,n)=>dollars(Number(n.replace(/,/g,''))))
+      .replace(/house-\d+-member-\d+/g,id=>members.get(id)?.name.split(' ')[0] || 'Example member')
+      .replace(/house-\d+/g,id=>houses.get(id) || 'Example house');
+    function card(label,value,note) {
+      const dl=document.createElement('dl');
+      add(dl,'dt',label);add(dl,'dd',value);
+      if (note) add(dl,'dd',note).className='summary-note';
+      summary.append(dl);
+    }
+    card('Chores done',`${whole(s.chores.done)} of ${whole(s.chores.assigned)}`,`${whole(s.chores.completionPercent)}% completion`);
+    card('Fines',portfolio.fine.enabled ? dollars(s.fines.amount) : 'No fines — you don’t fine',
+      portfolio.fine.enabled ? `${whole(s.fines.count)} fines, each with the record behind it` : '');
+    card('Collections',`${dollars(s.collections.recovered)} recovered`,
+      `of ${dollars(s.collections.promised)} promised · ${whole(s.collections.ownerDecisions)} decisions left for you`);
+    card('Messages handled',whole(s.messagesHandled));
+    card('Repair tickets opened',whole(s.ticketsOpened));
+    const low=Math.max(1,Math.round(s.hoursSaved.low)), high=Math.max(1,Math.round(s.hoursSaved.high));
+    card('Hours back',`${whole(low)}–${whole(high)} hours a week`,"Estimate, based on one portfolio's team");
+    add(summary,'p',readable(s.label)).className='summary-label';
+    const alertKinds=new Set(['owner_decision','notice_preview','owner_alert','owner_note','dispute_packet']);
+    let disclosureId=0;
+    function toggle(parent,content,closed,open,className) {
+      const button=add(parent,'button',closed);
+      button.type='button';button.className=className;
+      content.id=`sim-details-${++disclosureId}`;content.hidden=true;
+      button.setAttribute('aria-controls',content.id);button.setAttribute('aria-expanded','false');
+      button.addEventListener('click',()=>{
+        content.hidden=!content.hidden;
+        button.setAttribute('aria-expanded',String(!content.hidden));
+        button.textContent=content.hidden ? closed : open;
+      });
+    }
+    function clock(hhmm) {
+      if (!hhmm) return '';
+      let [h,m]=hhmm.split(':').map(Number);const ap=h >= 12 ? 'pm' : 'am';h=h % 12 || 12;
+      return m ? `${h}:${String(m).padStart(2,'0')} ${ap}` : `${h} ${ap}`;
+    }
+    const GROUPS={assignment:['Chore assignments sent to','Hide chore assignments'],reminder:['Reminders sent to','Hide reminders']};
+    function eventCard(parent,event) {
+      const item=document.createElement('li');parent.append(item);
+      const member=members.get(event.actor) || portfolio.houses.find(h=>h.id === event.house)?.members.find(m=>m.room === event.room);
+      const actor=event.actor === 'owner' ? 'You' : event.actor === 'system' ? 'PM.BOS' : member?.name.split(' ')[0] || 'Example member';
+      const room=event.room ?? member?.room;
+      const isMemberMessage=event.message && member && event.actor !== 'owner';
+      item.className=alertKinds.has(event.kind) ? 'sim-event sim-alert' : isMemberMessage ? 'sim-event sim-message' : 'sim-event';
+      const time=event.kind === 'portfolio' ? '' : clock(event.t.match(/\d{2}:\d{2}/)?.[0] || '');
+      add(item,'p',[time,houses.get(event.house),actor,room != null ? `Room ${whole(room)}` : ''].filter(Boolean).join(' · ')).className='event-meta';
+      add(item,'h4',readable(event.title));add(item,'p',readable(event.detail));
+      if (typeof event.money === 'number') add(item,'p',dollars(event.money)).className='event-money';
+      if (event.kind === 'notice_preview') {
+        add(item,'p','Preview — never sent automatically. You decide.').className='notice-warning';
+        if (event.calendar?.length) {
+          const calendar=document.createElement('ul');item.append(calendar);
+          event.calendar.forEach(entry=>add(calendar,'li',`Day ${whole(entry.day)} · ${dateLabel(entry.date)}`));
+        }
       }
     }
-    metrics(result.summary);
-    // Preserve the engine's week order (Fri, Sat, Mon…Sun), including any repeated day groups.
-    let day=null, list;
-    for (const event of result.events || []) {
-      if (event.day !== day) {day=event.day;add(timeline,'h3',day);list=document.createElement('ol');timeline.append(list);}
-      const item=document.createElement('li');list.append(item);
-      add(item,'small',[event.t,event.house != null ? `House ${event.house}` : '',event.room != null ? `Room ${event.room}` : ''].filter(Boolean).join(' · '));
-      add(item,'h4',event.title);add(item,'p',event.detail);
-      if (event.actor) add(item,'p',typeof event.actor === 'object' ? event.actor.name || 'Example member' : event.actor);
-      if (typeof event.money === 'number') add(item,'p',new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(event.money));
+    const days=new Map();
+    [...events].sort((a,b)=>a.day-b.day || a.t.localeCompare(b.t)).forEach(event=>{
+      if (!days.has(event.date)) days.set(event.date,[]);
+      days.get(event.date).push(event);
+    });
+    for (const [date,dayEvents] of days) {
+      const section=document.createElement('section');section.className='sim-day';timeline.append(section);
+      add(section,'h3',dateLabel(date));
+      const entries=[], assignments=new Map();
+      for (const event of dayEvents) {
+        if (GROUPS[event.kind]) {
+          const k=event.kind+'|'+event.house;
+          if (!assignments.has(k)) {
+            const group={house:event.house,kind:event.kind,t:event.t,events:[]};assignments.set(k,group);entries.push(group);
+          }
+          assignments.get(k).events.push(event);
+        } else entries.push(event);
+      }
+      function renderEntry(parent,entry) {
+        if (!entry.events) {eventCard(parent,entry);return;}
+        const item=document.createElement('li');item.className='assignment-group';parent.append(item);
+        add(item,'p',`${clock(entry.t.match(/\d{2}:\d{2}/)?.[0] || '')} · ${houses.get(entry.house)} · PM.BOS`).className='event-meta';
+        const list=document.createElement('ol');list.className='assignment-details';
+        toggle(item,list,`${GROUPS[entry.kind][0]} ${whole(entry.events.length)} members — show all`,GROUPS[entry.kind][1],'assignment-toggle');
+        item.append(list);entry.events.forEach(event=>eventCard(list,event));
+      }
+      const first=document.createElement('ol');first.className='day-events';section.append(first);
+      entries.slice(0,6).forEach(entry=>renderEntry(first,entry));
+      if (entries.length > 6) {
+        const rest=document.createElement('ol');rest.className='day-events';
+        entries.slice(6).forEach(entry=>renderEntry(rest,entry));
+        toggle(section,rest,`Show all ${whole(dayEvents.length)}`,'Show fewer events','day-toggle');
+        section.append(rest);
+      }
     }
     $('#simulation').hidden=false;$('#simulation h2').focus();
   }
