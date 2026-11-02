@@ -110,10 +110,16 @@
   const wl = $('#wl-form');
   if (wl) {
     const msg = $('#wl-msg'), btn = $('button[type=submit]', wl);
+    const applyLink = $('#wl-apply');
+    function showApplicationLink(name = '', email = '') {
+      applyLink.href = '/apply?' + new URLSearchParams({name, email});
+      applyLink.hidden = false;
+    }
     $('#wl-t').value = String(Date.now());
     if (new URLSearchParams(location.search).get('joined') === '1') {
       wl.classList.add('done'); msg.className = 'wl-msg ok';
       msg.textContent = "You're on the list. We'll be in touch when a spot opens.";
+      showApplicationLink(wl.elements.namedItem('name').value, wl.email.value);
     }
     wl.addEventListener('submit', async ev => {
       ev.preventDefault();
@@ -129,6 +135,7 @@
         if (!r.ok || !d.ok) throw new Error(d.error || 'failed');
         wl.classList.add('done'); msg.className = 'wl-msg ok';
         msg.textContent = "You're on the list. We'll be in touch when a spot opens.";
+        showApplicationLink(wl.elements.namedItem('name').value, wl.email.value);
       } catch (e) {
         btn.disabled = false; msg.className = 'wl-msg err';
         msg.textContent = 'That did not go through. Please try again, or email hortonwyatt@outlook.com.';
