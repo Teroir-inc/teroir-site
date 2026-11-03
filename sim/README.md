@@ -45,20 +45,24 @@ Event kinds: `portfolio`, `assignment`, `reminder`, `deadline`, `photo_failed`,
 Summary counts and money derive from events. Up to three largest houses are
 simulated; event totals scale by total properties / detailed properties, so projected
 counts can be fractional. Completion is accepted chores / assigned chores; a failed
-photo is not a completion. Hours saved use the portfolio event's total room count
-and the specified 3–6 minute band, independent of owner hours. The label explicitly
-identifies an estimate based on one portfolio's team. All display sentences and
-assignment reasons are in `copy.js`.
+photo is not a completion. Members reached counts distinct example member IDs with
+at least one message event, then applies the same scale factor. Owner and system
+events are excluded. All display sentences and assignment reasons are in `copy.js`.
 
 ## Assumptions and uncertainties
 
 - Friday starts the story. The closing Sunday is nine days later so Monday–Thursday
   collections can precede it. Fixed November 2026 example dates make seeds repeatable.
-- Each detailed house has one missed chore; with at least two chores, a different
-  chore fails a checklist item and passes on resubmission. With one chore, only the
-  miss is shown; with no chores, photo and penalty events are omitted.
-- The second house misses its payment promise; other detailed houses keep theirs.
-  A flagged balance starts at the threshold and rises by weekly rent (at least $1).
+- Story locations vary deterministically by seed. Across the detailed houses there
+  is one missed chore and one failed photo followed by an approved resubmission.
+  These use different assignments, preferring different houses. With only one
+  chore, only the miss is shown; with none, no photo or penalty events are invented.
+  All other chore photos are approved normally.
+- One member crosses the balance threshold and keeps their promise. A second
+  member's promise is missed, prompting an owner decision and notice preview.
+  They live in different houses when possible, or are distinct members of the
+  sole house. Only the first story emits a threshold-crossing message.
+- One leak message creates one maintenance request and one owner alert.
 - The notice calendar is an illustrative future preview, not a legal timetable.
   It has no send action. Humans decide notices. The decision event includes history.
 - Scaling assumes detailed houses represent the portfolio; it is not a prediction.

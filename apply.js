@@ -132,9 +132,8 @@ function toSimInput(answers) {
     card('Collections',`${dollars(s.collections.recovered)} recovered`,
       `of ${dollars(s.collections.promised)} promised · ${whole(s.collections.ownerDecisions)} decisions left for you`);
     card('Messages handled',whole(s.messagesHandled));
-    card('Repair tickets opened',whole(s.ticketsOpened));
-    const low=Math.max(1,Math.round(s.hoursSaved.low)), high=Math.max(1,Math.round(s.hoursSaved.high));
-    card('Hours back',`${whole(low)}–${whole(high)} hours a week`,"Estimate, based on one portfolio's team");
+    card('Maintenance requests opened',whole(s.ticketsOpened));
+    card('Members reached',whole(s.membersReached));
     add(summary,'p',readable(s.label)).className='summary-label';
     const alertKinds=new Set(['owner_decision','notice_preview','owner_alert','owner_note','dispute_packet']);
     let disclosureId=0;

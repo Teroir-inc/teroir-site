@@ -1,4 +1,4 @@
-import { names, eventCopy, summaryLabel, hoursLabel } from './copy.js';
+import { names, eventCopy, summaryLabel } from './copy.js';
 import { assignChores } from './rotation.js';
 const SPACES = ['kitchen', 'bathroom', 'living room', 'laundry', 'garbage'];
 const DAYS = ['Fri', 'Sat', 'Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
@@ -42,40 +42,64 @@ export function simulateWeek(answers = {}, { seed = 1 } = {}) {
     const previous = Object.fromEntries(sharedSpaces.map((s, j) => [s, members[j % rooms].id]));
     const assignments = assignChores(members, sharedSpaces, previous);
     portfolio.houses.push({ id, rooms, members, sharedSpaces, assignments, previous });
+  }
+  // Choose story locations once per portfolio, with repeatable variation by seed.
+  const houses = [...portfolio.houses];
+  for (let j = houses.length - 1; j > 0; j--) {
+    const k = Math.floor(random() * (j + 1));
+    [houses[j], houses[k]] = [houses[k], houses[j]];
+  }
+  const choreCandidates = houses.flatMap(house => house.assignments.map(assignment => ({house, assignment})));
+  const missedChore = choreCandidates.length ? choreCandidates.splice(Math.floor(random() * choreCandidates.length), 1)[0] : null;
+  const otherHouseChores = choreCandidates.filter(c => c.house !== missedChore?.house);
+  const retryCandidates = otherHouseChores.length ? otherHouseChores : choreCandidates;
+  const retryChore = retryCandidates.length ? retryCandidates[Math.floor(random() * retryCandidates.length)] : null;
+  for (const house of portfolio.houses) {
+    const {id, members, assignments} = house;
     for (const member of members) {
       const chores = assignments.filter(c => c.member === member.id);
       emit(0, '12:00', 'assignment', id, member.id, { room: member.room, assignments: chores, message: true });
       if (chores.length) emit(1, '09:00', 'reminder', id, member.id, { room: member.room, message: true });
     }
-    assignments.forEach((assignment, j) => {
+    for (const assignment of assignments) {
+      if (assignment === missedChore?.assignment) continue;
       const data = { assignment, room: members.find(m => m.id === assignment.member).room };
-      if (j === assignments.length - 1) return;
-      if (j === 0) emit(1, '10:00', 'photo_failed', id, assignment.member, { ...data, message: true });
-      emit(1, j === 0 ? '14:00' : '12:00', 'photo_passed', id, assignment.member, { ...data, resubmission: j === 0, message: true });
-    });
-    if (assignments.length) {
-      emit(1, '17:00', 'deadline', id);
-      const miss = assignments.at(-1);
+      const retry = assignment === retryChore?.assignment;
+      if (retry) emit(1, '10:00', 'photo_failed', id, assignment.member, { ...data, message: true });
+      emit(1, retry ? '14:00' : '12:00', 'photo_passed', id, assignment.member, { ...data, resubmission: retry, message: true });
+    }
+    if (assignments.length) emit(1, '17:00', 'deadline', id);
+    if (house === missedChore?.house) {
+      const miss = missedChore.assignment;
       const data = { assignment: miss, room: members.find(m => m.id === miss.member).room };
       emit(1, '17:01', portfolio.fine.enabled ? 'fine' : 'missed_reminder', id, miss.member, { ...data, ...(portfolio.fine.enabled ? { money: portfolio.fine.amount } : {}), message: true });
       emit(1, '17:02', portfolio.fine.enabled ? 'dispute_packet' : 'owner_note', id, 'owner', data);
     }
-    const member = members[0];
+  }
+  // Only the first story crosses the threshold. The second starts with a promise.
+  const keptHouse = houses[0], missedHouse = houses[1] || keptHouse;
+  const keptMember = keptHouse.members[Math.floor(random() * keptHouse.members.length)];
+  const missedMembers = missedHouse.members.filter(m => m.id !== keptMember.id);
+  const missedMember = missedMembers[Math.floor(random() * missedMembers.length)];
+  for (const [house, member, missed] of [[keptHouse, keptMember, false], [missedHouse, missedMember, true]]) {
     const money = Math.round((portfolio.lateThreshold + Math.max(1, portfolio.rentPerRoomPerWeek)) * 100) / 100;
     const data = { money, room: member.room, promisedDate: '2026-11-12' };
     const history = [];
-    for (const [day, time, kind] of [[3,'09:00','balance_message'],[3,'10:00','payment_promise'],[3,'10:01','promise_recorded'],[6,'09:00','promise_reminder']]) {
-      history.push(emit(day, time, kind, id, member.id, { ...data, previousBalance: portfolio.lateThreshold, message: kind !== 'promise_recorded' }));
+    history.push(emit(3, missed ? '09:30' : '09:00', 'balance_message', house.id, member.id, { ...data, previousBalance: portfolio.lateThreshold, message: true }));
+    for (const [day, time, kind] of [[3,'10:00','payment_promise'],[3,'10:01','promise_recorded'],[6,'09:00','promise_reminder']]) {
+      history.push(emit(day, time, kind, house.id, member.id, { ...data, message: kind !== 'promise_recorded' }));
     }
-    if (i === 1) {
-      history.push(emit(6, '17:00', 'promise_missed', id, member.id, data));
-      emit(6, '17:01', 'owner_decision', id, 'owner', { ...data, history: history.map(e => ({ kind: e.kind, date: e.date, t: e.t, money: e.money })), message: true });
-      emit(6, '17:02', 'notice_preview', id, 'owner', { preview: true, autoSent: false, calendar: [{ day: 1, date: '2026-11-13' }, { day: 4, date: '2026-11-16' }, { day: 5, date: '2026-11-17' }] });
-    } else emit(6, '15:00', 'payment_received', id, member.id, data);
-    emit(4, '10:00', 'member_message', id, member.id, { room: member.room, message: true });
-    emit(4, '10:01', 'ticket_created', id, 'system', { room: member.room });
-    emit(4, '10:02', 'owner_alert', id, 'owner', { message: true });
+    if (missed) {
+      history.push(emit(6, '17:00', 'promise_missed', house.id, member.id, data));
+      emit(6, '17:01', 'owner_decision', house.id, 'owner', { ...data, history: history.map(e => ({ kind: e.kind, date: e.date, t: e.t, money: e.money })), message: true });
+      emit(6, '17:02', 'notice_preview', house.id, 'owner', { preview: true, autoSent: false, calendar: [{ day: 1, date: '2026-11-13' }, { day: 4, date: '2026-11-16' }, { day: 5, date: '2026-11-17' }] });
+    } else emit(6, '15:00', 'payment_received', house.id, member.id, data);
   }
+  const leakHouse = houses[2] || houses[0];
+  const leakMember = leakHouse.members[Math.floor(random() * leakHouse.members.length)];
+  emit(4, '10:00', 'member_message', leakHouse.id, leakMember.id, { room: leakMember.room, message: true });
+  emit(4, '10:01', 'ticket_created', leakHouse.id, 'system', { room: leakMember.room });
+  emit(4, '10:02', 'owner_alert', leakHouse.id, 'owner', { message: true });
   emit(9, '18:00', 'week_summary');
   events.sort((a, b) => a.day - b.day || a.t.slice(4).localeCompare(b.t.slice(4)));
   const scaleFactor = events.find(e => e.kind === 'portfolio').properties / portfolio.houses.length;
@@ -83,6 +107,8 @@ export function simulateWeek(answers = {}, { seed = 1 } = {}) {
   const sum = kind => events.filter(e => e.kind === kind).reduce((n, e) => n + e.money, 0) * scaleFactor;
   const assigned = events.filter(e => e.kind === 'assignment').reduce((n, e) => n + e.assignments.length, 0) * scaleFactor;
   const done = count('photo_passed');
+  const memberIds = new Set(portfolio.houses.flatMap(h => h.members.map(m => m.id)));
+  const reached = new Set(events.filter(e => e.message && memberIds.has(e.actor)).map(e => e.actor));
   const summary = {
     scaleFactor, label: summaryLabel(scaleFactor !== 1),
     chores: { assigned, done, completionPercent: assigned ? done / assigned * 100 : 0 },
@@ -90,7 +116,7 @@ export function simulateWeek(answers = {}, { seed = 1 } = {}) {
     messagesHandled: events.filter(e => e.message).length * scaleFactor,
     ticketsOpened: count('ticket_created'),
     collections: { balancesFlagged: count('balance_message'), promised: sum('promise_recorded'), recovered: sum('payment_received'), ownerDecisions: count('owner_decision') },
-    hoursSaved: { low: events[0].rooms * 3 / 60, high: events[0].rooms * 6 / 60, label: hoursLabel() },
+    membersReached: reached.size * scaleFactor,
   };
   return { portfolio, events, summary };
 }

@@ -1,7 +1,6 @@
 export const names = ['Avery Q.', 'Blair V.', 'Casey X.', 'Drew Z.', 'Ellis J.', 'Finley U.', 'Gray W.', 'Harper Y.', 'Indigo C.', 'Jules K.', 'Kit F.', 'Lane B.', 'Morgan D.', 'Noel G.', 'Quinn H.'];
 export const reason = avoided => avoided ? "different from last week" : 'fewest chores this week';
 export const summaryLabel = scaled => scaled ? 'Simulation: totals scaled from up to three example houses to the whole portfolio.' : 'Simulation: example outcomes only.';
-export const hoursLabel = () => "Estimate, based on one portfolio's team: 3–6 minutes per room per week.";
 export function eventCopy(kind, d = {}) {
   const money = n => `$${Number(n).toLocaleString('en-US', { maximumFractionDigits: 2 })}`;
   const date = iso => iso ? new Date(`${iso}T12:00:00`).toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' }) : '';
@@ -25,8 +24,8 @@ export function eventCopy(kind, d = {}) {
     owner_decision: ['Your call: payment plan or notice?', 'Here\'s the full history: the balance, the reminder, the promise and the miss. Nothing happens until you decide.'],
     notice_preview: ['Notice timeline (preview)', 'If you choose a notice, these are the dates we\'d track for you. Example dates only, not legal advice.'],
     member_message: ['Member texted', 'Hey, the kitchen sink is leaking.'],
-    ticket_created: ['Repair ticket opened', 'Kitchen sink leak, logged from the member\'s text.'],
-    owner_alert: ['New repair ticket', 'Kitchen sink leak. The member has been told it\'s logged.'],
+    ticket_created: ['Maintenance request opened', 'Kitchen sink leak, logged from the member\'s text.'],
+    owner_alert: ['New maintenance request', 'Kitchen sink leak. The member has been told it\'s logged.'],
     week_summary: ['That\'s your week', 'Example outcomes only. The totals are at the top.'],
   };
   const [title, detail] = copy[kind];
