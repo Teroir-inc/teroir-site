@@ -1,1 +1,50 @@
-{"framework": null, "buildCommand": "", "installCommand": "", "outputDirectory": ".", "cleanUrls": true, "headers": [{"source": "/wyatt-horton.vcf", "headers": [{"key": "Content-Type", "value": "text/vcard; charset=utf-8"}]}]}
+{
+ "framework": null,
+ "buildCommand": "",
+ "installCommand": "",
+ "outputDirectory": ".",
+ "cleanUrls": true,
+ "headers": [
+  {
+   "source": "/wyatt-horton.vcf",
+   "headers": [
+    {
+     "key": "Content-Type",
+     "value": "text/vcard; charset=utf-8"
+    }
+   ]
+  }
+ ],
+ "redirects": [
+  {
+   "source": "/Apply",
+   "destination": "/apply",
+   "permanent": false
+  },
+  {
+   "source": "/APPLY",
+   "destination": "/apply",
+   "permanent": false
+  },
+  {
+   "source": "/Demo",
+   "destination": "/demo",
+   "permanent": false
+  },
+  {
+   "source": "/DEMO",
+   "destination": "/demo",
+   "permanent": false
+  },
+  {
+   "source": "/WYATT",
+   "destination": "/wyatt",
+   "permanent": false
+  },
+  {
+   "source": "/Wyatt",
+   "destination": "/wyatt",
+   "permanent": false
+  }
+ ]
+}
