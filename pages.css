@@ -156,7 +156,7 @@
 .band .st.ok{color:var(--mint);border-color:rgba(79,121,87,.35);background:rgba(147,201,155,.1)}
 .band .st.ask{color:#0F2A20;border-color:rgba(15,42,32,.35);background:rgba(217,226,220,.7)}
 .band .st.stop{color:#B94F28;border-color:rgba(226,112,63,.45);background:rgba(226,112,63,.08)}
-.band .st.off{opacity:.45}
+.band .st.off{color:var(--muted);border-style:dashed}
 .band.on{border-color:rgba(226,112,63,.5);background:#FFF8F2;box-shadow:0 10px 30px -18px rgba(185,79,40,.45)}
 .band.gate{border-color:var(--line-2);background:linear-gradient(90deg,rgba(217,226,220,.8),rgba(255,254,250,.8))}
 .band.gate.on{border-color:rgba(226,112,63,.6);background:linear-gradient(90deg,rgba(226,112,63,.12),#FFF8F2)}
@@ -229,3 +229,4 @@ a.pg-card:hover{border-color:rgba(226,112,63,.5);transform:translateY(-2px)}
 @media (prefers-reduced-motion:reduce){
   .eco .msg,.talk-dot{display:none}
 }
+.streaming .dot:not(.live){background:var(--line-2,#c9d1cb)}
