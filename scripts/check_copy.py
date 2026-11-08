@@ -43,7 +43,11 @@ FORBIDDEN = {
     'present-tense outcome': r'\brunning a real|\bruns a real|runs today|already runs?\b|\bis running\b|\b(?:PM\.BOS|it) runs (?:the|its) (?:operations )?week\b|\bPM\.BOS runs\b',
     # Teroir is the company, not the network; each owner signs its own rules.
     'Teroir is the network': r'\bTeroir(?:\s+in development)?\s*(?:is|=|:|—)?\s*(?:the|an|a|our)\s+(?:open\s+)?network\b',
+    'Teroir network': r"\bTeroir(?:'s)? network\b",
+    'Teroir runs the network': r'\bTeroir (?:runs|owns|operates|controls) the network\b',
     'network policy': r'network polic(?:y|ies)',
+    # The network holds no money; only "will hold no money" may say so.
+    'network holds money': r'escrow|held by the network|\b(?:hold|keep)(?:s|ing)? (?:your |the |their )?(?:funds|money|payments)\b',
     # The network is in development: future tense.
     'record stays yours (present)': r'(?<!will )(?<!to )\b(?:stays?|belongs?) (?:yours|to (?:you|the owner))',
     'every act is checked (present)': r'\bevery (?:act|exchange|agent|job|deal) (?:is|gets) (?:checked|signed|verified)',
@@ -73,7 +77,8 @@ CONTROL = (
     'The ecosystem where AI agents can securely transact without worry of adversaries or hacks. The invoice is paid '
     'automatically, from posting to paid invoice. The AI operating system for every business. Running a real portfolio '
     'since May 2026. PM.BOS runs today and already runs the week; it is running. It runs the week for operators. '
-    'Teroir is the network. Teroir in development An open network. The network policy. Your record stays yours. '
+    'Teroir is the network. Teroir in development An open network. Teroir runs the network. The Teroir network '
+    'holds your funds. Payments are held in escrow by the network. The network policy. Your record stays yours. '
     'Identity belongs to the owner. Every act is checked against its rules. Both sides sign every deal. The network '
     'holds no money. That is the network. By text link or one-time code. Witnessed. Robert Lin, co-founder; a silent '
     'partner. Everything but collections and handyman booking. 10-20 h of hours saved. 490 of 901. 901 repair tickets. '
@@ -86,8 +91,9 @@ CLEAN = (
     "checked against its owner's rules. The owner pays the way they already do. The network will hold no money. "
     'Ready to run as it is. Soon, connect the agent you already use with one sign-in. Three examples cycle: one runs, '
     'one waits for a person. Before it runs your week. Who runs the week? How you work today. Hours a week on operations. '
-    'Wyatt Horton, Founder & CEO. Play demo · 1:01. Receipt signed by both. Ticket from a review. 2.8× the weekly '
-    'workload. 900+ tickets tracked.'
+    "Wyatt Horton, Founder & CEO. Play demo · 1:01. Receipt signed by both. Ticket from a member's text. Teroir's "
+    'own agent will get no head start. The owner will pay as usual, outside the network. One repair, start to finish. '
+    '2.8× the weekly workload. 900+ tickets tracked.'
 )
 
 
