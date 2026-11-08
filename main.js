@@ -54,7 +54,7 @@
     ['Reminder sent', 'Room 3 · chore due Saturday', 'Sent', ''],
     ['Chore photo graded', 'Bathroom · House 17', 'Pass', 'ok'],
     ['Damage spotted in chore photo', 'Kitchen · House 11 → ticket', 'Flagged', 'warn'],
-    ['Fine assessed', 'Photo evidence attached', 'Evidence', ''],
+    ['Fine assessed', 'From the photo records', 'Evidence', ''],
     ['Maintenance ticket closed', 'House 15', 'Done', 'ok'],
     ['Chore photo graded', 'Kitchen · House 8', 'Retake', 'warn'],
     ['Ratings watch', 'New review logged · House 19', 'Logged', ''],
@@ -79,17 +79,6 @@
       while (rows.children.length > 7) rows.lastElementChild.remove();
     };
     setInterval(tick, 2600);
-  }
-
-  // Next: step through the B2B flow
-  const steps = $$('.step');
-  if (steps.length) {
-    let k = 0;
-    steps[0].classList.add('on');
-    if (!reduce) setInterval(() => {
-      steps.forEach(s => s.classList.remove('on'));
-      steps[k = (k + 1) % steps.length].classList.add('on');
-    }, 1800);
   }
 
   // demo player

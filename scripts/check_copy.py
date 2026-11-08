@@ -32,26 +32,31 @@ STACK = [  # DECISIONS 2026-11-07, split at the layer names as the checked deck 
     "XX.BOS packs, like PM.BOS for property management, add one industry's tools: its job types, proof rules and "
     "privacy levels.",
 ]
+# On / the lines must be in the page's visible text, not only in its meta tags; on /network the meta is enough.
 REQUIRED = {'index.html': [ONE_LINER, *STACK], 'network.html': [ONE_LINER]}
+BODY_ONLY = {'index.html'}
 
 FORBIDDEN = {
     # Home-page lines retired by the re-scope (PITCH_IMPROVEMENTS #10).
     'adversaries or hacks': r'securely transact|without worry|adversar|\bhacks?\b|hack-?proof',
     'network pays the invoice': r'paid invoice|invoices? (?:is |are |gets? )?paid|paid automatically|pays? (?:the )?invoices?',
+    'automatic payment': r'\bpays? automatically|payments? (?:is|are) automatic\b',
     'old title': r'AI operating system for every business',
     # FACTS: outcomes in the past or present perfect.
-    'present-tense outcome': r'\brunning a real|\bruns a real|runs today|already runs?\b|\bis running\b|\b(?:PM\.BOS|it) runs (?:the|its) (?:operations )?week\b|\bPM\.BOS runs\b',
+    'present-tense outcome': r'\brunning a real|\bruns a real|runs today|already runs?\b|\bis running\b|\b(?:PM\.BOS|it) runs (?:the|its) (?:operations )?week\b|\bPM\.BOS runs\b|\bruns a \d',
     # Teroir is the company, not the network; each owner signs its own rules.
-    'Teroir is the network': r'\bTeroir(?:\s+in development)?\s*(?:is|=|:|—)?\s*(?:the|an|a|our)\s+(?:open\s+)?network\b',
+    'Teroir is the network': r'\bTeroir(?:\s+in development)?\s*(?:is|=|:|—|,)?\s*(?:the|an|a|our)\s+(?:open\s+)?network\b',
     'Teroir network': r"\bTeroir(?:'s)? network\b",
     'Teroir runs the network': r'\bTeroir (?:runs|owns|operates|controls) the network\b',
     'network policy': r'network polic(?:y|ies)',
     # The network holds no money; only "will hold no money" may say so.
-    'network holds money': r'escrow|held by the network|\b(?:hold|keep)(?:s|ing)? (?:your |the |their )?(?:funds|money|payments)\b',
+    # The stack line has agents pay on the network; only the money is not held there (CHECK2 FIX 4).
+    'payment outside the network': r'outside (?:the|our) network',
+    'network holds money': r'escrow|held by the network|\bTeroir (?:holds|keeps)\b|\bholds? the payment|\b(?:hold|keep)(?:s|ing)? (?:your |the |their )?(?:funds|money|payments)\b',
     # The network is in development: future tense.
-    'record stays yours (present)': r'(?<!will )(?<!to )\b(?:stays?|belongs?) (?:yours|to (?:you|the owner))',
+    'record stays yours (present)': r'(?<!will )(?<!to )\b(?:stays?|belongs?) (?:yours|to (?:you|the owner))|(?<!will )\bstays? with (?:you|the owner)',
     'every act is checked (present)': r'\bevery (?:act|exchange|agent|job|deal) (?:is|gets) (?:checked|signed|verified)',
-    'both sign every deal (present)': r'(?<!will )\bsigns? (?:every|each) deal',
+    'both sign every deal (present)': r'(?<!will )\bsigns? (?:every|each) (?:deal|receipt)',
     'the network holds (present)': r'\bthe network (?:holds|verifies|checks|connects|runs|keeps|pays)\b',
     'this is the network (present)': r"\b(?:this|that) is the network\b(?! we)|\bthat's the network\b(?! we)",
     # bos SPEC §2.8.5: a text-link confirmation is never "signed by both".
@@ -59,7 +64,7 @@ FORBIDDEN = {
     'witnessed': r'witnessed',
     # People and scope (DECISIONS 2026-11-02, 11-07).
     'Robert': r'\bRobert\b',
-    'second founder': r'co-?founder|silent partner',
+    'second founder': r'co-?found|silent partner',
     'retired scope line': r'everything but collections|collections and handyman booking',
     'hours saved': r'hours? (?:saved|back)|\bsaves? \d+|\d+\s*[–-]\s*\d+\s*h(?:ours)?\b|minutes per room',
     # FACTS NEVER USE and the deck's list.
@@ -73,17 +78,42 @@ FORBIDDEN = {
 # PadSplit as a listing channel or host role (DECISIONS 2026-11-04) is fine; these exact spots are the only ones.
 MARKET_OPTIONS = ['Co-living or PadSplit host', 'value="PadSplit"', '<span>PadSplit</span>', 'PadSplit inbox']
 
-CONTROL = (
-    'The ecosystem where AI agents can securely transact without worry of adversaries or hacks. The invoice is paid '
-    'automatically, from posting to paid invoice. The AI operating system for every business. Running a real portfolio '
-    'since May 2026. PM.BOS runs today and already runs the week; it is running. It runs the week for operators. '
-    'Teroir is the network. Teroir in development An open network. Teroir runs the network. The Teroir network '
-    'holds your funds. Payments are held in escrow by the network. The network policy. Your record stays yours. '
-    'Identity belongs to the owner. Every act is checked against its rules. Both sides sign every deal. The network '
-    'holds no money. That is the network. By text link or one-time code. Witnessed. Robert Lin, co-founder; a silent '
-    'partner. Everything but collections and handyman booking. 10-20 h of hours saved. 490 of 901. 901 repair tickets. '
-    'Houston. Pre-revenue. Watch the 70-second demo. A PadSplit portfolio.'
-)
+# Positive controls: every string must hit its own pattern, so each variant the check claims to catch is proven.
+CONTROL = {
+    'adversaries or hacks': ['The ecosystem where AI agents can securely transact without worry of adversaries or hacks.'],
+    'network pays the invoice': ['The invoice is paid automatically.', 'From posting to paid invoice.'],
+    'automatic payment': ['Payment is automatic once both sign.', 'The owner pays automatically.'],
+    'old title': ['The AI operating system for every business.'],
+    'present-tense outcome': ['Running a real portfolio since May 2026.', 'PM.BOS runs today.', 'It already runs the week.',
+                              'It is running.', 'It runs the week for operators.',
+                              'PM.BOS is live and runs a 218-room portfolio.'],
+    'Teroir is the network': ['Teroir is the network.', 'Teroir in development An open network.',
+                              'Teroir, the network for agents.'],
+    'Teroir network': ['The Teroir network holds your funds.'],
+    'Teroir runs the network': ['Teroir runs the network.'],
+    'network policy': ['The network policy.'],
+    'payment outside the network': ['The owner will pay as usual, outside the network.'],
+    'network holds money': ['Payments are held in escrow by the network.', 'The network holds your funds.',
+                            'Teroir holds the payment until both sign.', 'Teroir keeps the deposit.'],
+    'record stays yours (present)': ['Your record stays yours.', 'Identity belongs to the owner.',
+                                     'Your record stays with you.'],
+    'every act is checked (present)': ['Every act is checked against its rules.'],
+    'both sign every deal (present)': ['Both sides sign every deal.', 'Both sides sign every receipt.'],
+    'the network holds (present)': ['The network holds no money.'],
+    'this is the network (present)': ['That is the network.'],
+    'text-link path': ['By text link.', 'With a one-time code.'],
+    'witnessed': ['Witnessed.'],
+    'Robert': ['Robert Lin'],
+    'second founder': ['Our co-founder.', 'A silent partner.', 'Co-founded with a partner.'],
+    'retired scope line': ['Everything but collections.', 'Collections and handyman booking.'],
+    'hours saved': ['Hours saved.', '10-20 h a week.'],
+    '490 of 901': ['490 of 901.'],
+    'repair tickets': ['901 repair tickets.'],
+    'cities': ['Houston.'],
+    'revenue label': ['Pre-revenue.'],
+    '70-second demo': ['Watch the 70-second demo.'],
+    'first-project platform': ['A PadSplit portfolio.'],
+}
 CLEAN = (
     f'{ONE_LINER} {" ".join(STACK)} The network — Teroir ¶ A network where agents meet. Your agent, meet theirs. '
     'PM.BOS has run a real portfolio since May 2026. The first pack has run a real business. Your identity, record and '
@@ -92,34 +122,44 @@ CLEAN = (
     'Ready to run as it is. Soon, connect the agent you already use with one sign-in. Three examples cycle: one runs, '
     'one waits for a person. Before it runs your week. Who runs the week? How you work today. Hours a week on operations. '
     "Wyatt Horton, Founder & CEO. Play demo · 1:01. Receipt signed by both. Ticket from a member's text. Teroir's "
-    'own agent will get no head start. The owner will pay as usual, outside the network. One repair, start to finish. '
+    'own agent will get no head start. The owner will pay as usual; the network will hold no money. Follow a repair '
+    'from posting to receipt: who sees what, who signs, and what each side keeps. PM.BOS, our first pack, has been '
+    'live since May 2026. It will wrap the software and agents you already use. From the photo records. Your record will '
+    'stay with you. Both sides will sign each receipt. '
     '2.8× the weekly workload. 900+ tickets tracked.'
 )
 
 
 def self_test():
+    assert CONTROL.keys() == FORBIDDEN.keys(), 'every pattern needs a positive control'
     for label, pat in FORBIDDEN.items():
-        assert re.search(pat, CONTROL, re.I), f'control failed for {label}'
+        for probe in CONTROL[label]:
+            assert re.search(pat, probe, re.I), f'control failed for {label}: {probe!r}'
         assert not re.search(pat, CLEAN, re.I), f'false positive for {label}: {re.search(pat, CLEAN, re.I).group(0)!r}'
     # The whole scan on a page with one bad line must fail, and on the same page without it must pass.
     good = f'<html><head><meta name="description" content="x"></head><body><p>{ONE_LINER}</p></body></html>'
     bad = good.replace('</body>', '<p>Both sides sign every deal.</p></body>')
     assert scan_text('control.html', bad) and not scan_text('control.html', good), 'page-level control failed'
-    return len(FORBIDDEN)
+    # On / the one-liner and the stack must be in the visible text: a changed hero fails even with the meta intact.
+    home = (f'<html><head><meta name="description" content="{ONE_LINER}"></head><body><h1>Hi</h1><p>{ONE_LINER}</p>'
+            + ''.join(f'<p>{s}</p>' for s in STACK) + '</body></html>')
+    drifted = home.replace(f'<p>{ONE_LINER}</p>', f'<p>{ONE_LINER.replace("safely", "securely")}</p>')
+    assert not scan_text('index.html', home) and scan_text('index.html', drifted), 'body-text control failed'
+    return len(FORBIDDEN), sum(map(len, CONTROL.values()))
 
 
-def visible(name, text):
-    """Visible text plus the attribute text people see in previews, tooltips and screen readers."""
+def visible(name, text, attrs=True):
+    """Visible text plus (unless attrs=False) the attribute text people see in previews, tooltips and screen readers."""
     if not name.endswith('.html'):
         return text
     # ¶ separates texts that are never read together (title, meta tags), so a pattern cannot run across them.
-    attrs = ' ¶ '.join(re.findall(r'\b(?:content|alt|aria-label|title|placeholder)="([^"]*)"', text))
+    meta = ' ¶ '.join(re.findall(r'\b(?:content|alt|aria-label|title|placeholder)="([^"]*)"', text))
     body = re.sub(r'<(script|style)\b.*?</\1>', ' ', text, flags=re.S | re.I)
     body = re.sub(r'<title>(.*?)</title>', r' ¶ \1 ¶ ', body, flags=re.S)
     # A status tag ("In development") beside a layer name is a label, not part of the sentence.
     body = re.sub(r'<span class="status[^"]*">(?:<span[^>]*></span>)?[^<]*</span>', ' ', body)
     body = re.sub(r'<[^>]+>', ' ', body)
-    return re.sub(r'\s+', ' ', html.unescape(body + ' ¶ ' + attrs).replace('’', "'"))
+    return re.sub(r'\s+', ' ', html.unescape(body + (' ¶ ' + meta if attrs else '')).replace('’', "'"))
 
 
 def scan_text(name, text):
@@ -135,11 +175,11 @@ def scan_text(name, text):
             if m:
                 hits.append(f'{label}: "{where[max(0, m.start() - 40):m.end() + 40].strip()}"')
                 break
-    flat = visible(name, text)
+    flat = visible(name, text, attrs=name not in BODY_ONLY)
     for line in REQUIRED.get(name, []):
         if line not in flat:
             hits.append(f'missing word for word: "{line[:60]}..."')
-    if ONE_LINER[:28] in flat and ONE_LINER not in flat:
+    if visible(name, text).count(ONE_LINER[:28]) > visible(name, text).count(ONE_LINER):
         hits.append('one-liner altered')
     return hits
 
@@ -164,8 +204,9 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument('--rev', help='check this commit instead of the working tree')
     args = ap.parse_args()
-    n = self_test()
-    print(f'controls: {n} patterns hit the positive control, none hit the approved lines; page-level control ok')
+    n, probes = self_test()
+    print(f'controls: {n} patterns hit all {probes} positive controls, none hit the approved lines; '
+          'page-level and body-text controls ok')
     failed = 0
     count = 0
     for name, text in files(args.rev):
