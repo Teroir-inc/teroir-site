@@ -10,6 +10,7 @@
 /* home: links from the platform layers */
 .layer .more{display:inline-block;margin-top:8px;font-size:14px;color:var(--text);text-decoration:underline;text-decoration-color:rgba(226,112,63,.45);text-underline-offset:4px}
 .layer .more:hover{text-decoration-color:var(--ember)}
+.layer h3 .status{font-weight:400;margin-left:6px;padding:3px 9px;font-size:11px;vertical-align:2px}
 .sub .more,.cta-lead .more{color:var(--text);text-decoration:underline;text-decoration-color:rgba(226,112,63,.45);text-underline-offset:4px}
 
 /* footer page links */

@@ -50,7 +50,7 @@
   const rows = $('#ledger-rows');
   const events = [
     ['Chore photo graded', 'Living room · House 21', 'Pass', 'ok'],
-    ['Ticket opened from PadSplit', 'Broken blind · House 6', 'Auto', ''],
+    ['Ticket from a review', 'Broken blind · House 6', 'Auto', ''],
     ['Reminder sent', 'Room 3 · chore due Saturday', 'Sent', ''],
     ['Chore photo graded', 'Bathroom · House 17', 'Pass', 'ok'],
     ['Damage spotted in chore photo', 'Kitchen · House 11 → ticket', 'Flagged', 'warn'],
