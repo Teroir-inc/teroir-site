@@ -46,5 +46,15 @@
    "destination": "/wyatt",
    "permanent": false
   }
+ ],
+ "rewrites": [
+  {
+   "source": "/brainstorm",
+   "destination": "/api/brainstorm"
+  },
+  {
+   "source": "/brainstorm/",
+   "destination": "/api/brainstorm"
+  }
  ]
 }
