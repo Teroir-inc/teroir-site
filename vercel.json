@@ -3,9 +3,6 @@
  "buildCommand": "",
  "installCommand": "",
  "outputDirectory": ".",
- "functions": {
-  "api/brainstorm.js": { "includeFiles": "api/brainstorm-assets/**" }
- },
  "cleanUrls": true,
  "headers": [
   {
@@ -48,16 +45,6 @@
    "source": "/Wyatt",
    "destination": "/wyatt",
    "permanent": false
-  }
- ],
- "rewrites": [
-  {
-   "source": "/brainstorm",
-   "destination": "/api/brainstorm"
-  },
-  {
-   "source": "/brainstorm/",
-   "destination": "/api/brainstorm"
   }
  ]
 }
