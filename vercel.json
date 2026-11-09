@@ -3,6 +3,9 @@
  "buildCommand": "",
  "installCommand": "",
  "outputDirectory": ".",
+ "functions": {
+  "api/brainstorm.js": { "includeFiles": "api/brainstorm-assets/**" }
+ },
  "cleanUrls": true,
  "headers": [
   {

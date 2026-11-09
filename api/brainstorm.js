@@ -1,4 +1,6 @@
 const { createHmac, timingSafeEqual } = require('node:crypto');
+const { readFileSync } = require('node:fs');
+const { join } = require('node:path');
 
 const COOKIE = 'sable_brainstorm';
 const MAX_AGE = 60 * 60 * 24 * 3;
@@ -51,11 +53,32 @@ function send(res, status, body, headers = {}) {
   res.writeHead(status, { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store, private', 'X-Robots-Tag': 'noindex, nofollow, noarchive', 'Referrer-Policy': 'no-referrer', 'X-Content-Type-Options': 'nosniff', ...headers });
   res.end(body);
 }
+function serveAsset(req, res) {
+  const asset = new URL(req.url || '/brainstorm', 'https://teroir.com').searchParams.get('asset');
+  if (!asset) return false;
+  if (!/^(renders|drawings)\/[a-z0-9-]+\.(jpg|svg|pdf)$/i.test(asset)) {
+    send(res, 404, 'Asset not found.');
+    return true;
+  }
+  const ext = asset.split('.').pop().toLowerCase();
+  const types = { jpg: 'image/jpeg', svg: 'image/svg+xml', pdf: 'application/pdf' };
+  let bytes;
+  try { bytes = readFileSync(join(__dirname, 'brainstorm-assets', asset)); }
+  catch { send(res, 404, 'Asset not found.'); return true; }
+  send(res, 200, bytes, {
+    'Content-Type': types[ext],
+    'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; script-src 'none'; sandbox",
+  });
+  return true;
+}
 module.exports = function handler(req, res) {
   let key;
   try { key = secret(); } catch { return send(res, 503, 'Temporary demo is not configured.'); }
   if (expired()) return send(res, 410, 'This short-term concept demo has expired.');
-  if (req.method === 'GET' && validSession(cookie(req), key)) return send(res, 200, PAGE, { 'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src data:; base-uri 'none'; form-action 'self'; frame-ancestors 'none'" });
+  if (req.method === 'GET' && validSession(cookie(req), key)) {
+    if (serveAsset(req, res)) return;
+    return send(res, 200, PAGE, { 'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; script-src 'unsafe-inline'; img-src 'self'; base-uri 'none'; form-action 'self'; frame-ancestors 'none'" });
+  }
   if (req.method === 'GET') return send(res, 200, gate());
   if (req.method !== 'POST') return send(res, 405, 'Method not allowed.', { Allow: 'GET, POST' });
   const ip = (req.headers['x-forwarded-for'] || 'unknown').split(',')[0].trim();
