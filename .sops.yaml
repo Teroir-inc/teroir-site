@@ -1,0 +1,8 @@
+# SOPS: files matching path_regex are encrypted to BOTH keys below; either one decrypts.
+#  - OpenBao transit key "sops-teroir": day-to-day use (agents fetch short-lived tokens)
+#  - offline break-glass age key held by the owner: recovery if OpenBao is lost
+# Usage:  sops edit secrets/app.yaml   |   sops decrypt secrets/app.yaml
+creation_rules:
+  - path_regex: (^|/)(secrets/.+|.+\.enc\.(ya?ml|json|env|ini))$
+    hc_vault_transit_uri: https://127.0.0.1:8200/v1/transit/keys/sops-teroir
+    age: age1h0t3mmnuhmq067frlpg29zpu3yspyqymtvea5xrapnu4ucmu2qrqfknrhw
