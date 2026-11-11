@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Talk to us — Teroir</title>
+<meta name="description" content="Book a one-on-one discovery or coaching call with Wyatt Horton, founder of Teroir, or get the newsletter.">
+<meta name="theme-color" content="#F6F4EE">
+<meta name="color-scheme" content="light">
+<link rel="canonical" href="https://teroir.com/talk">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Teroir">
+<meta property="og:url" content="https://teroir.com/talk">
+<meta property="og:title" content="Talk to us — Teroir">
+<meta property="og:description" content="Book a one-on-one discovery or coaching call with Wyatt Horton, founder of Teroir, or get the newsletter.">
+<meta property="og:image" content="https://teroir.com/og.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Teroir logo: a sun over terraced hills.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Talk to us — Teroir">
+<meta name="twitter:description" content="Book a one-on-one discovery or coaching call with Wyatt Horton, founder of Teroir, or get the newsletter.">
+<meta name="twitter:image" content="https://teroir.com/og.png">
+<link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="brand/favicon.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="brand/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<link rel="stylesheet" href="pages.css">
+<script>document.documentElement.classList.add('js')</script>
+<script src="main.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav pg-nav" id="top">
+  <div class="wrap nav-in">
+    <a class="brand" href="/" aria-label="Teroir — home"><img src="brand/logo.svg" alt="Teroir" width="97" height="30">
+    </a>
+    <nav class="links pg" aria-label="Pages"><a href="/property-management">Case study</a><a href="/talk?for=coaching">Coaching</a><a href="/vision">Vision</a></nav>
+    <a class="btn btn-sm btn-ghost" href="/" >Home</a>
+  </div>
+</header>
+
+<main id="main">
+
+<section class="section cta-sec" id="form" aria-labelledby="talk-h">
+  <div class="wrap">
+    <div class="cta">
+      <div class="cta-glow" aria-hidden="true"></div>
+      <span class="cta-k">Talk to us</span>
+      <div class="talk-who"><img class="founder-pic" src="wyatt-avatar.png" alt="Wyatt Horton" width="56" height="56"><p><b>Wyatt Horton</b><span>Founder &amp; CEO, Teroir</span></p></div>
+      <h1 id="talk-h">Let's <em>talk.</em></h1>
+      <p class="cta-lead">Teroir's first AI system has run a 218-room property portfolio since May 2026; the team grew it from 11 to 29 properties with no new hires. <a class="more" href="/property-management#demo">Watch the one-minute demo</a></p>
+      <form class="wl" id="wl-form" action="/api/waitlist" method="post" data-ok-business="Got it. Now pick a time below." data-ok-coaching="Got it. Now pick a time below." data-ok-newsletter="You're subscribed. Watch your inbox.">
+        <fieldset class="wl-pick">
+          <legend class="vh">What would you like?</legend>
+          <label><input type="radio" name="interest" value="business" checked> For my business</label>
+          <label><input type="radio" name="interest" value="coaching"> Coaching for me</label>
+          <label><input type="radio" name="interest" value="newsletter"> Just the newsletter</label>
+        </fieldset>
+        <div class="wl-grid">
+          <label class="wl-f"><span>Name</span><input name="name" autocomplete="name" maxlength="120"></label>
+          <label class="wl-f"><span>Email</span><input name="email" type="email" required autocomplete="email" maxlength="200"></label>
+          <label class="wl-f wl-call"><span>What takes up most of your week? <i>(optional)</i></span><input name="note" maxlength="500" placeholder="e.g. answering the same customer questions"></label>
+          <label class="wl-f wl-call"><span>Good times for a call <i>(optional)</i></span><input name="times" maxlength="200" placeholder="e.g. weekday mornings, Central"></label>
+        </div>
+        <label class="wl-hp" aria-hidden="true">Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label>
+        <input type="hidden" name="t" id="wl-t">
+        <input type="hidden" name="src" id="wl-src">
+        <div class="wl-act">
+          <button class="btn btn-primary" type="submit">Send <span aria-hidden="true">→</span></button>
+          <p class="wl-msg" id="wl-msg" role="status" aria-live="polite"></p>
+        </div>
+      </form>
+      <p class="rec-note">Calls may be recorded so you get the most out of the call and Wyatt can deliver the best result.</p>
+      <div class="cal" id="cal" data-cal="https://calendly.com/wyatt-teroir/30min" hidden>
+        <p class="cal-k">Pick a time for your call</p>
+        <div class="cal-frame" id="cal-frame"></div>
+        <p class="cal-alt"><a id="cal-link" href="https://calendly.com/wyatt-teroir/30min" target="_blank" rel="noopener">Open the calendar in a new tab →</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <a class="brand" href="#top" aria-label="Back to top"><img src="brand/logo.svg" alt="Teroir" width="84" height="26" loading="lazy">
+    </a>
+    <p>© 2026 Teroir · Palo Alto, CA</p>
+    <nav class="foot-links" aria-label="Pages"><a href="/">Home</a><a href="/property-management">Property management</a><a href="/vision">Vision</a><a href="/talk">Talk to us</a></nav>
+    <p><a href="mailto:wyatt@teroir.com?subject=Teroir">wyatt@teroir.com</a></p>
+  </div>
+</footer>
+</body>
+</html>

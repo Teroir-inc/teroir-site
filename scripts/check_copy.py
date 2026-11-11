@@ -32,9 +32,10 @@ STACK = [  # DECISIONS 2026-11-07, split at the layer names as the checked deck 
     "XX.BOS packs, like PM.BOS for property management, add one industry's tools: its job types, proof rules and "
     "privacy levels.",
 ]
-# On / the lines must be in the page's visible text, not only in its meta tags; on /network the meta is enough.
-REQUIRED = {'index.html': [ONE_LINER, *STACK], 'network.html': [ONE_LINER]}
-BODY_ONLY = {'index.html'}
+# On /vision the lines must be in the page's visible text, not only in its meta tags. The 2026-11-11 redesign
+# (Wyatt: the home page stays plain, for non-technical readers) moved them from / to /vision.
+REQUIRED = {'vision.html': [ONE_LINER, *STACK]}
+BODY_ONLY = {'vision.html'}
 
 FORBIDDEN = {
     # Home-page lines retired by the re-scope (PITCH_IMPROVEMENTS #10).
@@ -158,7 +159,7 @@ def self_test():
     home = (f'<html><head><meta name="description" content="{ONE_LINER}"></head><body><h1>Hi</h1><p>{ONE_LINER}</p>'
             + ''.join(f'<p>{s}</p>' for s in STACK) + '</body></html>')
     drifted = home.replace(f'<p>{ONE_LINER}</p>', f'<p>{ONE_LINER.replace("safely", "securely")}</p>')
-    assert not scan_text('index.html', home) and scan_text('index.html', drifted), 'body-text control failed'
+    assert not scan_text('vision.html', home) and scan_text('vision.html', drifted), 'body-text control failed'
     return len(FORBIDDEN), sum(map(len, CONTROL.values()))
 
 
