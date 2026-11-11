@@ -108,6 +108,23 @@
     const want = wl.querySelector(`input[name=interest][value="${(qs.get('for') || '').replace(/[^a-z]/g, '')}"]`);
     if (want) want.checked = true;
     wl.addEventListener('change', pick); pick();
+    // after a call request, open the booking calendar with the person's details filled in
+    const cal = $('#cal');
+    function showCalendar() {
+      const k = (wl.elements.namedItem('interest') || {}).value;
+      if (!cal || (k !== 'business' && k !== 'coaching')) return;
+      const q = new URLSearchParams({ name: wl.elements.namedItem('name').value, email: wl.email.value,
+        a1: wl.elements.namedItem('note').value, hide_gdpr_banner: '1' });
+      const url = cal.dataset.cal + '?' + q;
+      $('#cal-link').href = url;
+      if (/(^|\.)teroir\.com$|\.vercel\.app$|^localhost$/.test(location.hostname)) {
+        const f = document.createElement('iframe');
+        f.title = 'Book a time with Wyatt'; f.loading = 'lazy';
+        f.src = url + '&embed_type=Inline&embed_domain=' + location.hostname;
+        $('#cal-frame').replaceChildren(f);
+      }
+      cal.hidden = false;
+    }
     function showApplicationLink(name = '', email = '') {
       if (!applyLink) return;
       applyLink.href = '/apply?' + new URLSearchParams({name, email});
@@ -116,7 +133,7 @@
     $('#wl-t').value = String(Date.now());
     if (new URLSearchParams(location.search).get('joined') === '1') {
       wl.classList.add('done'); msg.className = 'wl-msg ok';
-      msg.textContent = okText();
+      msg.textContent = okText(); showCalendar();
       showApplicationLink(wl.elements.namedItem('name').value, wl.email.value);
     }
     wl.addEventListener('submit', async ev => {
@@ -132,7 +149,7 @@
         const d = await r.json().catch(() => ({}));
         if (!r.ok || !d.ok) throw new Error(d.error || 'failed');
         wl.classList.add('done'); msg.className = 'wl-msg ok';
-        msg.textContent = okText();
+        msg.textContent = okText(); showCalendar();
         showApplicationLink(wl.elements.namedItem('name').value, wl.email.value);
       } catch (e) {
         btn.disabled = false; msg.className = 'wl-msg err';

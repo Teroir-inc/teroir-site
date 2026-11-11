@@ -54,7 +54,7 @@
       <div class="talk-who"><img class="founder-pic" src="wyatt-avatar.png" alt="Wyatt Horton" width="56" height="56"><p><b>Wyatt Horton</b><span>Founder &amp; CEO, Teroir</span></p></div>
       <h1 id="talk-h">Let's <em>talk.</em></h1>
       <p class="cta-lead">Teroir's first AI system has run a 218-room property portfolio since May 2026; the team grew it from 11 to 29 properties with no new hires. <a class="more" href="/property-management#demo">Watch the one-minute demo</a></p>
-      <form class="wl" id="wl-form" action="/api/waitlist" method="post" data-ok-business="Got it. Wyatt will email you to set a time." data-ok-coaching="Got it. Wyatt will email you to set a time." data-ok-newsletter="You're subscribed. Watch your inbox.">
+      <form class="wl" id="wl-form" action="/api/waitlist" method="post" data-ok-business="Got it. Now pick a time below." data-ok-coaching="Got it. Now pick a time below." data-ok-newsletter="You're subscribed. Watch your inbox.">
         <fieldset class="wl-pick">
           <legend class="vh">What would you like?</legend>
           <label><input type="radio" name="interest" value="business" checked> For my business</label>
@@ -75,6 +75,11 @@
           <p class="wl-msg" id="wl-msg" role="status" aria-live="polite"></p>
         </div>
       </form>
+      <div class="cal" id="cal" data-cal="https://calendly.com/wyatt-teroir/30min" hidden>
+        <p class="cal-k">Pick a time for your call</p>
+        <div class="cal-frame" id="cal-frame"></div>
+        <p class="cal-alt"><a id="cal-link" href="https://calendly.com/wyatt-teroir/30min" target="_blank" rel="noopener">Open the calendar in a new tab →</a></p>
+      </div>
     </div>
   </div>
 </section>

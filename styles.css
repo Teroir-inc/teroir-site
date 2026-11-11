@@ -297,3 +297,9 @@ h3{font-size:18px;letter-spacing:-.02em;font-weight:600;margin:0}
 .talk-who .founder-pic{width:56px;height:56px;margin:0}
 .talk-who p{margin:0;display:grid;text-align:left;font-size:14px}
 .talk-who span{color:var(--muted)}
+/* /talk: booking calendar after a call request */
+.cal{margin-top:20px;display:grid;gap:10px}
+.cal-k{margin:0;font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--ember-2)}
+.cal-frame iframe{display:block;width:100%;height:700px;border:0;border-radius:14px;background:#fff}
+.cal-frame:empty{display:none}
+.cal-alt{margin:0;font-size:14px}
