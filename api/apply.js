@@ -1,4 +1,4 @@
-const NOTIFY_TO = ['hortonwyatt@outlook.com'];
+const NOTIFY_TO = ['wyatt@teroir.com'];
 const NOTIFY_CC = ['wyatthorton.pm@gmail.com'];
 const FROM = 'Teroir Beta <waitlist@teroir.com>';
 const EMAIL_RE = /^[^\s@<>"]{1,100}@[^\s@<>"]{1,100}\.[^\s@<>"]{2,24}$/;
@@ -96,7 +96,7 @@ module.exports = async (req, res) => {
   const reply = (status, body) => {
     if (wantsJson) return res.status(status).json(body);
     if (body.ok) { res.setHeader('Location', '/apply?submitted=1'); return res.status(303).end(); }
-    return res.status(status).send('Something went wrong. Please email hortonwyatt@outlook.com.');
+    return res.status(status).send('Something went wrong. Please email wyatt@teroir.com.');
   };
   if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return res.status(405).json({ok:false,error:'method'}); }
   const b = typeof req.body === 'object' && req.body ? req.body : {};
@@ -141,7 +141,7 @@ module.exports = async (req, res) => {
       subject:`Teroir beta [${tier}] · ${a.rooms} rooms · ${a.channels[0] || 'Not specified'} · ${a.start || 'Not specified'}`,text:lines.join('\n')});
   } catch { console.error('apply notify failed'); return reply(502,{ok:false,error:'send'}); }
   try {
-    await send({from:FROM,to:[a.email],reply_to:'hortonwyatt@outlook.com',subject:'Your Teroir beta application',
+    await send({from:FROM,to:[a.email],reply_to:'wyatt@teroir.com',subject:'Your Teroir beta application',
       text:"Thanks for applying to the Teroir beta.\n\nI read every application myself, and I'll reach out within two days to talk about your portfolio and what a pilot would look like.\n\nIf you want to talk sooner, text or call me at (801) 835-9054.\n\nWyatt Horton\nFounder, Teroir\nhttps://teroir.com"});
   } catch { console.error('apply confirmation failed'); }
   return reply(200,{ok:true});

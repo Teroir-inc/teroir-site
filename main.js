@@ -153,7 +153,7 @@
         showApplicationLink(wl.elements.namedItem('name').value, wl.email.value);
       } catch (e) {
         btn.disabled = false; msg.className = 'wl-msg err';
-        msg.textContent = 'That did not go through. Please try again, or email hortonwyatt@outlook.com.';
+        msg.textContent = 'That did not go through. Please try again, or email wyatt@teroir.com.';
       }
     });
   }

@@ -1,5 +1,5 @@
 // teroir.com waitlist: each signup is emailed to Wyatt (the list lives in his inbox) and the signer gets a fixed confirmation.
-const NOTIFY_TO = ['hortonwyatt@outlook.com'];
+const NOTIFY_TO = ['wyatt@teroir.com'];
 const NOTIFY_CC = ['wyatthorton.pm@gmail.com'];
 const FROM = 'Teroir Waitlist <waitlist@teroir.com>';
 const EMAIL_RE = /^[^\s@<>"]{1,100}@[^\s@<>"]{1,100}\.[^\s@<>"]{2,24}$/;
@@ -23,7 +23,7 @@ module.exports = async (req, res) => {
   const reply = (status, body) => {
     if (wantsJson) return res.status(status).json(body);
     if (body.ok) { res.setHeader('Location', b.interest ? '/talk?joined=1#form' : '/apply'); return res.status(303).end(); }
-    return res.status(status).send('Something went wrong. Please email hortonwyatt@outlook.com.');
+    return res.status(status).send('Something went wrong. Please email wyatt@teroir.com.');
   };
   if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return res.status(405).json({ ok: false, error: 'method' }); }
 
@@ -69,7 +69,7 @@ module.exports = async (req, res) => {
       newsletter: ["You're on the Teroir newsletter", "You're on the list. I'll send updates as Teroir grows.",
         'Reply to this email any time to unsubscribe or to tell me about your business.'],
     }[interest];
-    await send({ from: FROM, to: [email], reply_to: 'hortonwyatt@outlook.com', subject: CONFIRM[0],
+    await send({ from: FROM, to: [email], reply_to: 'wyatt@teroir.com', subject: CONFIRM[0],
       text: ['Thanks for your interest in Teroir.', '', CONFIRM[1], '', CONFIRM[2], '', 'Wyatt Horton', 'Founder, Teroir', 'https://teroir.com'].join('\n') });
   } catch (e) {
     console.error('waitlist confirmation failed', e.message); // the signup itself reached Wyatt
