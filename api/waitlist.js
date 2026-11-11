@@ -63,9 +63,9 @@ module.exports = async (req, res) => {
       beta: ["You're on the Teroir waitlist", "You're on the waitlist for early access to PM.BOS. We bring on a small cohort of operators at a time so every house is set up properly, and we'll reach out when a spot opens.",
         'In the meantime, reply to this email if you want to tell us about your portfolio.'],
       business: ['Your discovery call with Teroir', "Thanks for reaching out about your business. If you haven't picked a time yet, book a one-on-one call here: https://calendly.com/wyatt-teroir/30min",
-        'If it helps, reply with a little about your business and where your week goes.'],
+        'If it helps, reply with a little about your business and where your week goes. Calls may be recorded so you get the most out of the call and I can deliver the best result.'],
       coaching: ['Your coaching call with Teroir', "Thanks for reaching out about coaching. If you haven't picked a time yet, book a one-on-one call here: https://calendly.com/wyatt-teroir/30min",
-        'If it helps, reply with what you do and where you want AI to help.'],
+        'If it helps, reply with what you do and where you want AI to help. Calls may be recorded so you get the most out of the call and I can deliver the best result.'],
       newsletter: ["You're on the Teroir newsletter", "You're on the list. I'll send updates as Teroir grows.",
         'Reply to this email any time to unsubscribe or to tell me about your business.'],
     }[interest];
