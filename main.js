@@ -100,14 +100,21 @@
   if (wl) {
     const msg = $('#wl-msg'), btn = $('button[type=submit]', wl);
     const applyLink = $('#wl-apply');
+    const okText = () => { const k = (wl.elements.namedItem('interest') || {}).value;
+      return (k && wl.dataset['ok' + k[0].toUpperCase() + k.slice(1)]) || "You're on the list. We'll be in touch when a spot opens."; };
+    const qs = new URLSearchParams(location.search), src = $('#wl-src');
+    if (src) src.value = (qs.get('src') || qs.get('utm_source') || (document.referrer && !document.referrer.includes(location.host) ? new URL(document.referrer).hostname : '')).slice(0, 60);
+    const pick = () => wl.querySelectorAll('.wl-call').forEach(el => { el.hidden = (wl.elements.namedItem('interest') || {}).value === 'newsletter'; });
+    wl.addEventListener('change', pick); pick();
     function showApplicationLink(name = '', email = '') {
+      if (!applyLink) return;
       applyLink.href = '/apply?' + new URLSearchParams({name, email});
       applyLink.hidden = false;
     }
     $('#wl-t').value = String(Date.now());
     if (new URLSearchParams(location.search).get('joined') === '1') {
       wl.classList.add('done'); msg.className = 'wl-msg ok';
-      msg.textContent = "You're on the list. We'll be in touch when a spot opens.";
+      msg.textContent = okText();
       showApplicationLink(wl.elements.namedItem('name').value, wl.email.value);
     }
     wl.addEventListener('submit', async ev => {
@@ -123,7 +130,7 @@
         const d = await r.json().catch(() => ({}));
         if (!r.ok || !d.ok) throw new Error(d.error || 'failed');
         wl.classList.add('done'); msg.className = 'wl-msg ok';
-        msg.textContent = "You're on the list. We'll be in touch when a spot opens.";
+        msg.textContent = okText();
         showApplicationLink(wl.elements.namedItem('name').value, wl.email.value);
       } catch (e) {
         btn.disabled = false; msg.className = 'wl-msg err';

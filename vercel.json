@@ -27,16 +27,6 @@
    "permanent": false
   },
   {
-   "source": "/Demo",
-   "destination": "/demo",
-   "permanent": false
-  },
-  {
-   "source": "/DEMO",
-   "destination": "/demo",
-   "permanent": false
-  },
-  {
    "source": "/WYATT",
    "destination": "/wyatt",
    "permanent": false
@@ -44,6 +34,51 @@
   {
    "source": "/Wyatt",
    "destination": "/wyatt",
+   "permanent": false
+  },
+  {
+   "source": "/network",
+   "destination": "/vision",
+   "permanent": false
+  },
+  {
+   "source": "/os",
+   "destination": "/vision",
+   "permanent": false
+  },
+  {
+   "source": "/pmbos",
+   "destination": "/property-management",
+   "permanent": false
+  },
+  {
+   "source": "/demo",
+   "destination": "/property-management#demo",
+   "permanent": false
+  },
+  {
+   "source": "/Demo",
+   "destination": "/property-management#demo",
+   "permanent": false
+  },
+  {
+   "source": "/DEMO",
+   "destination": "/property-management#demo",
+   "permanent": false
+  },
+  {
+   "source": "/invest",
+   "destination": "/vision",
+   "permanent": false
+  },
+  {
+   "source": "/pm",
+   "destination": "/property-management",
+   "permanent": false
+  },
+  {
+   "source": "/Talk",
+   "destination": "/talk",
    "permanent": false
   }
  ]

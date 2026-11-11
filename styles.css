@@ -284,3 +284,9 @@ h3{font-size:18px;letter-spacing:-.02em;font-weight:600;margin:0}
 .demo>.wrap{position:relative;z-index:1}
 .cta>*:not(.cta-glow){position:relative;z-index:1}
 .cta-glow{z-index:0}
+/* /talk: call or newsletter */
+.wl-pick{display:flex;flex-wrap:wrap;gap:10px;border:0;margin:0 0 16px;padding:0}
+.wl-pick label{display:flex;align-items:center;gap:8px;padding:10px 14px;border:1px solid var(--line);border-radius:999px;cursor:pointer;font-size:15px}
+.wl-pick label:has(input:checked){border-color:var(--ember);background:rgba(226,112,63,.08)}
+.wl.done .wl-pick{display:none}
+.wl-f[hidden]{display:none}
