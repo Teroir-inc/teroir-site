@@ -20,7 +20,7 @@ import sys
 
 ROOT = Path(__file__).resolve().parent.parent
 TEXT = ('.html', '.js', '.json', '.vcf', '.txt', '.md')
-SKIP = ('api/', 'scripts/')  # serverless code and this script; neither is served as a page
+SKIP = ('api/', 'scripts/', 'assets/fonts/')  # serverless code, this script, font licenses: not page copy
 
 ONE_LINER = ("Built for small businesses: a network where your AI agents can do business with anyone else's, "
              "safely, on the record, with no middleman.")
@@ -74,6 +74,13 @@ FORBIDDEN = {
     'revenue label': r'pre-revenue|revenue status',
     '70-second demo': r'70[- ]?s(?:ec(?:ond)?)?\b',
     'first-project platform': r'PadSplit',  # allowed only as a public market option, see MARKET_OPTIONS
+    # DECISIONS 2026-11-07, relayed by the ops session 2026-11-11.
+    'by small businesses': r'by small businesses',
+    'federated': r'\bfederat',  # technical and investor material only, never the site
+    'robotics claim': r'\brobot(?:s|ic|ics)?\b',  # future direction only, no customer or product claim
+    'ads (unapproved wording)': r"\b(?:ads|advertis\w*|sponsored)\b(?!.{0,40}never change ranking, ratings or the gate's decisions)",
+    'fees (unapproved wording)': r'\b(?:fees?|commissions?)\b(?!.{0,40}never taken from funds in transit)',
+    'every fine from photo proof': r'every fine (?:from|by|via|with) (?:the )?photo',
 }
 # PadSplit as a listing channel or host role (DECISIONS 2026-11-04) is fine; these exact spots are the only ones.
 MARKET_OPTIONS = ['Co-living or PadSplit host', 'value="PadSplit"', '<span>PadSplit</span>', 'PadSplit inbox']
@@ -113,6 +120,12 @@ CONTROL = {
     'revenue label': ['Pre-revenue.'],
     '70-second demo': ['Watch the 70-second demo.'],
     'first-project platform': ['A PadSplit portfolio.'],
+    'by small businesses': ['Built by small businesses.'],
+    'federated': ['A federated network.', 'Federation of agents.'],
+    'robotics claim': ['Robots do the chores.', 'A robotics customer.'],
+    'ads (unapproved wording)': ['Ads boost your ranking.', 'Advertising on the network.', 'Sponsored listings.'],
+    'fees (unapproved wording)': ['A small fee on each payment.', 'Fees come out of the payment.'],
+    'every fine from photo proof': ['Every fine from photo proof.'],
 }
 CLEAN = (
     f'{ONE_LINER} {" ".join(STACK)} The network — Teroir ¶ A network where agents meet. Your agent, meet theirs. '
@@ -126,7 +139,8 @@ CLEAN = (
     'from posting to receipt: who sees what, who signs, and what each side keeps. PM.BOS, our first pack, has been '
     'live since May 2026. It will wrap the software and agents you already use. From the photo records. Your record will '
     'stay with you. Both sides will sign each receipt. '
-    '2.8× the weekly workload. 900+ tickets tracked.'
+    '2.8× the weekly workload. 900+ tickets tracked. Coffee roaster. Ads will never change ranking, ratings or '
+    "the gate's decisions. Fees are never taken from funds in transit. Fines assessed from the photo records."
 )
 
 
