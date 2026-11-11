@@ -80,6 +80,36 @@
    "source": "/Talk",
    "destination": "/talk",
    "permanent": false
+  },
+  {
+   "source": "/Free",
+   "destination": "/free",
+   "permanent": false
+  },
+  {
+   "source": "/FREE",
+   "destination": "/free",
+   "permanent": false
+  },
+  {
+   "source": "/guides",
+   "destination": "/free",
+   "permanent": false
+  },
+  {
+   "source": "/guide",
+   "destination": "/free",
+   "permanent": false
+  },
+  {
+   "source": "/Guides",
+   "destination": "/free",
+   "permanent": false
   }
- ]
+ ],
+ "functions": {
+  "api/guide.js": {
+   "includeFiles": "guides/**"
+  }
+ }
 }

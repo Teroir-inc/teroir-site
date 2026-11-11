@@ -306,3 +306,26 @@ h3{font-size:18px;letter-spacing:-.02em;font-weight:600;margin:0}
 .cal-frame:empty{display:none}
 .cal-alt{margin:0;font-size:14px}
 .rec-note{margin:14px 0 0;font-size:13px;color:var(--muted)}
+/* /free: guide picker, buy cards, done state */
+.gd-pick{display:grid;gap:10px;border:0;margin:0 0 18px;padding:0}
+.gd-pick label{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border:1px solid var(--line-2);border-radius:14px;cursor:pointer;background:rgba(246,244,238,.6)}
+.gd-pick label:has(input:checked){border-color:var(--ember);background:rgba(226,112,63,.08)}
+.wl .gd-pick input{flex:none;width:20px;height:20px;min-height:0;margin:2px 0 0;padding:0;border:0;accent-color:var(--ember-2);background:none}
+.gd-pick span{display:flex;flex-direction:column;gap:4px}
+.gd-pick b{font-size:16px;line-height:1.3;font-weight:600}
+.gd-pick i{font-style:normal;font-size:14px;line-height:1.4;color:var(--muted)}
+.gd-pick small{font-size:12px;color:var(--dim);letter-spacing:.02em}
+.wl .wl-act+.rec-note{margin-top:14px}
+.gd-done{position:relative;max-width:760px}
+.gd-big{font-size:clamp(24px,4vw,32px);font-weight:600;letter-spacing:-.02em;margin:0 0 8px}
+.gd-links{list-style:none;padding:0;margin:14px 0 0;display:grid;gap:10px}
+.gd-sub{max-width:640px;color:var(--muted);margin:0 0 22px}
+.gd-buy{align-items:stretch}
+.gd-card{display:flex;flex-direction:column;gap:8px}
+.gd-card[hidden]{display:none}
+.gd-card .gd-price{font-size:28px;font-weight:600;letter-spacing:-.02em;color:var(--text);margin-top:auto;padding-top:6px}
+.gd-card .btn{align-self:flex-start}
+.gd-all{border-color:var(--ember)}
+.gd-more{margin-top:22px}
+@media (min-width:860px){.gd-pick{grid-template-columns:repeat(3,1fr)}}
+@media (min-width:860px){.gd-buy{grid-template-columns:repeat(3,1fr)}.gd-all{grid-column:1/-1}}
