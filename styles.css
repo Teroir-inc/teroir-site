@@ -290,3 +290,10 @@ h3{font-size:18px;letter-spacing:-.02em;font-weight:600;margin:0}
 .wl-pick label:has(input:checked){border-color:var(--ember);background:rgba(226,112,63,.08)}
 .wl.done .wl-pick{display:none}
 .wl-f[hidden]{display:none}
+/* home: three ways in, founder */
+.ways .go{margin-top:6px;font-size:14px;font-weight:500;color:var(--ember-2)}
+.founder-pic{display:block;width:72px;height:72px;border-radius:50%;object-fit:cover;margin:0 auto 14px}
+.talk-who{display:flex;align-items:center;justify-content:center;gap:12px;margin-bottom:12px}
+.talk-who .founder-pic{width:56px;height:56px;margin:0}
+.talk-who p{margin:0;display:grid;text-align:left;font-size:14px}
+.talk-who span{color:var(--muted)}

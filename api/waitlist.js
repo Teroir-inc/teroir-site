@@ -37,8 +37,10 @@ module.exports = async (req, res) => {
   const name = clean(b.name, 120);
   const role = ROLES.has(clean(b.role, 60)) ? clean(b.role, 60) : 'Other';
   const size = clean(b.size, 20);
-  const INTERESTS = { call: 'Discovery call', newsletter: 'Newsletter', beta: 'Waitlist' };
-  const interest = INTERESTS[clean(b.interest, 20)] ? clean(b.interest, 20) : 'beta';
+  const INTERESTS = { business: 'Discovery call', coaching: 'Coaching call', newsletter: 'Newsletter', beta: 'Waitlist' };
+  const asked = clean(b.interest, 20) === 'call' ? 'business' : clean(b.interest, 20);
+  const interest = INTERESTS[asked] ? asked : 'beta';
+  const isCall = interest === 'business' || interest === 'coaching';
   const src = clean(b.src, 60).replace(/[^\w.\-]/g, '');
   const times = clean(b.times, 200), note = clean(b.note, 500);
   if (!process.env.RESEND_API_KEY) { console.error('waitlist: RESEND_API_KEY missing'); return reply(500, { ok: false, error: 'config' }); }
@@ -46,7 +48,7 @@ module.exports = async (req, res) => {
   const when = new Date().toISOString();
   const lines = [`Wants: ${INTERESTS[interest]}`, `Name: ${name || '(not given)'}`, `Email: ${email}`,
     ...(interest === 'beta' ? [`Role: ${role || '(not given)'}`, `Rooms or units: ${size || '(not given)'}`] : []),
-    ...(interest === 'call' ? [`Good times: ${times || '(not given)'}`, `On their mind: ${note || '(not given)'}`] : []),
+    ...(isCall ? [`Takes up their week: ${note || '(not given)'}`, `Good times: ${times || '(not given)'}`] : []),
     `Came from: ${src || '(direct)'}`, `Signed up: ${when}`, `Country: ${clean(req.headers['x-vercel-ip-country'], 4) || 'unknown'}`, '', 'Reply to this email to answer them directly.'];
   try {
     await send({ from: FROM, to: NOTIFY_TO, cc: NOTIFY_CC, reply_to: email,
@@ -60,8 +62,10 @@ module.exports = async (req, res) => {
     const CONFIRM = {
       beta: ["You're on the Teroir waitlist", "You're on the waitlist for early access to PM.BOS. We bring on a small cohort of operators at a time so every house is set up properly, and we'll reach out when a spot opens.",
         'In the meantime, reply to this email if you want to tell us about your portfolio.'],
-      call: ['Your call with Teroir', "Thanks for reaching out. I'll email you shortly to set a time for a one-on-one call.",
-        'If it helps, reply with a little about your business and what you want to talk through.'],
+      business: ['Your discovery call with Teroir', "Thanks for reaching out. I'll email you shortly to set a time for a one-on-one call about your business.",
+        'If it helps, reply with a little about your business and where your week goes.'],
+      coaching: ['Your coaching call with Teroir', "Thanks for reaching out. I'll email you shortly to set a time for a one-on-one coaching call.",
+        'If it helps, reply with what you do and where you want AI to help.'],
       newsletter: ["You're on the Teroir newsletter", "You're on the list. I'll send updates as Teroir grows.",
         'Reply to this email any time to unsubscribe or to tell me about your business.'],
     }[interest];

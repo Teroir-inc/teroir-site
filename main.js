@@ -105,6 +105,8 @@
     const qs = new URLSearchParams(location.search), src = $('#wl-src');
     if (src) src.value = (qs.get('src') || qs.get('utm_source') || (document.referrer && !document.referrer.includes(location.host) ? new URL(document.referrer).hostname : '')).slice(0, 60);
     const pick = () => wl.querySelectorAll('.wl-call').forEach(el => { el.hidden = (wl.elements.namedItem('interest') || {}).value === 'newsletter'; });
+    const want = wl.querySelector(`input[name=interest][value="${(qs.get('for') || '').replace(/[^a-z]/g, '')}"]`);
+    if (want) want.checked = true;
     wl.addEventListener('change', pick); pick();
     function showApplicationLink(name = '', email = '') {
       if (!applyLink) return;

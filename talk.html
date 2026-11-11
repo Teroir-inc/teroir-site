@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Talk to us — Teroir</title>
-<meta name="description" content="Book a one-on-one discovery call with the founder of Teroir, or get the newsletter.">
+<meta name="description" content="Book a one-on-one discovery or coaching call with Wyatt Horton, founder of Teroir, or get the newsletter.">
 <meta name="theme-color" content="#F6F4EE">
 <meta name="color-scheme" content="light">
 <link rel="canonical" href="https://teroir.com/talk">
@@ -12,14 +12,14 @@
 <meta property="og:site_name" content="Teroir">
 <meta property="og:url" content="https://teroir.com/talk">
 <meta property="og:title" content="Talk to us — Teroir">
-<meta property="og:description" content="Book a one-on-one discovery call with the founder of Teroir, or get the newsletter.">
+<meta property="og:description" content="Book a one-on-one discovery or coaching call with Wyatt Horton, founder of Teroir, or get the newsletter.">
 <meta property="og:image" content="https://teroir.com/og.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Teroir logo: a sun over terraced hills.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Talk to us — Teroir">
-<meta name="twitter:description" content="Book a one-on-one discovery call with the founder of Teroir, or get the newsletter.">
+<meta name="twitter:description" content="Book a one-on-one discovery or coaching call with Wyatt Horton, founder of Teroir, or get the newsletter.">
 <meta name="twitter:image" content="https://teroir.com/og.png">
 <link rel="icon" href="brand/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="brand/favicon.png" type="image/png" sizes="32x32">
@@ -39,7 +39,7 @@
   <div class="wrap nav-in">
     <a class="brand" href="/" aria-label="Teroir — home"><img src="brand/logo.svg" alt="Teroir" width="97" height="30">
     </a>
-    <nav class="links pg" aria-label="Pages"><a href="/property-management">Property management</a><a href="/vision">Vision</a></nav>
+    <nav class="links pg" aria-label="Pages"><a href="/property-management">Case study</a><a href="/talk?for=coaching">Coaching</a><a href="/vision">Vision</a></nav>
     <a class="btn btn-sm btn-ghost" href="/" >Home</a>
   </div>
 </header>
@@ -51,19 +51,21 @@
     <div class="cta">
       <div class="cta-glow" aria-hidden="true"></div>
       <span class="cta-k">Talk to us</span>
+      <div class="talk-who"><img class="founder-pic" src="wyatt-avatar.png" alt="Wyatt Horton" width="56" height="56"><p><b>Wyatt Horton</b><span>Founder &amp; CEO, Teroir</span></p></div>
       <h1 id="talk-h">Let's <em>talk.</em></h1>
-      <p class="cta-lead">Book a one-on-one call with Wyatt, the founder, to see if Teroir fits your business. Or get the newsletter and follow along.</p>
-      <form class="wl" id="wl-form" action="/api/waitlist" method="post" data-ok-call="Got it. Wyatt will email you to set a time." data-ok-newsletter="You're subscribed. Watch your inbox.">
+      <p class="cta-lead">Teroir's first AI system has run a 218-room property portfolio since May 2026; the team grew it from 11 to 29 properties with no new hires. <a class="more" href="/property-management#demo">Watch the one-minute demo</a></p>
+      <form class="wl" id="wl-form" action="/api/waitlist" method="post" data-ok-business="Got it. Wyatt will email you to set a time." data-ok-coaching="Got it. Wyatt will email you to set a time." data-ok-newsletter="You're subscribed. Watch your inbox.">
         <fieldset class="wl-pick">
           <legend class="vh">What would you like?</legend>
-          <label><input type="radio" name="interest" value="call" checked> Book a discovery call</label>
-          <label><input type="radio" name="interest" value="newsletter"> Get the newsletter</label>
+          <label><input type="radio" name="interest" value="business" checked> For my business</label>
+          <label><input type="radio" name="interest" value="coaching"> Coaching for me</label>
+          <label><input type="radio" name="interest" value="newsletter"> Just the newsletter</label>
         </fieldset>
         <div class="wl-grid">
           <label class="wl-f"><span>Name</span><input name="name" autocomplete="name" maxlength="120"></label>
           <label class="wl-f"><span>Email</span><input name="email" type="email" required autocomplete="email" maxlength="200"></label>
+          <label class="wl-f wl-call"><span>What takes up most of your week? <i>(optional)</i></span><input name="note" maxlength="500" placeholder="e.g. answering the same customer questions"></label>
           <label class="wl-f wl-call"><span>Good times for a call <i>(optional)</i></span><input name="times" maxlength="200" placeholder="e.g. weekday mornings, Central"></label>
-          <label class="wl-f wl-call"><span>What's on your mind? <i>(optional)</i></span><input name="note" maxlength="500" placeholder="e.g. 40 units, tenant texts are a mess"></label>
         </div>
         <label class="wl-hp" aria-hidden="true">Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label>
         <input type="hidden" name="t" id="wl-t">
