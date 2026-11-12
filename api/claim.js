@@ -34,7 +34,8 @@ module.exports = async (req, res) => {
       subject: `Your free guide: ${guide.title}`,
       text: [`Hey, it's Wyatt.`, '', `Here's your free guide, "${guide.title}":`, link, '',
         'The link works for 30 days. Save the PDF somewhere you will see it again.', '',
-        `Want the other guides? They're at https://teroir.com/free#buy`, '',
+        `For the next 24 hours, any other guide is $29 instead of $169:`,
+        `https://teroir.com/free?offer=${G.offerFor(email)}#buy`, '',
         'Questions, or want something like this built for your business? Just reply to this email.', '',
         'Wyatt', 'Teroir · teroir.com'].join('\n'),
     });
