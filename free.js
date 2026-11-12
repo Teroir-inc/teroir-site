@@ -35,7 +35,7 @@
       if (j.ok) {
         show('Check your inbox.', `"${TITLES[data.guide]}" is on its way to ${data.email}. If it's not there in a few minutes, look in spam or promotions.`);
         document.querySelectorAll('.gd-card').forEach(c => { c.hidden = c.dataset.guide === data.guide; });
-        document.querySelectorAll('#buy input[name=src]').forEach(i => { i.form.dataset.email = data.email; });
+        $('gd-buy-email').value = data.email;
       } else if (j.error === 'claimed') { claimed(j.guide); }
       else { msg.textContent = j.error === 'email' ? 'Please check your email address.' : 'Something went wrong. Please try again, or email wyatt@teroir.com.'; }
     } catch { msg.textContent = 'Something went wrong. Please try again, or email wyatt@teroir.com.'; }
@@ -45,7 +45,9 @@
   // 24-hour $29 offer link from the free-guide email: /free?offer=<token>. The server checks the token; this only shows the price.
   const offer = qs.get('offer');
   let offerEnd = 0;
-  try { offerEnd = JSON.parse(atob(offer.split('.')[0].replace(/-/g, '+').replace(/_/g, '/'))).x; } catch {}
+  let offerEmail = '';
+  try { ({ x: offerEnd, e: offerEmail } = JSON.parse(atob(offer.split('.')[0].replace(/-/g, '+').replace(/_/g, '/')))); } catch {}
+  if (offerEnd > Date.now() && offerEmail) $('gd-buy-email').value = offerEmail;
   if (offerEnd > Date.now()) document.querySelectorAll('#buy form[data-guide]').forEach(f => {
     f.insertAdjacentHTML('beforeend', '<input type="hidden" name="offer">'); f.elements.offer.value = offer;
     f.querySelector('.gd-price').innerHTML = '<s>$169</s> $29 <small>for 24 hours</small>';
@@ -56,7 +58,10 @@
     e.preventDefault();
     const btn = f.querySelector('button'); btn.disabled = true;
     try {
-      const body = { ...Object.fromEntries(new FormData(f)), email: f.dataset.email || '' };
+      const email = $('gd-buy-email').value.trim();
+      if (!/^\S+@\S+\.\S+$/.test(email)) { $('gd-buy-msg').textContent = 'Please enter a valid email.'; $('gd-buy-email').focus(); btn.disabled = false; return; }
+      $('gd-buy-msg').textContent = '';
+      const body = { ...Object.fromEntries(new FormData(f)), email };
       const r = await fetch('/api/checkout', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
       const j = await r.json();
       if (j.url) { location.href = j.url; return; }

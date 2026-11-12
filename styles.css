@@ -329,3 +329,6 @@ h3{font-size:18px;letter-spacing:-.02em;font-weight:600;margin:0}
 .gd-more{margin-top:22px}
 @media (min-width:860px){.gd-pick{grid-template-columns:repeat(2,1fr)}}
 @media (min-width:640px){.pages.gd-buy{grid-template-columns:repeat(2,1fr)}.gd-all{grid-column:1/-1}}
+
+.gd-buyer{max-width:420px;margin:0 0 4px;grid-template-columns:1fr!important}
+#gd-buy-msg{min-height:1.2em;margin:0 0 12px}

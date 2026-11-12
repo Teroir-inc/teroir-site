@@ -91,6 +91,10 @@
     <p class="eyebrow">The full set</p>
     <h2 id="buy-h">Want the <em>other guides?</em></h2>
     <p class="gd-sub">Each guide is $169, or get all seven for $500. Pay by card and the PDFs come straight to your email.</p>
+    <div class="wl wl-grid gd-buyer">
+      <label class="wl-f"><span>Your email</span><input id="gd-buy-email" type="email" autocomplete="email" maxlength="200" placeholder="you@example.com"></label>
+    </div>
+    <p class="wl-msg" id="gd-buy-msg" role="status" aria-live="polite"></p>
     <div class="pages gd-buy">
       <form class="pg-card gd-card gd-all" action="/api/checkout" method="post">
         <input type="hidden" name="item" value="bundle"><input type="hidden" name="src" class="gd-src">
