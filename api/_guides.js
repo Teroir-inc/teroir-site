@@ -7,6 +7,7 @@ const GUIDES = [
   { id: 'repeat-task', title: 'Hand AI your most repeated task' },
   { id: 'run-while-out', title: "Keep your business running while you're out" },
   { id: 'get-paid', title: 'Get paid for AI: build and sell one small automation' },
+  { id: 'claude-artifacts', title: 'Make Claude build it: a field guide to artifacts' },
 ];
 const PRICE_EACH = 1900, PRICE_BUNDLE = 3900; // cents, USD
 const BY_ID = Object.fromEntries(GUIDES.map(g => [g.id, g]));

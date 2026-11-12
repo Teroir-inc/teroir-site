@@ -327,5 +327,5 @@ h3{font-size:18px;letter-spacing:-.02em;font-weight:600;margin:0}
 .gd-card .btn{align-self:flex-start}
 .gd-all{border-color:var(--ember)}
 .gd-more{margin-top:22px}
-@media (min-width:860px){.gd-pick{grid-template-columns:repeat(3,1fr)}}
-@media (min-width:860px){.gd-buy{grid-template-columns:repeat(3,1fr)}.gd-all{grid-column:1/-1}}
+@media (min-width:860px){.gd-pick{grid-template-columns:repeat(2,1fr)}}
+@media (min-width:640px){.pages.gd-buy{grid-template-columns:repeat(2,1fr)}.gd-all{grid-column:1/-1}}
