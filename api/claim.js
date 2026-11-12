@@ -20,7 +20,7 @@ module.exports = async (req, res) => {
   const email = G.clean(b.email, 200).toLowerCase();
   if (!G.EMAIL_RE.test(email)) return reply(400, { ok: false, error: 'email' });
   const guide = G.BY_ID[G.clean(b.guide, 40)];
-  if (!guide) return reply(400, { ok: false, error: 'guide' });
+  if (!guide || guide.paidOnly) return reply(400, { ok: false, error: 'guide' }); // paid-only guides can't be the free pick
   const src = G.clean(b.src, 60).replace(/[^\w.\-]/g, '');
 
   try {

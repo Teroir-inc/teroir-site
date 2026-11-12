@@ -3,7 +3,7 @@
   const $ = id => document.getElementById(id);
   const qs = new URLSearchParams(location.search);
   const TITLES = {};
-  document.querySelectorAll('.gd-pick input').forEach(i => { TITLES[i.value] = i.parentElement.querySelector('b').textContent; });
+  document.querySelectorAll('.gd-card[data-guide]').forEach(f => { TITLES[f.dataset.guide] = f.querySelector('b').textContent; });
 
   // where the visitor came from (ManyChat link: /free?src=manychat)
   let src = (qs.get('src') || qs.get('utm_source') || '').replace(/[^\w.\-]/g, '').slice(0, 60);
@@ -11,7 +11,10 @@
   $('gd-src').value = src;
   document.querySelectorAll('.gd-src').forEach(i => { i.value = src; });
   $('gd-t').value = Date.now();
-  if (qs.get('guide') && TITLES[qs.get('guide')]) document.querySelector(`.gd-pick input[value="${qs.get('guide')}"]`).checked = true;
+  const want = qs.get('guide') && TITLES[qs.get('guide')] ? qs.get('guide') : '';
+  const pick = want && document.querySelector(`.gd-pick input[value="${want}"]`);
+  if (pick) pick.checked = true;
+  else if (want) addEventListener('load', () => document.querySelector(`.gd-card[data-guide="${want}"]`).scrollIntoView({ block: 'center' })); // paid-only guide: show its buy card
 
   const form = $('gd-form'), msg = $('gd-msg'), done = $('gd-done');
   const show = (h, p) => { form.hidden = true; done.hidden = false; $('gd-done-h').textContent = h; $('gd-done-p').textContent = p; };

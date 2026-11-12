@@ -1,4 +1,4 @@
-// teroir.com/free: starts a Stripe Checkout for one guide ($19) or the bundle of all guides ($39).
+// teroir.com/free: starts a Stripe Checkout for one guide or the bundle of all guides (prices in _guides.js).
 const G = require('./_guides');
 
 module.exports = async (req, res) => {
