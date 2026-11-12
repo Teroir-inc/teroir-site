@@ -80,19 +80,45 @@ async function stripe(method, path, params) {
   return j;
 }
 
-async function send(payload) {
+async function send(payload, idem) {
   if (!process.env.RESEND_API_KEY) throw new Error('RESEND_API_KEY missing');
   const r = await fetch('https://api.resend.com/emails', {
     method: 'POST',
-    headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+    headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json', ...(idem ? { 'Idempotency-Key': idem } : {}) },
     body: JSON.stringify(payload),
   });
   if (!r.ok) throw new Error(`resend ${r.status}: ${(await r.text()).slice(0, 200)}`);
   return r.json();
 }
-const notify = (subject, lines) => send({ from: 'Teroir Guides <waitlist@teroir.com>', to: NOTIFY_TO, cc: NOTIFY_CC, subject, text: lines.join('\n') })
+const notify = (subject, lines, idem) => send({ from: 'Teroir Guides <waitlist@teroir.com>', to: NOTIFY_TO, cc: NOTIFY_CC, subject, text: lines.join('\n') }, idem)
   .catch(e => console.error('guides notify failed', e.message));
 
 const linkFor = (id, email, days) => `https://teroir.com/api/guide?t=${sign(id, email, days)}`;
 
-module.exports = { FROM, GUIDES, BY_ID, PRICE_EACH, PRICE_BUNDLE, EMAIL_RE, clean, sign, verify, encrypt, decrypt, stripe, send, notify, linkFor };
+// A paid Checkout Session (payment_intent expanded) -> its links; emails them once.
+// Both the success page (api/order) and the Stripe webhook call this. The delivered flag on the payment intent
+// stops repeats, and the Resend idempotency key stops a double email if both arrive at the same moment.
+async function deliver(s) {
+  const email = String(s.customer_details?.email || s.customer_email || '').toLowerCase();
+  const guides = String(s.metadata?.guides || '').split(',').map(g => BY_ID[g]).filter(Boolean);
+  const links = guides.map(g => ({ id: g.id, title: g.title, url: linkFor(g.id, email, 730) }));
+  const pi = s.payment_intent;
+  if (links.length && pi && typeof pi === 'object' && !pi.metadata?.delivered) {
+    await send({
+      from: FROM, to: [email], reply_to: 'wyatt@teroir.com',
+      subject: links.length > 1 ? 'Your Teroir guides' : `Your guide: ${links[0].title}`,
+      text: [`Hey, it's Wyatt. Thanks for buying${links.length > 1 ? ' the guides' : ''}.`, '',
+        ...links.flatMap(l => [`${l.title}:`, l.url, '']),
+        'These links work for two years. Save the PDFs somewhere you will see them again.', '',
+        'Questions, or want something like this built for your business? Just reply to this email.', '',
+        'Wyatt', 'Teroir · teroir.com'].join('\n'),
+    }, `guide-order-${s.id}`);
+    await stripe('POST', `payment_intents/${pi.id}`, { metadata: { delivered: new Date().toISOString() } });
+    await notify(`Guide sale: $${(s.amount_total / 100).toFixed(2)} · ${email}`, [
+      `Bought: ${guides.map(g => g.title).join(', ')}`, `Paid: $${(s.amount_total / 100).toFixed(2)}`,
+      `Email: ${email}`, `Came from: ${s.metadata?.src || '(direct)'}`, `Stripe session: ${s.id}`], `guide-sale-${s.id}`);
+  }
+  return { email, links };
+}
+
+module.exports = { deliver, FROM, GUIDES, BY_ID, PRICE_EACH, PRICE_BUNDLE, EMAIL_RE, clean, sign, verify, encrypt, decrypt, stripe, send, notify, linkFor };

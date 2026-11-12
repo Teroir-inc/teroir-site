@@ -105,6 +105,16 @@
    "source": "/Guides",
    "destination": "/free",
    "permanent": false
+  },
+  {
+   "source": "/ai",
+   "destination": "/free?src=instagram",
+   "permanent": false
+  },
+  {
+   "source": "/ai/:path*",
+   "destination": "/free?src=instagram",
+   "permanent": false
   }
  ],
  "functions": {
