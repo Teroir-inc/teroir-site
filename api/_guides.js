@@ -19,7 +19,6 @@ const offerOk = t => { const o = verify(t); return o && o.d === 'offer29' && o.x
 const BY_ID = Object.fromEntries(GUIDES.map(g => [g.id, g]));
 
 const NOTIFY_TO = ['wyatt@teroir.com'];
-const NOTIFY_CC = ['wyatthorton.pm@gmail.com'];
 const FROM = 'Wyatt Horton <wyatt@teroir.com>';
 const EMAIL_RE = /^[^\s@<>"]{1,100}@[^\s@<>"]{1,100}\.[^\s@<>"]{2,24}$/;
 const DAY = 86400e3;
@@ -93,7 +92,7 @@ async function send(payload, idem) {
   if (!r.ok) throw new Error(`resend ${r.status}: ${(await r.text()).slice(0, 200)}`);
   return r.json();
 }
-const notify = (subject, lines, idem) => send({ from: 'Teroir Guides <waitlist@teroir.com>', to: NOTIFY_TO, cc: NOTIFY_CC, subject, text: lines.join('\n') }, idem)
+const notify = (subject, lines, idem) => send({ from: 'Teroir Guides <waitlist@teroir.com>', to: NOTIFY_TO, subject, text: lines.join('\n') }, idem)
   .catch(e => console.error('guides notify failed', e.message));
 
 const linkFor = (id, email, days) => `https://teroir.com/api/guide?t=${sign(id, email, days)}`;
@@ -102,7 +101,7 @@ const linkFor = (id, email, days) => `https://teroir.com/api/guide?t=${sign(id, 
 // Both the success page (api/order) and the Stripe webhook call this. The delivered flag on the payment intent
 // stops repeats, and the Resend idempotency key stops a double email if both arrive at the same moment.
 async function deliver(s) {
-  const email = String(s.customer_details?.email || s.customer_email || '').toLowerCase();
+  const email = String(s.metadata?.email || s.customer_email || s.customer_details?.email || '').toLowerCase();
   const guides = String(s.metadata?.guides || '').split(',').map(g => BY_ID[g]).filter(Boolean);
   const links = guides.map(g => ({ id: g.id, title: g.title, url: linkFor(g.id, email, 730) }));
   const pi = s.payment_intent;

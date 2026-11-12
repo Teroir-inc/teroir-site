@@ -1,6 +1,5 @@
 // teroir.com waitlist: each signup is emailed to Wyatt (the list lives in his inbox) and the signer gets a fixed confirmation.
 const NOTIFY_TO = ['wyatt@teroir.com'];
-const NOTIFY_CC = ['wyatthorton.pm@gmail.com'];
 const FROM = 'Teroir Waitlist <waitlist@teroir.com>';
 const EMAIL_RE = /^[^\s@<>"]{1,100}@[^\s@<>"]{1,100}\.[^\s@<>"]{2,24}$/;
 const ROLES = new Set(['Property manager', 'Owner-operator', 'Co-living or PadSplit host', 'Investor', 'Other', '']);
@@ -51,7 +50,7 @@ module.exports = async (req, res) => {
     ...(isCall ? [`Takes up their week: ${note || '(not given)'}`, `Good times: ${times || '(not given)'}`] : []),
     `Came from: ${src || '(direct)'}`, `Signed up: ${when}`, `Country: ${clean(req.headers['x-vercel-ip-country'], 4) || 'unknown'}`, '', 'Reply to this email to answer them directly.'];
   try {
-    await send({ from: FROM, to: NOTIFY_TO, cc: NOTIFY_CC, reply_to: email,
+    await send({ from: FROM, to: NOTIFY_TO, reply_to: email,
       subject: interest === 'beta' ? `Teroir waitlist: ${name || email}${role ? ` · ${role}` : ''}`
         : `Teroir ${INTERESTS[interest].toLowerCase()}: ${name || email}${src ? ` · ${src}` : ''}`, text: lines.join('\n') });
   } catch (e) {

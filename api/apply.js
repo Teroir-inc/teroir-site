@@ -1,5 +1,4 @@
 const NOTIFY_TO = ['wyatt@teroir.com'];
-const NOTIFY_CC = ['wyatthorton.pm@gmail.com'];
 const FROM = 'Teroir Beta <waitlist@teroir.com>';
 const EMAIL_RE = /^[^\s@<>"]{1,100}@[^\s@<>"]{1,100}\.[^\s@<>"]{2,24}$/;
 const clean = (v, n) => String(v ?? '').replace(/[\r\n\t]+/g, ' ').replace(/[<>]/g, '').trim().slice(0, n);
@@ -137,7 +136,7 @@ module.exports = async (req, res) => {
   const lines = steps.flatMap(([title,keys])=>[title.toUpperCase(),...keys.map(k=>`${LABELS[k]}: ${show(a[k])}`),'']);
   lines.push(`Tier: ${tier}`, 'Answers JSON:', JSON.stringify(a));
   try {
-    await send({from:FROM,to:NOTIFY_TO,cc:NOTIFY_CC,reply_to:a.email,
+    await send({from:FROM,to:NOTIFY_TO,reply_to:a.email,
       subject:`Teroir beta [${tier}] · ${a.rooms} rooms · ${a.channels[0] || 'Not specified'} · ${a.start || 'Not specified'}`,text:lines.join('\n')});
   } catch { console.error('apply notify failed'); return reply(502,{ok:false,error:'send'}); }
   try {

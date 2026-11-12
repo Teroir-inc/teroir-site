@@ -16,8 +16,10 @@ module.exports = async (req, res) => {
   // 24-hour $29 offer from the free-guide email: single guides only, locked to the email it was sent to
   const offer = one && b.offer ? G.offerOk(G.clean(b.offer, 400)) : null;
   const buyer = offer ? offer.e : G.EMAIL_RE.test(email) ? email : undefined;
+  // the page always sends the email typed on teroir.com; it is locked into Checkout so a wallet (Apple Pay, Link) can't swap it
+  if (wantsJson && !buyer) return res.status(400).json({ ok: false, error: 'email' });
   const ids = one ? [one.id] : G.GUIDES.map(g => g.id);
-  const meta = { guides: ids.join(','), src: src || 'direct', ...(offer ? { offer: '29' } : {}) };
+  const meta = { guides: ids.join(','), src: src || 'direct', ...(buyer ? { email: buyer } : {}), ...(offer ? { offer: '29' } : {}) };
   try {
     const s = await G.stripe('POST', 'checkout/sessions', {
       mode: 'payment',
