@@ -13,6 +13,9 @@ const GUIDES = [
   { id: 'remote-dev-setup', title: 'Build from your phone: a remote AI workshop', paidOnly: true },
 ];
 const PRICE_EACH = 16900, PRICE_BUNDLE = 50000; // cents, USD
+const OFFER_PRICE = 2900, OFFER_DAYS = 1; // the free-guide email's offer: any single guide at $29 for 24 hours from the claim
+const offerFor = email => sign('offer29', email, OFFER_DAYS);
+const offerOk = t => { const o = verify(t); return o && o.d === 'offer29' && o.x > Date.now() && EMAIL_RE.test(o.e) ? o : null; };
 const BY_ID = Object.fromEntries(GUIDES.map(g => [g.id, g]));
 
 const NOTIFY_TO = ['wyatt@teroir.com'];
@@ -121,4 +124,4 @@ async function deliver(s) {
   return { email, links };
 }
 
-module.exports = { deliver, FROM, GUIDES, BY_ID, PRICE_EACH, PRICE_BUNDLE, EMAIL_RE, clean, sign, verify, encrypt, decrypt, stripe, send, notify, linkFor };
+module.exports = { OFFER_PRICE, offerFor, offerOk, deliver, FROM, GUIDES, BY_ID, PRICE_EACH, PRICE_BUNDLE, EMAIL_RE, clean, sign, verify, encrypt, decrypt, stripe, send, notify, linkFor };

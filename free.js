@@ -42,6 +42,15 @@
     btn.disabled = false;
   });
 
+  // 24-hour $29 offer link from the free-guide email: /free?offer=<token>. The server checks the token; this only shows the price.
+  const offer = qs.get('offer');
+  let offerEnd = 0;
+  try { offerEnd = JSON.parse(atob(offer.split('.')[0].replace(/-/g, '+').replace(/_/g, '/'))).x; } catch {}
+  if (offerEnd > Date.now()) document.querySelectorAll('#buy form[data-guide]').forEach(f => {
+    f.insertAdjacentHTML('beforeend', '<input type="hidden" name="offer">'); f.elements.offer.value = offer;
+    f.querySelector('.gd-price').innerHTML = '<s>$169</s> $29 <small>for 24 hours</small>';
+  });
+
   // Buy buttons: JSON first so the email they gave carries into Stripe; plain form post is the fallback
   document.querySelectorAll('#buy form').forEach(f => f.addEventListener('submit', async e => {
     e.preventDefault();

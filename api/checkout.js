@@ -13,18 +13,22 @@ module.exports = async (req, res) => {
   const host = String(req.headers.host || '');
   const origin = /^(teroir\.com|www\.teroir\.com|[\w-]+\.vercel\.app)$/.test(host) ? `https://${host}` : 'https://teroir.com';
 
+  // 24-hour $29 offer from the free-guide email: single guides only, locked to the email it was sent to
+  const offer = one && b.offer ? G.offerOk(G.clean(b.offer, 400)) : null;
+  const buyer = offer ? offer.e : G.EMAIL_RE.test(email) ? email : undefined;
   const ids = one ? [one.id] : G.GUIDES.map(g => g.id);
+  const meta = { guides: ids.join(','), src: src || 'direct', ...(offer ? { offer: '29' } : {}) };
   try {
     const s = await G.stripe('POST', 'checkout/sessions', {
       mode: 'payment',
-      line_items: [{ quantity: 1, price_data: { currency: 'usd', unit_amount: one ? G.PRICE_EACH : G.PRICE_BUNDLE,
+      line_items: [{ quantity: 1, price_data: { currency: 'usd', unit_amount: offer ? G.OFFER_PRICE : one ? G.PRICE_EACH : G.PRICE_BUNDLE,
         product_data: { name: one ? `Teroir guide: ${one.title}` : `Teroir guides: all ${ids.length}`,
           description: one ? 'PDF guide, sent to your email' : G.GUIDES.map(g => g.title).join(' · ') } } }],
-      customer_email: G.EMAIL_RE.test(email) ? email : undefined,
+      customer_email: buyer,
       customer_creation: 'always',
       allow_promotion_codes: 'true',
-      metadata: { guides: ids.join(','), src: src || 'direct' },
-      payment_intent_data: { metadata: { guides: ids.join(','), src: src || 'direct' } },
+      metadata: meta,
+      payment_intent_data: { metadata: meta },
       success_url: `${origin}/free?paid={CHECKOUT_SESSION_ID}#get`,
       cancel_url: `${origin}/free#buy`,
     });
