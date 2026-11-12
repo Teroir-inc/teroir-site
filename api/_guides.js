@@ -7,9 +7,12 @@ const GUIDES = [
   { id: 'repeat-task', title: 'Hand AI your most repeated task' },
   { id: 'run-while-out', title: "Keep your business running while you're out" },
   { id: 'get-paid', title: 'Get paid for AI: build and sell one small automation' },
-  { id: 'claude-artifacts', title: 'Make Claude build it: a field guide to artifacts' },
+  { id: 'claude-artifacts', title: 'Make Claude build it: a field guide to artifacts', paidOnly: true },
+  { id: 'harness-engineering', title: 'Build the harness: what your AI agents need from you' },
+  { id: 'agent-engineering', title: 'Run AI agents like a team' },
+  { id: 'remote-dev-setup', title: 'Build from your phone: a remote AI workshop', paidOnly: true },
 ];
-const PRICE_EACH = 1900, PRICE_BUNDLE = 3900; // cents, USD
+const PRICE_EACH = 16900, PRICE_BUNDLE = 50000; // cents, USD
 const BY_ID = Object.fromEntries(GUIDES.map(g => [g.id, g]));
 
 const NOTIFY_TO = ['wyatt@teroir.com'];
