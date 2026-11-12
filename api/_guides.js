@@ -106,7 +106,10 @@ async function deliver(s) {
   const links = guides.map(g => ({ id: g.id, title: g.title, url: linkFor(g.id, email, 730) }));
   const pi = s.payment_intent;
   if (links.length && pi && typeof pi === 'object' && !pi.metadata?.delivered) {
-    await send({
+    const sale = `$${(s.amount_total / 100).toFixed(2)} · ${email}`;
+    let sent;
+    try {
+      sent = await send({
       from: FROM, to: [email], reply_to: 'wyatt@teroir.com',
       subject: links.length > 1 ? 'Your Teroir guides' : `Your guide: ${links[0].title}`,
       text: [`Hey, it's Wyatt. Thanks for buying${links.length > 1 ? ' the guides' : ''}.`, '',
@@ -114,11 +117,19 @@ async function deliver(s) {
         'These links work for two years. Save the PDFs somewhere you will see them again.', '',
         'Questions, or want something like this built for your business? Just reply to this email.', '',
         'Wyatt', 'Teroir · teroir.com'].join('\n'),
-    }, `guide-order-${s.id}`);
-    await stripe('POST', `payment_intents/${pi.id}`, { metadata: { delivered: new Date().toISOString() } });
-    await notify(`Guide sale: $${(s.amount_total / 100).toFixed(2)} · ${email}`, [
+      }, `guide-order-${s.id}`);
+    } catch (e) {
+      // loud: the owner gets the error and the buyer's links to forward by hand; Stripe retries the webhook
+      await notify(`GUIDE DELIVERY FAILED: ${sale}`, [`The buyer's email did not send: ${e.message}`, '',
+        'Send these links to the buyer yourself:', ...links.flatMap(l => [`${l.title}:`, l.url]), '', `Stripe session: ${s.id}`], `guide-fail-${s.id}`);
+      throw e;
+    }
+    await stripe('POST', `payment_intents/${pi.id}`, { metadata: { delivered: new Date().toISOString(), resend_id: String(sent?.id || '') } });
+    await notify(`Guide sale: ${sale}`, [
       `Bought: ${guides.map(g => g.title).join(', ')}`, `Paid: $${(s.amount_total / 100).toFixed(2)}`,
-      `Email: ${email}`, `Came from: ${s.metadata?.src || '(direct)'}`, `Stripe session: ${s.id}`], `guide-sale-${s.id}`);
+      `Email: ${email}`, `Came from: ${s.metadata?.src || '(direct)'}`, `Stripe session: ${s.id}`,
+      `Buyer email accepted by Resend: ${sent?.id || '(no id)'} (if the buyer can't find it: Resend → Emails → this id shows delivered, bounced or junked)`, '',
+      'Their links, in case they need them again:', ...links.flatMap(l => [`${l.title}:`, l.url])], `guide-sale-${s.id}`);
   }
   return { email, links };
 }
