@@ -62,6 +62,9 @@
           <label><input type="radio" name="guide" value="run-while-out"><span><b>Keep your business running while you're out</b><i>Hand off your week, get a weekly report drafted, turn calls into to-dos.</i><small>8 pages · 10-minute read</small></span></label>
           <label><input type="radio" name="guide" value="get-paid"><span><b>Get paid for AI: build and sell one small automation</b><i>Pick one local business, build one small AI helper for them, and sell it.</i><small>9 pages · 10-minute read</small></span></label>
           <label><input type="radio" name="guide" value="claude-artifacts"><span><b>Make Claude build it: a field guide to artifacts</b><i>Turn a chat into a chart, a tool, or a page you can share.</i><small>18 pages · 15-minute read</small></span></label>
+          <label><input type="radio" name="guide" value="harness-engineering"><span><b>Build the harness: what your AI agents need from you</b><i>Write your rules once, enforce them in code, and keep them true.</i><small>28 pages · 30-minute read</small></span></label>
+          <label><input type="radio" name="guide" value="agent-engineering"><span><b>Run AI agents like a team</b><i>Brief one agent, check its work, then run many without losing control.</i><small>27 pages · 30-minute read</small></span></label>
+          <label><input type="radio" name="guide" value="remote-dev-setup"><span><b>Build from your phone: a remote AI workshop</b><i>Set up a private server your AI agents work on, run from your phone.</i><small>27 pages · 30-minute read</small></span></label>
         </fieldset>
         <div class="wl-grid">
           <label class="wl-f"><span>Your email</span><input name="email" type="email" required autocomplete="email" maxlength="200" placeholder="you@example.com"></label>
@@ -89,13 +92,13 @@
   <div class="wrap">
     <p class="eyebrow">The full set</p>
     <h2 id="buy-h">Want the <em>other guides?</em></h2>
-    <p class="gd-sub">Each guide is $19, or get all four for $39. Pay by card and the PDFs come straight to your email.</p>
+    <p class="gd-sub">Each guide is $19, or get all seven for $39. Pay by card and the PDFs come straight to your email.</p>
     <div class="pages gd-buy">
       <form class="pg-card gd-card gd-all" action="/api/checkout" method="post">
         <input type="hidden" name="item" value="bundle"><input type="hidden" name="src" class="gd-src">
-        <b>All four guides</b><span>Every guide on this page, as PDFs.</span>
+        <b>All seven guides</b><span>Every guide on this page, as PDFs.</span>
         <span class="gd-price">$39</span>
-        <button class="btn btn-primary" type="submit">Get all four <span aria-hidden="true">→</span></button>
+        <button class="btn btn-primary" type="submit">Get all seven <span aria-hidden="true">→</span></button>
       </form>
       <form class="pg-card gd-card" action="/api/checkout" method="post" data-guide="repeat-task">
         <input type="hidden" name="item" value="repeat-task"><input type="hidden" name="src" class="gd-src">
@@ -118,6 +121,24 @@
       <form class="pg-card gd-card" action="/api/checkout" method="post" data-guide="claude-artifacts">
         <input type="hidden" name="item" value="claude-artifacts"><input type="hidden" name="src" class="gd-src">
         <b>Make Claude build it: a field guide to artifacts</b><span>Turn a chat into a chart, a tool, or a page you can share.</span>
+        <span class="gd-price">$19</span>
+        <button class="btn btn-ghost" type="submit">Buy this guide</button>
+      </form>
+      <form class="pg-card gd-card" action="/api/checkout" method="post" data-guide="harness-engineering">
+        <input type="hidden" name="item" value="harness-engineering"><input type="hidden" name="src" class="gd-src">
+        <b>Build the harness: what your AI agents need from you</b><span>Write your rules once, enforce them in code, and keep them true.</span>
+        <span class="gd-price">$19</span>
+        <button class="btn btn-ghost" type="submit">Buy this guide</button>
+      </form>
+      <form class="pg-card gd-card" action="/api/checkout" method="post" data-guide="agent-engineering">
+        <input type="hidden" name="item" value="agent-engineering"><input type="hidden" name="src" class="gd-src">
+        <b>Run AI agents like a team</b><span>Brief one agent, check its work, then run many without losing control.</span>
+        <span class="gd-price">$19</span>
+        <button class="btn btn-ghost" type="submit">Buy this guide</button>
+      </form>
+      <form class="pg-card gd-card" action="/api/checkout" method="post" data-guide="remote-dev-setup">
+        <input type="hidden" name="item" value="remote-dev-setup"><input type="hidden" name="src" class="gd-src">
+        <b>Build from your phone: a remote AI workshop</b><span>Set up a private server your AI agents work on, run from your phone.</span>
         <span class="gd-price">$19</span>
         <button class="btn btn-ghost" type="submit">Buy this guide</button>
       </form>
