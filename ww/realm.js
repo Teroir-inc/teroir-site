@@ -22,7 +22,7 @@
   }
 
   const BASE = 0.35;               // idle forward speed (grid cells per second)
-  let z = 0, speed = BASE, push = 0, lastY = scrollY, pitch = 0, last = 0;
+  let z = 0, speed = BASE, push = 0, lastY = scrollY, pitch = 0, last = 0, drawn = 0;
   addEventListener('scroll', () => { push = Math.min(push + Math.abs(scrollY - lastY) * 0.02, 5); lastY = scrollY; }, { passive: true });
   addEventListener('pointerdown', () => { push = Math.min(push + 1.5, 5); }, { passive: true });
 
@@ -38,20 +38,22 @@
     const scrollMax = Math.max(1, document.documentElement.scrollHeight - h);
     const target = (scrollY / scrollMax) * 0.06;  // the camera tips down as you go deeper
     pitch += (target - pitch) * 0.1;
-    const hy = h * (0.38 - pitch), cx = w / 2, f = (h - hy) * 1.1;
+    const win = document.querySelector('.window');
+    const base = win ? Math.min(h * 0.6, win.offsetTop + win.offsetHeight) : h * 0.38;   // the hub opens a window onto the sun
+    const hy = base - pitch * h, cx = w / 2, f = (h - hy) * 1.1;
 
     // sky
     const sky = ctx.createLinearGradient(0, 0, 0, hy);
     sky.addColorStop(0, NIGHT); sky.addColorStop(1, '#0B0524');
     ctx.fillStyle = sky; ctx.fillRect(0, 0, w, hy + 1);
     // the sun, sitting on the horizon, slits in its lower half
-    const r = Math.min(w * 0.3, 150), sy = hy - r * 0.15;
+    const r = win ? Math.min(w * 0.3, win.offsetHeight * 0.8) : Math.min(w * 0.3, 150), sy = hy - r * 0.15;
     const sg = ctx.createLinearGradient(0, sy - r, 0, sy + r * 0.2);
     sg.addColorStop(0, '#FFD23F'); sg.addColorStop(0.55, MAGENTA); sg.addColorStop(1, '#8C1EFF');
     ctx.save(); ctx.beginPath(); ctx.rect(0, 0, w, hy); ctx.clip();
     ctx.globalAlpha = 0.85; ctx.fillStyle = sg; ctx.beginPath(); ctx.arc(cx, sy, r, 0, Math.PI * 2); ctx.fill();
     ctx.globalAlpha = 1; ctx.fillStyle = NIGHT;
-    for (let k = 0; k < 5; k++) { const yy = sy - r * 0.05 + k * r * 0.17, hh = 2 + k * 1.6; ctx.fillRect(cx - r, yy, r * 2, hh); }
+    for (let k = 0; k < 5; k++) { const yy = hy - r * 0.52 + k * r * 0.11, hh = 1.5 + k * 1.4; ctx.fillRect(cx - r, yy, r * 2, hh); }
     ctx.restore();
     // floor
     const fl = ctx.createLinearGradient(0, hy, 0, h);
@@ -80,7 +82,7 @@
       line(cx + (x0 - cx) * 0.02, hy, x0, y0, 0.75, CYAN);
     }
     // horizon line
-    line(0, hy, w, hy, 1, MAGENTA, 2);
+    line(0, hy, w, hy, 0.6, MAGENTA, 2);
 
     // light cycles with trails
     for (const cy of cycles) {
@@ -107,7 +109,7 @@
     speed = BASE + push;
     z = (z + speed * dt) % 1;
     for (const cy of cycles) { cy.z -= (cy.v + speed) * dt; if (cy.z < -4) cy.z = FAR * (0.4 + Math.random() * 0.5); }
-    draw(t);
+    if (push > 0.05 || t - drawn > 31) { draw(t); drawn = t; }   // idle: about 30 fps; pushed: every frame
     if (!document.hidden) requestAnimationFrame(frame); else last = 0;
   }
 

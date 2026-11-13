@@ -28,7 +28,8 @@ body.realm-on::before{display:none} /* the canvas is the grid space */
 .id img{width:72px;height:72px;border-radius:2px;border:1px solid var(--cyan);box-shadow:var(--glow-cyan);flex:none;background:var(--night)}
 .id h1{margin:0 0 4px;font:700 clamp(1.5rem,7vw,2rem)/1.05 var(--font-display);letter-spacing:.06em;text-transform:uppercase;color:#fff;text-shadow:0 0 2px #fff,0 0 18px rgba(0,229,255,.7)}
 .id p{margin:0;color:var(--muted);font-size:.95rem}
-.readout{margin:0 0 18px}
+.readout{margin:0 0 14px}
+.id + .rows{margin-top:12px}
 
 /* panels (the token .card, used everywhere) */
 .card{padding:16px}
@@ -103,3 +104,8 @@ a.btn{text-decoration:none}
 .shop .card .price{font:500 1.4rem var(--font-mono);color:var(--gold);margin-top:auto;padding-top:6px}
 .shop .card .price s{color:var(--muted);font-size:1rem}
 .shop .btn,.shop .btn-ghost{align-items:center;gap:10px;min-height:48px;padding:13px 16px}
+
+/* the hub's window onto the world: empty, framed, readout on its bottom edge */
+.window{height:150px;border:1px solid var(--line-dim);border-bottom:1px solid var(--line)}
+.window + .readout{margin:0 0 14px}
+.window + .readout{background:rgba(3,1,13,.7);padding:8px 6px}
