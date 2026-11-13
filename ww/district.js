@@ -28,8 +28,13 @@
   const id = box.dataset.id, $ = s => box.querySelector(s);
   fetch(`/api/district?d=${encodeURIComponent(id)}&k=${encodeURIComponent(passes.join(','))}`).then(r => r.json()).then(j => {
     if (!j.ok) throw 0;
-    if (!j.open) { $('.d-locked').hidden = false; return; }
     const gate = document.querySelector('.gate[data-id]');
+    if (!j.open) {
+      $('.d-locked').hidden = false;
+      const d = j.district, st = gate && gate.querySelector('.gate-status');
+      if (st) st.textContent = d.id === 'free-street' ? 'opens with your free day pass' : `opens with ${d.kind === 'all-access pass' ? 'the' : 'an'} ${d.kind} · $${Math.round(d.price / 100)}`;
+      return;
+    }
     if (gate) { gate.classList.replace('gate--locked', 'gate--open'); gate.querySelector('.gate-status').textContent = 'open'; }
     $('.d-open').hidden = false;
     $('.d-who').textContent = j.email;
@@ -44,7 +49,7 @@
       const c = document.createElement('figcaption'); c.textContent = l.title; f.append(fr, c); lv.append(f);
     }
     $('.d-lessons-wrap').hidden = !(j.lessons || []).length;
-  }).catch(() => { $('.d-error').hidden = false; });
+  }).catch(() => { $('.d-error').hidden = false; const st = document.querySelector('.gate[data-id] .gate-status'); if (st) st.textContent = 'pass check unavailable'; });
 })();
 
 // a locked district page: buy its pass (Stripe Checkout; the email typed here is the one the pass is locked to)
