@@ -2,14 +2,14 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
 <channel>
   <title>wyatt worldwide blog</title>
-  <link>https://wyattworldwide.com/blog</link>
-  <atom:link href="https://wyattworldwide.com/blog/rss.xml" rel="self" type="application/rss+xml"/>
+  <link>https://www.wyattworldwide.com/blog</link>
+  <atom:link href="https://www.wyattworldwide.com/blog/rss.xml" rel="self" type="application/rss+xml"/>
   <description>A short daily note from Wyatt Horton on building Teroir and using AI.</description>
   <language>en-us</language>
   <item>
     <title>the desk your ai works at, and how i keep it clear</title>
-    <link>https://wyattworldwide.com/blog/the-desk-your-ai-works-at</link>
-    <guid isPermaLink="true">https://wyattworldwide.com/blog/the-desk-your-ai-works-at</guid>
+    <link>https://www.wyattworldwide.com/blog/the-desk-your-ai-works-at</link>
+    <guid isPermaLink="true">https://www.wyattworldwide.com/blog/the-desk-your-ai-works-at</guid>
     <pubDate>Fri, 13 Nov 2026 13:00:00 GMT</pubDate>
     <description>an ai can only work with what is on its desk, and a few small rules keep that desk clear.</description>
   </item>

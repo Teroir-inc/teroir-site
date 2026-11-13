@@ -18,5 +18,5 @@ User-agent: Applebot
 Allow: /
 Disallow: /api/
 
-Sitemap: https://wyattworldwide.com/sitemap.xml
-Sitemap: https://wyattworldwide.com/blog/rss.xml
+Sitemap: https://www.wyattworldwide.com/sitemap.xml
+Sitemap: https://www.wyattworldwide.com/blog/rss.xml

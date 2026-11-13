@@ -82,39 +82,234 @@
    "permanent": false
   },
   {
+   "source": "/free",
+   "has": [
+    {
+     "type": "host",
+     "value": "teroir.com"
+    }
+   ],
+   "destination": "https://www.wyattworldwide.com/free",
+   "statusCode": 301
+  },
+  {
    "source": "/Free",
-   "destination": "/free",
-   "permanent": false
+   "has": [
+    {
+     "type": "host",
+     "value": "teroir.com"
+    }
+   ],
+   "destination": "https://www.wyattworldwide.com/free",
+   "statusCode": 301
   },
   {
    "source": "/FREE",
-   "destination": "/free",
-   "permanent": false
+   "has": [
+    {
+     "type": "host",
+     "value": "teroir.com"
+    }
+   ],
+   "destination": "https://www.wyattworldwide.com/free",
+   "statusCode": 301
   },
   {
    "source": "/guides",
-   "destination": "/free",
-   "permanent": false
+   "has": [
+    {
+     "type": "host",
+     "value": "teroir.com"
+    }
+   ],
+   "destination": "https://www.wyattworldwide.com/free",
+   "statusCode": 301
   },
   {
    "source": "/guide",
-   "destination": "/free",
-   "permanent": false
+   "has": [
+    {
+     "type": "host",
+     "value": "teroir.com"
+    }
+   ],
+   "destination": "https://www.wyattworldwide.com/free",
+   "statusCode": 301
   },
   {
    "source": "/Guides",
-   "destination": "/free",
-   "permanent": false
+   "has": [
+    {
+     "type": "host",
+     "value": "teroir.com"
+    }
+   ],
+   "destination": "https://www.wyattworldwide.com/free",
+   "statusCode": 301
+  },
+  {
+   "source": "/blog",
+   "has": [
+    {
+     "type": "host",
+     "value": "teroir.com"
+    }
+   ],
+   "destination": "https://www.wyattworldwide.com/blog",
+   "statusCode": 301
+  },
+  {
+   "source": "/blog/:path*",
+   "has": [
+    {
+     "type": "host",
+     "value": "teroir.com"
+    }
+   ],
+   "destination": "https://www.wyattworldwide.com/blog/:path*",
+   "statusCode": 301
+  },
+  {
+   "source": "/ww",
+   "has": [
+    {
+     "type": "host",
+     "value": "teroir.com"
+    }
+   ],
+   "destination": "https://www.wyattworldwide.com/",
+   "statusCode": 301
+  },
+  {
+   "source": "/ww/:path*",
+   "has": [
+    {
+     "type": "host",
+     "value": "teroir.com"
+    }
+   ],
+   "destination": "https://www.wyattworldwide.com/:path*",
+   "statusCode": 301
+  },
+  {
+   "source": "/free",
+   "has": [
+    {
+     "type": "host",
+     "value": "www.teroir.com"
+    }
+   ],
+   "destination": "https://www.wyattworldwide.com/free",
+   "statusCode": 301
+  },
+  {
+   "source": "/Free",
+   "has": [
+    {
+     "type": "host",
+     "value": "www.teroir.com"
+    }
+   ],
+   "destination": "https://www.wyattworldwide.com/free",
+   "statusCode": 301
+  },
+  {
+   "source": "/FREE",
+   "has": [
+    {
+     "type": "host",
+     "value": "www.teroir.com"
+    }
+   ],
+   "destination": "https://www.wyattworldwide.com/free",
+   "statusCode": 301
+  },
+  {
+   "source": "/guides",
+   "has": [
+    {
+     "type": "host",
+     "value": "www.teroir.com"
+    }
+   ],
+   "destination": "https://www.wyattworldwide.com/free",
+   "statusCode": 301
+  },
+  {
+   "source": "/guide",
+   "has": [
+    {
+     "type": "host",
+     "value": "www.teroir.com"
+    }
+   ],
+   "destination": "https://www.wyattworldwide.com/free",
+   "statusCode": 301
+  },
+  {
+   "source": "/Guides",
+   "has": [
+    {
+     "type": "host",
+     "value": "www.teroir.com"
+    }
+   ],
+   "destination": "https://www.wyattworldwide.com/free",
+   "statusCode": 301
+  },
+  {
+   "source": "/blog",
+   "has": [
+    {
+     "type": "host",
+     "value": "www.teroir.com"
+    }
+   ],
+   "destination": "https://www.wyattworldwide.com/blog",
+   "statusCode": 301
+  },
+  {
+   "source": "/blog/:path*",
+   "has": [
+    {
+     "type": "host",
+     "value": "www.teroir.com"
+    }
+   ],
+   "destination": "https://www.wyattworldwide.com/blog/:path*",
+   "statusCode": 301
+  },
+  {
+   "source": "/ww",
+   "has": [
+    {
+     "type": "host",
+     "value": "www.teroir.com"
+    }
+   ],
+   "destination": "https://www.wyattworldwide.com/",
+   "statusCode": 301
+  },
+  {
+   "source": "/ww/:path*",
+   "has": [
+    {
+     "type": "host",
+     "value": "www.teroir.com"
+    }
+   ],
+   "destination": "https://www.wyattworldwide.com/:path*",
+   "statusCode": 301
   },
   {
    "source": "/ai",
-   "destination": "/free?src=instagram",
-   "permanent": false
+   "destination": "https://www.wyattworldwide.com/free?src=instagram",
+   "statusCode": 301
   },
   {
    "source": "/ai/:path*",
-   "destination": "/free?src=instagram",
-   "permanent": false
+   "destination": "https://www.wyattworldwide.com/free?src=instagram",
+   "statusCode": 301
   }
  ],
  "functions": {
