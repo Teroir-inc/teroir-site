@@ -1,0 +1,17 @@
+# Teroir
+
+> Teroir builds AI systems for small businesses and coaches people to use AI well. Our first system has run a 29-property, 218-room co-living portfolio since May 2026, with no new hires.
+
+Founder and CEO: Wyatt Horton (wyatt@teroir.com).
+
+## Services
+
+- [Prices](https://teroir.com/pricing): AI assessment, setup, monthly support, coaching and guides for small businesses, plus starting prices for teams of $5M to $50M a year.
+- [Talk to us](https://teroir.com/talk): book a free discovery call or a coaching call with Wyatt.
+- [Free AI guides](https://teroir.com/free): short, plain guides for people running a business; the longer guides are paid.
+
+## Work and vision
+
+- [Case study: property management](https://teroir.com/property-management): tenant messages, maintenance requests, chores and fines in one place.
+- [Vision](https://teroir.com/vision): a network where small businesses' AI agents can do business with anyone else's, safely and on the record.
+- [Blog](https://teroir.com/blog): Wyatt's daily notes on building Teroir.
