@@ -22,6 +22,11 @@ const offerOk = t => { const o = verify(t); return o && o.d === 'offer29' && o.x
 const BY_ID = Object.fromEntries(GUIDES.map(g => [g.id, g]));
 
 const NOTIFY_TO = ['wyatt@teroir.com'];
+// The guide shop is Wyatt's personal brand (wyattworldwide.com); Stripe stays Teroir's, tagged brand=wyattworldwide.
+const BRAND = 'wyattworldwide';
+// Links in emails and Stripe returns go back to the site the visitor came from.
+const originOf = req => { const h = String(req.headers.host || '').toLowerCase();
+  return /^(teroir\.com|www\.teroir\.com|wyattworldwide\.com|www\.wyattworldwide\.com|[\w-]+\.vercel\.app)$/.test(h) ? `https://${h.replace(/^www\./, '')}` : 'https://teroir.com'; };
 const FROM = 'Wyatt Horton <wyatt@teroir.com>';
 const EMAIL_RE = /^[^\s@<>"]{1,100}@[^\s@<>"]{1,100}\.[^\s@<>"]{2,24}$/;
 const DAY = 86400e3;
@@ -137,4 +142,4 @@ async function deliver(s) {
   return { email, links };
 }
 
-module.exports = { OFFER_PRICE, offerFor, offerOk, deliver, FROM, GUIDES, BY_ID, PRICE_BUNDLE, EMAIL_RE, clean, sign, verify, encrypt, decrypt, stripe, send, notify, linkFor };
+module.exports = { BRAND, originOf, OFFER_PRICE, offerFor, offerOk, deliver, FROM, GUIDES, BY_ID, PRICE_BUNDLE, EMAIL_RE, clean, sign, verify, encrypt, decrypt, stripe, send, notify, linkFor };

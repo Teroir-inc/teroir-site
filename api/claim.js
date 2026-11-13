@@ -35,12 +35,12 @@ module.exports = async (req, res) => {
       text: [`Hey, it's Wyatt.`, '', `Here's your free guide, "${guide.title}":`, link, '',
         'The link works for 30 days. Save the PDF somewhere you will see it again.', '',
         `For the next 24 hours, any of the longer guides is $29:`,
-        `https://teroir.com/free?offer=${G.offerFor(email)}#buy`, '',
+        `${G.originOf(req)}/free?offer=${G.offerFor(email)}#buy`, '',
         'Questions, or want something like this built for your business? Just reply to this email.', '',
         'Wyatt', 'Teroir · teroir.com'].join('\n'),
     });
 
-    const meta = { free_guide: guide.id, free_src: src || 'direct', free_at: new Date().toISOString() };
+    const meta = { brand: G.BRAND, free_guide: guide.id, free_src: src || 'direct', free_at: new Date().toISOString() };
     if (found[0]) await G.stripe('POST', `customers/${found[0].id}`, { metadata: meta });
     else await G.stripe('POST', 'customers', { email, description: 'Free guide signup (teroir.com/free)', metadata: meta });
   } catch (e) {

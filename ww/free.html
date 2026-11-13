@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>free AI guides — wyatt worldwide</title>
+<meta name="description" content="Short, plain AI guides for people running a business. Pick one and get it free by email.">
+<meta name="theme-color" content="#07021A">
+<meta name="color-scheme" content="dark">
+<link rel="canonical" href="https://wyattworldwide.com/free">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="wyatt worldwide">
+<meta property="og:url" content="https://wyattworldwide.com/free">
+<meta property="og:title" content="free AI guides — wyatt worldwide">
+<meta property="og:description" content="Short, plain AI guides for people running a business. Pick one and get it free by email.">
+<meta property="og:image" content="https://wyattworldwide.com/og.png">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@WyattHorton">
+<meta name="twitter:title" content="free AI guides — wyatt worldwide">
+<meta name="twitter:description" content="Short, plain AI guides for people running a business. Pick one and get it free by email.">
+<meta name="twitter:image" content="https://wyattworldwide.com/og.png">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="alternate" type="application/rss+xml" title="wyatt worldwide blog" href="https://wyattworldwide.com/blog/rss.xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap">
+<link rel="stylesheet" href="/tokens.css">
+<link rel="stylesheet" href="/ww.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="top"><a class="mark" href="/">wyatt <span>worldwide</span></a><nav aria-label="Pages"><a href="/free" aria-current=page>guides</a><a href="/blog">blog</a></nav></header>
+<main id="main">
+<section class="section" id="get" aria-labelledby="free-h">
+  <div class="wrap">
+    <div class="card">
+      <p class="eyebrow">free AI guide</p>
+      <h1 id="free-h" class="neon">pick a guide. it's free.</h1>
+      <p>Short, plain guides for people running a business. Each one gets you one real task done with AI, with copy-paste templates. Pick one and I'll email it to you.</p>
+      <form id="gd-form" action="/api/claim" method="post">
+        <fieldset class="pick gd-pick">
+          <legend class="vh">Which guide do you want?</legend>
+          <label><input type="radio" name="guide" value="repeat-task" checked><span><b>Hand AI your most repeated task</b><i>Find the boring part of your week, explain it to AI once, get the draft back.</i><small>9 pages · 10-minute read</small></span></label>
+          <label><input type="radio" name="guide" value="run-while-out"><span><b>Keep your business running while you're out</b><i>Hand off your week, get a weekly report drafted, turn calls into to-dos.</i><small>8 pages · 10-minute read</small></span></label>
+          <label><input type="radio" name="guide" value="get-paid"><span><b>Get paid for AI: build and sell one small automation</b><i>Pick one local business, build one small AI helper for them, and sell it.</i><small>9 pages · 10-minute read</small></span></label>
+        </fieldset>
+        <label class="field"><span>your email</span><input name="email" type="email" required autocomplete="email" maxlength="200" placeholder="you@example.com"></label>
+        <label class="wl-hp" aria-hidden="true">Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label>
+        <input type="hidden" name="t" id="gd-t">
+        <input type="hidden" name="src" id="gd-src">
+        <button class="btn btn-big" type="submit">email me my guide <span aria-hidden="true">→</span></button>
+        <p class="msg" id="gd-msg" role="status" aria-live="polite"></p>
+        <p class="note">One free guide per email address. The link arrives in your inbox, so use one you check.</p>
+      </form>
+      <div id="gd-done" hidden>
+        <p class="neon" id="gd-done-h">Check your inbox.</p>
+        <p id="gd-done-p">Your guide is on its way. If it's not there in a few minutes, look in spam or promotions.</p>
+        <ul class="done-links gd-links" id="gd-links"></ul>
+      </div>
+    </div>
+  </div>
+</section>
+<section class="section" id="buy" aria-labelledby="buy-h">
+  <div class="wrap wide">
+    <p class="eyebrow">the full set</p>
+    <h2 id="buy-h">want the other guides?</h2>
+    <p class="muted">The longer guides are $49 to $97 each, or get all seven for $249. Pay by card and the PDFs come straight to your email.</p>
+    <label class="field" style="max-width:420px"><span>your email</span><input id="gd-buy-email" type="email" autocomplete="email" maxlength="200" placeholder="you@example.com"></label>
+    <p class="msg" id="gd-buy-msg" role="status" aria-live="polite"></p>
+    <div class="shop">
+      <form class="card gd-card all gd-all" action="/api/checkout" method="post">
+        <input type="hidden" name="item" value="bundle"><input type="hidden" name="src" class="gd-src">
+        <b>All seven guides</b><span>Every guide on this page, as PDFs.</span>
+        <span class="price gd-price">$249</span>
+        <button class="btn" type="submit">get all seven <span aria-hidden="true">→</span></button>
+      </form>
+      <form class="card gd-card" action="/api/checkout" method="post" data-guide="claude-artifacts">
+        <input type="hidden" name="item" value="claude-artifacts"><input type="hidden" name="src" class="gd-src">
+        <b>Make Claude build it: a field guide to artifacts</b><span>Turn a chat into a chart, a tool, or a page you can share.</span>
+        <span class="price gd-price">$49</span>
+        <button class="btn btn-ghost" type="submit">buy this guide</button>
+      </form>
+      <form class="card gd-card" action="/api/checkout" method="post" data-guide="harness-engineering">
+        <input type="hidden" name="item" value="harness-engineering"><input type="hidden" name="src" class="gd-src">
+        <b>Build the harness: what your AI agents need from you</b><span>Write your rules once, enforce them in code, and keep them true.</span>
+        <span class="price gd-price">$97</span>
+        <button class="btn btn-ghost" type="submit">buy this guide</button>
+      </form>
+      <form class="card gd-card" action="/api/checkout" method="post" data-guide="agent-engineering">
+        <input type="hidden" name="item" value="agent-engineering"><input type="hidden" name="src" class="gd-src">
+        <b>Run AI agents like a team</b><span>Brief one agent, check its work, then run many without losing control.</span>
+        <span class="price gd-price">$97</span>
+        <button class="btn btn-ghost" type="submit">buy this guide</button>
+      </form>
+      <form class="card gd-card" action="/api/checkout" method="post" data-guide="remote-dev-setup">
+        <input type="hidden" name="item" value="remote-dev-setup"><input type="hidden" name="src" class="gd-src">
+        <b>Build from your phone: a remote AI workshop</b><span>Set up a private server your AI agents work on, run from your phone.</span>
+        <span class="price gd-price">$97</span>
+        <button class="btn btn-ghost" type="submit">buy this guide</button>
+      </form>
+    </div>
+    <p class="note">Want AI built into your business instead? <a href="https://teroir.com/talk?for=business&amp;src=wyattworldwide">Book a call with Teroir</a></p>
+  </div>
+</section>
+</main>
+<script src="/free.js" defer></script>
+<footer class="foot">
+  <nav aria-label="Elsewhere"><a href="https://www.instagram.com/wyattworldwide.ai/" rel="me noopener" target="_blank">Instagram</a><a href="https://www.tiktok.com/@wyatt.hortton" rel="me noopener" target="_blank">TikTok</a><a href="https://www.youtube.com/channel/UCNuHk2QIYh6yZo_xX4RPTYA" rel="me noopener" target="_blank">YouTube</a><a href="https://x.com/WyattHorton" rel="me noopener" target="_blank">X</a></nav>
+  <p>AI for your business: <a href="https://teroir.com/?src=wyattworldwide">teroir.com</a></p>
+</footer>
+</body>
+</html>
