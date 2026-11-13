@@ -332,3 +332,5 @@ h3{font-size:18px;letter-spacing:-.02em;font-weight:600;margin:0}
 
 .gd-buyer{max-width:420px;margin:0 0 4px;grid-template-columns:1fr!important}
 #gd-buy-msg{min-height:1.2em;margin:0 0 12px}
+.pr-list .gd-price small{font-size:15px;font-weight:500;color:var(--muted,#6b6b6b)}
+.pr-note{display:block;font-size:14px;color:var(--muted,#6b6b6b)}
