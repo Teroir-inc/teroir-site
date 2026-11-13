@@ -3,17 +3,20 @@
 const crypto = require('crypto');
 
 // The order here is the order on the page. `file` is guides/<id>.pdf.enc (AES-256-GCM, key from GUIDE_KEY).
+// `price` (cents, USD): sold on its own and never free. No price: a free pick, sold only inside the bundle,
+// so no guide is both a paid PDF and a free one.
 const GUIDES = [
   { id: 'repeat-task', title: 'Hand AI your most repeated task' },
   { id: 'run-while-out', title: "Keep your business running while you're out" },
   { id: 'get-paid', title: 'Get paid for AI: build and sell one small automation' },
-  { id: 'claude-artifacts', title: 'Make Claude build it: a field guide to artifacts', paidOnly: true },
-  { id: 'harness-engineering', title: 'Build the harness: what your AI agents need from you' },
-  { id: 'agent-engineering', title: 'Run AI agents like a team' },
-  { id: 'remote-dev-setup', title: 'Build from your phone: a remote AI workshop', paidOnly: true },
+  { id: 'claude-artifacts', title: 'Make Claude build it: a field guide to artifacts', price: 4900 },
+  { id: 'harness-engineering', title: 'Build the harness: what your AI agents need from you', price: 9700 },
+  { id: 'agent-engineering', title: 'Run AI agents like a team', price: 9700 },
+  { id: 'remote-dev-setup', title: 'Build from your phone: a remote AI workshop', price: 9700 },
 ];
-const PRICE_EACH = 16900, PRICE_BUNDLE = 50000; // cents, USD
-const OFFER_PRICE = 2900, OFFER_DAYS = 1; // the free-guide email's offer: any single guide at $29 for 24 hours from the claim
+GUIDES.forEach(g => { g.paidOnly = !!g.price; });
+const PRICE_BUNDLE = 24900;
+const OFFER_PRICE = 2900, OFFER_DAYS = 1; // the free-guide email's offer: any paid guide at $29 for 24 hours from the claim
 const offerFor = email => sign('offer29', email, OFFER_DAYS);
 const offerOk = t => { const o = verify(t); return o && o.d === 'offer29' && o.x > Date.now() && EMAIL_RE.test(o.e) ? o : null; };
 const BY_ID = Object.fromEntries(GUIDES.map(g => [g.id, g]));
@@ -134,4 +137,4 @@ async function deliver(s) {
   return { email, links };
 }
 
-module.exports = { OFFER_PRICE, offerFor, offerOk, deliver, FROM, GUIDES, BY_ID, PRICE_EACH, PRICE_BUNDLE, EMAIL_RE, clean, sign, verify, encrypt, decrypt, stripe, send, notify, linkFor };
+module.exports = { OFFER_PRICE, offerFor, offerOk, deliver, FROM, GUIDES, BY_ID, PRICE_BUNDLE, EMAIL_RE, clean, sign, verify, encrypt, decrypt, stripe, send, notify, linkFor };
