@@ -2,7 +2,7 @@
 // Content lives here, server side, so a locked district's lessons and downloads never ship in the page.
 // status: 'open' (live, sellable), 'soon' (shown as opening soon, never sold), 'link' (goes elsewhere).
 // Prices in cents, USD. PROPOSED mapping, waiting on Wyatt's yes before the domain goes live.
-const WW = 'https://wyattworldwide.com';
+const WW = 'https://www.wyattworldwide.com';
 const DISTRICTS = [
   { id: 'free-street', key: 'free', name: 'Free Street', status: 'open', price: 0, kind: 'free day pass',
     line: 'your free day pass: a starter guide, sent to your inbox.', guides: [], lessons: [] },

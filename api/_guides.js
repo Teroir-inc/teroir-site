@@ -27,7 +27,7 @@ const NOTIFY_TO = ['wyatt@teroir.com'];
 const BRAND = 'wyattworldwide';
 // Links in emails and Stripe returns go back to the site the visitor came from.
 const originOf = req => { const h = String(req.headers.host || '').toLowerCase();
-  return /^(teroir\.com|www\.teroir\.com|wyattworldwide\.com|www\.wyattworldwide\.com|[\w-]+\.vercel\.app)$/.test(h) ? `https://${h.replace(/^www\./, '')}` : 'https://teroir.com'; };
+  return /^(teroir\.com|www\.teroir\.com|wyattworldwide\.com|www\.wyattworldwide\.com|[\w-]+\.vercel\.app)$/.test(h) ? `https://${/wyattworldwide/.test(h) ? 'www.wyattworldwide.com' : h.replace(/^www\./, '')}` : 'https://teroir.com'; };
 const FROM = 'Wyatt Horton <wyatt@teroir.com>';
 const EMAIL_RE = /^[^\s@<>"]{1,100}@[^\s@<>"]{1,100}\.[^\s@<>"]{2,24}$/;
 const DAY = 86400e3;
