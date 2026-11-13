@@ -1,116 +1,155 @@
-/* v3 Neon Night web tokens (creative director, 11-13) for wyattworldwide.com: link-in-bio hub, guide shop, blog.
-   Source of truth for the look: vision/brand_style_v3.md (Wyatt 11-13: "Miami synthwave / neon cyberpunk / techno
-   ONLY"; outrun / 80s Miami blended with rainy neon-noir). Dark only: the brand has no light theme.
+/* Realm HUD web tokens v1 (creative director, 11-13) for wyattworldwide.com. REPLACES web_tokens_v3.css.
+   Wyatt 11-13 on the first site: "too much like a magazine"; he wants "much more modern, fluid, like Tron, IN THE
+   SIMULATION". Rule of the realm (vision/world_bible_v1.html): ENVIRONMENTS are Outrun / 80s Miami + rainy neon
+   city (the sun, the grid floor, chrome, palms). The INTERFACE (site, overlays, captions, lower thirds) is the HUD:
+   thin glowing lines, see-through holographic panels, a grid space, fluid motion. Same class names as v3, so this
+   file drops in over ww/tokens.css; new pieces are marked NEW.
 
-   RULES (read before building)
-   - Magenta leads. Cyan is structure (links, borders, grid). Gold is rare: at most one gold thing per screen
-     (the sun's top band, a "done" tick). No orange anywhere. Nothing else saturated.
-   - No slabs: never a flat, saturated purple block behind text. Surfaces are dark glass (--glass) with a thin neon
-     or --line edge. No grey or blurred bars, no letterboxed media.
-   - Glow is for headings, buttons and edges only. Body text is never glowing: plain --ink on --night (17.9:1).
-   - Scanlines / grain (.vhs) go on hero art and imagery only, never over text or his face.
-   - The sun and the grid floor are the house set: one sun per page (hero), the grid under it. Not repeated as a
-     pattern in cards.
-   - Chrome type is for the wordmark / hero title only, never for body, prices or buttons.
-   - Motion: short and snappy (120-200 ms), one flicker-on for the hero at most; honour prefers-reduced-motion.
-   - Handle: @wyattworldwide.ai. Never hard-code a guide price in an image; prices are live text.
-   - Words: no hype words (VISION.md "Words and moves we never use"); never lead with a negative. */
+   Fonts (Google Fonts), replace the old link:
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
 
-/* Fonts (Google Fonts):
-   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@600;700&display=swap"> */
+   RULES
+   - Cyan is the interface: every line, bracket, label and link. Magenta is the ONE live action per screen and the
+     selected state. Gold only for a price tag or a "done". No orange. No violet fills.
+   - Panels are see-through with a hairline and two corner brackets. Radius 2 px everywhere: no soft rounded cards,
+     no drop-shadow "paper", no gradient blobs behind text. That softness is what read as a magazine.
+   - Hairlines are 1 px. Glow is small and tight (it is light from a line, not a halo).
+   - Labels are short mono caps ("// LATEST VIDEO"). Headings are Chakra Petch. Reading text stays Inter, never
+     glowing, never all caps, at most 65 characters wide.
+   - The sun and grid floor are the world seen THROUGH the interface: keep them in the hero inside .hud-frame.
+   - Motion is part of the look: panels boot in (line first, then fill), a light sweeps a panel on hover, the grid
+     drifts slowly. All of it off under prefers-reduced-motion; the page is complete without it.
+   - Dark only. Handle @wyattworldwide.ai. Prices are live text. No hype words; never lead with a negative. */
 
 :root {
   color-scheme: dark;
 
   /* colour */
-  --night: #07021A;        /* page background */
-  --night-1: #1A0633;      /* purple night sky: gradients, glass tint */
-  --surface: #150A2E;      /* opaque fallback for cards where glass can't be used */
-  --glass: rgba(26, 6, 51, .62);   /* card / panel fill, over the page or hero art */
-  --line: #3A2466;         /* quiet borders, dividers */
-  --ink: #F3EEFF;          /* text */
-  --muted: #B4A6D6;        /* secondary text (9.1:1 on --night) */
-  --magenta: #FF2BD6;      /* the brand colour: primary buttons (dark text on it: 6.4:1), key words, the active state */
-  --pink: #FF2E97;         /* secondary glow, hover */
-  --cyan: #00E5FF;         /* links, focus rings, borders that matter, the grid */
-  --violet: #8C1EFF;       /* depth, the sun's base, haze */
-  --gold: #FFD23F;         /* rare: the sun's top, one "done" mark */
+  --night: #03010D;                    /* the void: page background */
+  --night-1: #0B0524;
+  --surface: #070318;                  /* opaque fallback */
+  --glass: rgba(0, 229, 255, .045);    /* panel fill */
+  --line: rgba(0, 229, 255, .34);      /* hairlines, panel borders */
+  --line-dim: rgba(0, 229, 255, .16);
+  --ink: #EAF6FF;                      /* text (18.4:1 on --night) */
+  --muted: #9DB3CC;                    /* secondary text (9.4:1) */
+  --cyan: #00E5FF;
+  --magenta: #FF2BD6;
+  --pink: #FF2E97;
+  --violet: #8C1EFF;
+  --gold: #FFD23F;
 
   /* gradients */
   --grad-sun: linear-gradient(180deg, #FFD23F 0%, #FF2BD6 50%, #8C1EFF 100%);
-  --grad-sky: linear-gradient(180deg, #07021A 0%, #1A0633 62%, #3B0A5E 100%);
-  --grad-edge: linear-gradient(90deg, #FF2BD6, #00E5FF);            /* neon card edge, underline */
-  --grad-chrome: linear-gradient(180deg, #FFFFFF 0%, #DDE4FF 40%, #8E9BD0 52%, #FFFFFF 68%, #DDE4FF 100%);   /* lighter steel band: the darker one went muddy at phone size */
+  --grad-sky: linear-gradient(180deg, #03010D 0%, #070318 70%, #0B0524 100%);
+  --grad-edge: linear-gradient(90deg, #00E5FF, rgba(0, 229, 255, 0));
+  --grad-chrome: linear-gradient(180deg, #FFFFFF 0%, #DDE4FF 40%, #8E9BD0 52%, #FFFFFF 68%, #DDE4FF 100%);   /* environment art only */
 
   /* type */
-  --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;   /* 600 / 700 */
-  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;   /* 400 / 500 / 600 */
-  --font-mono: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-  --text-hero: clamp(2.25rem, 9vw, 4rem);
-  --text-h2: 1.5rem;
-  --text-body: 1.0625rem;  /* 17 px; line-height 1.6; measure <= 65ch */
+  --font-display: "Chakra Petch", "Inter", system-ui, sans-serif;   /* 600 / 700 */
+  --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;   /* labels, handles, prices, meta */
+  --text-hero: clamp(2rem, 9vw, 3.5rem);
+  --text-h2: 1.4rem;
+  --text-body: 1.0625rem;
   --text-small: .875rem;
+  --text-label: .75rem;
 
   /* glow and shadow */
-  --glow-magenta: 0 0 6px rgba(255, 43, 214, .9), 0 0 22px rgba(255, 43, 214, .55);
-  --glow-cyan: 0 0 6px rgba(0, 229, 255, .9), 0 0 22px rgba(0, 229, 255, .5);
-  --glow-text: 0 0 2px #fff, 0 0 10px rgba(255, 43, 214, .85), 0 0 28px rgba(255, 43, 214, .5);   /* neon tube heading */
-  --shadow-card: 0 10px 40px rgba(0, 0, 0, .55);
+  --glow-cyan: 0 0 4px rgba(0, 229, 255, .8), 0 0 16px rgba(0, 229, 255, .35);
+  --glow-magenta: 0 0 4px rgba(255, 43, 214, .85), 0 0 18px rgba(255, 43, 214, .45);
+  --glow-text: 0 0 14px rgba(0, 229, 255, .6);
+  --shadow-card: none;
 
-  /* shape and space */
-  --radius-card: 14px;
-  --radius-control: 10px;
-  --radius-pill: 999px;
-  --space: 8px;            /* scale: 8 / 16 / 24 / 40 / 64 */
-  --ease-snap: cubic-bezier(.2, .9, .3, 1.2);   /* slight overshoot */
+  /* shape, space, motion */
+  --radius-card: 2px;
+  --radius-control: 2px;
+  --radius-pill: 2px;
+  --space: 8px;
+  --ease-snap: cubic-bezier(.2, .8, .2, 1);
+  --t-fast: 160ms;
+  --t-boot: 420ms;
 }
 
 body { background: var(--night); color: var(--ink); font: 400 var(--text-body)/1.6 var(--font-body); }
-a { color: var(--cyan); }
-:focus-visible { outline: 3px solid var(--cyan); outline-offset: 2px; }
+a { color: var(--cyan); text-underline-offset: 3px; }
+:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
 
-/* neon tube heading (hero, section titles); keep it to a few words */
-.neon { font: 700 var(--text-h2)/1.15 var(--font-display); color: #fff; text-shadow: var(--glow-text); }
+/* NEW the grid space: fixed behind everything */
+body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(110% 55% at 50% 0%, rgba(140, 30, 255, .22), transparent 62%),
+    repeating-linear-gradient(90deg, rgba(0, 229, 255, .07) 0 1px, transparent 1px 48px),
+    repeating-linear-gradient(0deg, rgba(0, 229, 255, .07) 0 1px, transparent 1px 48px); }
 
-/* chrome wordmark (hero title only) */
-.chrome { font: 700 var(--text-hero)/1 var(--font-display); letter-spacing: -.01em; transform: skewX(-8deg);
-  background: var(--grad-chrome); -webkit-background-clip: text; background-clip: text; color: transparent;
-  filter: drop-shadow(0 0 6px rgba(255, 43, 214, .55)) drop-shadow(0 2px 0 rgba(0, 229, 255, .45)); }
+/* NEW mono HUD label: section names, meta, handles. Keep them short. */
+.label, .eyebrow { font: 500 var(--text-label)/1.2 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--cyan); }
 
-/* dark glass card with a neon top edge: the only panel style */
-.card { background: var(--glass); border: 1px solid var(--line); border-radius: var(--radius-card);
-  box-shadow: var(--shadow-card); backdrop-filter: blur(6px); position: relative; }
-.card::before { content: ""; position: absolute; inset: 0 14px auto; height: 2px; background: var(--grad-edge);
-  box-shadow: var(--glow-magenta); border-radius: 2px; }
+/* headings */
+.neon { font: 600 var(--text-h2)/1.2 var(--font-display); color: #fff; text-shadow: var(--glow-text); }
+.chrome { font: 700 var(--text-hero)/1 var(--font-display); letter-spacing: .04em; text-transform: uppercase; color: #fff;
+  text-shadow: 0 0 2px #fff, 0 0 18px rgba(0, 229, 255, .7); transform: none; background: none; filter: none; }   /* the wordmark is interface now: light, not chrome */
 
-/* buttons: magenta = the one main action per screen; ghost = everything else */
-.btn { font: 600 1rem/1 var(--font-body); padding: 16px 22px; border-radius: var(--radius-control); border: 0;
-  background: var(--magenta); color: var(--night); box-shadow: var(--glow-magenta); cursor: pointer; }
+/* the holographic panel (class name kept: .card) */
+.card { position: relative; background: var(--glass); border: 1px solid var(--line); border-radius: var(--radius-card);
+  box-shadow: none; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
+.card::before, .card::after { content: ""; position: absolute; width: 16px; height: 16px; pointer-events: none;
+  background: none; box-shadow: none; border-radius: 0; inset: auto; }
+.card::before { top: -1px; left: -1px; border-top: 2px solid var(--cyan); border-left: 2px solid var(--cyan); }
+.card::after { bottom: -1px; right: -1px; border-bottom: 2px solid var(--cyan); border-right: 2px solid var(--cyan); }
+
+/* NEW frame for the hero art (sun + grid floor): brackets on all four corners, a readout line under it */
+.hud-frame { position: relative; border-bottom: 1px solid var(--line);
+  background:
+    linear-gradient(var(--cyan), var(--cyan)) top left / 18px 2px, linear-gradient(var(--cyan), var(--cyan)) top left / 2px 18px,
+    linear-gradient(var(--cyan), var(--cyan)) top right / 18px 2px, linear-gradient(var(--cyan), var(--cyan)) top right / 2px 18px;
+  background-repeat: no-repeat; }
+.readout { display: flex; justify-content: space-between; gap: 12px; padding: 8px 2px; font: 500 var(--text-label)/1.2 var(--font-mono);
+  letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+.readout b { color: var(--cyan); font-weight: 500; }
+.readout b::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 7px; background: var(--cyan); box-shadow: var(--glow-cyan); }
+
+/* buttons: magenta = the one live action; ghost = a console row */
+.btn { font: 600 1rem/1 var(--font-display); letter-spacing: .06em; text-transform: uppercase; padding: 17px 20px;
+  border-radius: var(--radius-control); border: 0; background: var(--magenta); color: var(--night); box-shadow: var(--glow-magenta);
+  cursor: pointer; position: relative; overflow: hidden; }
 .btn:hover { background: var(--pink); }
-.btn-ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line); box-shadow: none; }
-.btn-ghost:hover, .btn-ghost:focus-visible { border-color: var(--cyan); box-shadow: var(--glow-cyan); }   /* glow on touch only: a column of glowing buttons drowns the main action */
+.btn-ghost { background: var(--glass); color: var(--ink); border: 1px solid var(--line); border-left: 3px solid var(--cyan);
+  box-shadow: none; text-transform: none; letter-spacing: 0; font: 500 1rem/1.2 var(--font-body); }
+.btn-ghost:hover, .btn-ghost:focus-visible { background: rgba(0, 229, 255, .1); border-color: var(--cyan); box-shadow: var(--glow-cyan); }
+.btn-ghost .muted { font: 500 .8rem/1 var(--font-mono); letter-spacing: .04em; }
 
-/* the sun: stripes cut from the lower half. One per page. */
+/* the world through the interface: the sun and the grid floor (unchanged from v3) */
 .sun { width: min(60vw, 320px); aspect-ratio: 1; border-radius: 50%; background: var(--grad-sun);
   box-shadow: 0 0 60px rgba(255, 43, 214, .55);
   --sun-top: linear-gradient(#000, #000) top / 100% 50% no-repeat;
   --sun-slits: linear-gradient(#000 0 16%, transparent 16% 20%, #000 20% 36%, transparent 36% 42%, #000 42% 58%,
     transparent 58% 67%, #000 67% 82%, transparent 82% 93%, #000 93% 100%) bottom / 100% 50% no-repeat;
   -webkit-mask: var(--sun-top), var(--sun-slits); mask: var(--sun-top), var(--sun-slits); }
-
-/* the grid floor: put inside a hero with overflow hidden, under the sun */
 .grid-floor { height: 38vh; transform: perspective(420px) rotateX(62deg); transform-origin: top;
   background:
-    repeating-linear-gradient(90deg, rgba(0, 229, 255, .55) 0 2px, transparent 2px 64px),
-    repeating-linear-gradient(0deg, rgba(0, 229, 255, .55) 0 2px, transparent 2px 64px);
+    repeating-linear-gradient(90deg, rgba(0, 229, 255, .6) 0 2px, transparent 2px 64px),
+    repeating-linear-gradient(0deg, rgba(0, 229, 255, .6) 0 2px, transparent 2px 64px);
   -webkit-mask: linear-gradient(transparent, #000 35%); mask: linear-gradient(transparent, #000 35%); }
-
-/* VHS skin for hero art only (never over text) */
 .vhs { position: relative; }
 .vhs::after { content: ""; position: absolute; inset: 0; pointer-events: none;
   background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .06) 0 2px, transparent 2px 4px); }
 
+/* fluid motion (all optional; the page is complete without it) */
 @media (prefers-reduced-motion: no-preference) {
-  .btn, .card { transition: transform .15s var(--ease-snap), background .15s; }
-  .btn:active { transform: scale(.97); }
+  .btn, .btn-ghost, .card { transition: background var(--t-fast) var(--ease-snap), border-color var(--t-fast), box-shadow var(--t-fast), transform var(--t-fast) var(--ease-snap); }
+  .btn:active, .btn-ghost:active { transform: scale(.98); }
+  /* boot-in: a panel's line draws, then it settles. Stagger siblings with style="--i:1", 2, 3 ... */
+  @keyframes hud-boot { from { opacity: 0; transform: translateY(10px); clip-path: inset(0 100% 0 0); } to { opacity: 1; transform: none; clip-path: inset(0); } }
+  .boot { animation: hud-boot var(--t-boot) var(--ease-snap) both; animation-delay: calc(var(--i, 0) * 70ms); }
+  /* a light sweeps across a panel or button on hover */
+  .card::marker { content: none; }
+  .btn::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .35) 50%, transparent 70%);
+    transform: translateX(-120%); transition: transform 500ms var(--ease-snap); pointer-events: none; }
+  .btn:hover::after { transform: translateX(120%); }
+  /* the grid drifts toward the viewer, slowly */
+  @keyframes grid-drift { to { background-position: 0 0, 0 0, 0 48px; } }
+  body::before { animation: grid-drift 6s linear infinite; }
+  @keyframes floor-run { to { background-position: 0 0, 0 64px; } }
+  .grid-floor { animation: floor-run 1.6s linear infinite; }
 }

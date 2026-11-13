@@ -1,0 +1,105 @@
+/* realm UI for wyattworldwide.com, on tokens.css (creative-director HUD tokens v1).
+   The world (realm.js canvas: void, sun, moving grid floor) sits behind; the interface is a HUD on top:
+   hairlines, see-through panels with corner brackets, mono labels, console rows. Phone first, one tap per link.
+   Reading text is plain Inter. Reduced motion: still frame, no boot-in. */
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;background:var(--night)}
+body{margin:0;min-height:100svh;overflow-x:hidden;background:transparent}
+body.realm-on::before{display:none} /* the canvas is the grid space */
+.realm{position:fixed;inset:0;width:100vw;height:100vh;z-index:-1;display:block}
+.vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:-999px}.skip:focus{left:16px;top:16px;z-index:9}
+[hidden]{display:none!important}
+.muted{color:var(--muted)}.small{font-size:var(--text-small)}
+
+/* top bar */
+.hud{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;
+  background:linear-gradient(rgba(3,1,13,.92),rgba(3,1,13,.6));border-bottom:1px solid var(--line-dim);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.hud .mark{font:700 .95rem/1 var(--font-display);letter-spacing:.12em;text-transform:uppercase;color:#fff;text-decoration:none;text-shadow:var(--glow-text)}
+.hud .mark b{color:var(--magenta);text-shadow:var(--glow-magenta)}
+.hud nav{display:flex;gap:18px}
+.hud nav a{font:500 var(--text-label)/1 var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;padding:8px 0}
+.hud nav a[aria-current]{color:var(--cyan)}
+
+.stage{width:100%;max-width:520px;margin:0 auto;padding:14px 16px 32px}
+
+/* identity block: framed, readout line under it */
+.id{padding:18px 16px 14px;display:flex;gap:14px;align-items:center}
+.id img{width:72px;height:72px;border-radius:2px;border:1px solid var(--cyan);box-shadow:var(--glow-cyan);flex:none;background:var(--night)}
+.id h1{margin:0 0 4px;font:700 clamp(1.5rem,7vw,2rem)/1.05 var(--font-display);letter-spacing:.06em;text-transform:uppercase;color:#fff;text-shadow:0 0 2px #fff,0 0 18px rgba(0,229,255,.7)}
+.id p{margin:0;color:var(--muted);font-size:.95rem}
+.readout{margin:0 0 18px}
+
+/* panels (the token .card, used everywhere) */
+.card{padding:16px}
+.card + .card{margin-top:10px}
+.label{display:flex;align-items:center;gap:10px;margin:22px 0 10px}
+.label::after{content:"";flex:1;height:1px;background:var(--grad-edge)}
+
+/* launcher rows */
+.rows{display:grid;gap:8px}
+.rows .btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;text-decoration:none;min-height:58px}
+.rows .btn-ghost{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-decoration:none;min-height:54px;padding:14px 16px}
+.btn-ghost,.card{background:linear-gradient(rgba(0,229,255,.05),rgba(0,229,255,.05)),rgba(3,1,13,.8)} /* see-through, but text stays readable over the moving grid */
+.btn-ghost:hover,.btn-ghost:focus-visible{background:linear-gradient(rgba(0,229,255,.12),rgba(0,229,255,.12)),rgba(3,1,13,.8)}
+.rows .btn-ghost b{font:600 1rem/1.2 var(--font-display);letter-spacing:.04em}
+.rows .btn-ghost .muted{color:var(--muted)}
+.rows .btn-ghost i{font-style:normal;color:var(--cyan);margin-left:8px}
+
+/* shop */
+.field{display:flex;flex-direction:column;gap:6px;margin:0 0 12px}
+.field span{font:500 var(--text-label)/1 var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+input[type=email]{font:400 1rem/1.3 var(--font-body);color:var(--ink);background:rgba(0,229,255,.04);border:1px solid var(--line);border-radius:2px;padding:14px}
+input:focus{border-color:var(--cyan);outline:none;box-shadow:var(--glow-cyan)}
+.pick{border:0;padding:0;margin:0 0 14px;display:grid;gap:8px}
+.pick label{display:flex;gap:12px;align-items:flex-start;padding:12px;border:1px solid var(--line-dim);border-left:3px solid var(--line);border-radius:2px;cursor:pointer;background:var(--glass)}
+.pick label:has(input:checked){border-color:var(--magenta);border-left-color:var(--magenta);background:rgba(255,43,214,.07)}
+.pick input{accent-color:var(--magenta);margin-top:5px}
+.pick b{display:block;font:600 1.02rem/1.3 var(--font-display)}
+.pick i{display:block;font-style:normal;color:var(--muted);font-size:.94rem}
+.pick small{font:500 .7rem var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--cyan)}
+.card h1,.card h2{font:600 var(--text-h2)/1.2 var(--font-display);margin:0 0 10px;color:#fff}
+.card p{margin:0 0 12px}
+.wl-hp{position:absolute;left:-9999px}
+.msg{min-height:1.3em;color:var(--pink);font-size:.92rem;margin:8px 0 0}
+.note{color:var(--muted);font-size:var(--text-small);margin:10px 0 0}
+.btn.wide{width:100%;display:flex;justify-content:center;gap:10px}
+.shop{display:grid;gap:10px}
+@media (min-width:640px){.shop{grid-template-columns:1fr 1fr}.shop .all{grid-column:1/-1}.stage.wide{max-width:860px}}
+.shop .card{display:flex;flex-direction:column;gap:6px;margin:0}
+.shop .card b{font:600 1.08rem/1.3 var(--font-display)}
+.shop .card span{color:var(--muted);font-size:.94rem}
+.price{font:500 1.4rem var(--font-mono);color:var(--gold);margin-top:auto;padding-top:6px}
+.price s{color:var(--muted);font-size:1rem;margin-right:6px}
+.price small{font:500 .72rem var(--font-mono);color:var(--gold);letter-spacing:.08em;text-transform:uppercase}
+.shop .btn,.shop .btn-ghost{margin-top:8px;display:flex;justify-content:center;width:100%}
+.done-links{padding-left:1.2em}.done-links li{margin:6px 0}
+
+/* blog */
+.post-meta{display:flex;align-items:center;gap:10px;margin:0 0 18px;font:500 var(--text-label)/1.2 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.post-meta img{width:28px;height:28px;border-radius:2px;border:1px solid var(--cyan)}
+.post h1{font:700 clamp(1.5rem,6.6vw,2.1rem)/1.2 var(--font-display);color:#fff;text-shadow:var(--glow-text);margin:0 0 12px}
+.post-body{max-width:65ch}
+.post-body h2{font:600 1.25rem/1.3 var(--font-display);color:#fff;margin:1.6em 0 .5em;padding-top:.8em;border-top:1px solid var(--line-dim)}
+.post-body h3{font:600 1.08rem/1.3 var(--font-display);margin:1.4em 0 .4em}
+.post-body p,.post-body ul,.post-body ol,.post-body blockquote,.post-body pre{margin:0 0 1em}
+.post-body ul,.post-body ol{padding-left:1.3em}.post-body li{margin:.3em 0}
+.post-body img{max-width:100%;height:auto;border-radius:2px}
+.post-body blockquote{padding-left:14px;border-left:2px solid var(--cyan);color:var(--muted)}
+.post-body code{font-family:var(--font-mono);font-size:.88em;background:rgba(0,229,255,.08);padding:1px 5px;border-radius:2px}
+.post-body pre{overflow-x:auto;background:var(--surface);border:1px solid var(--line);padding:14px;border-radius:2px}
+.post-body pre code{background:none;padding:0}
+.post-list{list-style:none;padding:0;margin:0;display:grid;gap:10px}
+.post-list a{display:block;text-decoration:none;color:var(--ink)}
+.post-list time{font:500 var(--text-label)/1 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--cyan)}
+.post-list b{display:block;font:600 1.12rem/1.3 var(--font-display);margin:6px 0 4px}
+.post-list span{color:var(--muted);font-size:.94rem}
+
+.foot{padding:28px 16px 44px;text-align:center;font:500 var(--text-label)/1.9 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.foot a{color:var(--muted);text-decoration:none}.foot a:hover{color:var(--cyan)}
+.foot nav{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;margin-bottom:6px}
+/* fixes after the first HUD capture */
+a.btn{text-decoration:none}
+.shop .card .price{font:500 1.4rem var(--font-mono);color:var(--gold);margin-top:auto;padding-top:6px}
+.shop .card .price s{color:var(--muted);font-size:1rem}
+.shop .btn,.shop .btn-ghost{align-items:center;gap:10px;min-height:48px;padding:13px 16px}
