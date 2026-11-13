@@ -108,7 +108,7 @@ a.btn{text-decoration:none}
 /* the hub's window onto the world: empty, framed, readout on its bottom edge */
 .window{height:150px;border:1px solid var(--line-dim);border-bottom:1px solid var(--line)}
 .window + .readout{margin:0 0 14px}
-.window + .readout{background:rgba(3,1,13,.7);padding:8px 6px}
+.window + .readout{background:rgba(3,1,13,.93);padding:8px 6px}
 /* districts */
 .gates{display:grid;gap:10px}
 a.gate{cursor:pointer}
