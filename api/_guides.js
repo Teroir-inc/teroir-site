@@ -1,6 +1,7 @@
 // Shared helpers for teroir.com/free: the guide catalog, signed download links, Stripe and Resend calls.
 // Files starting with "_" in api/ are not routes on Vercel.
 const crypto = require('crypto');
+const D = require('./_districts');
 
 // The order here is the order on the page. `file` is guides/<id>.pdf.enc (AES-256-GCM, key from GUIDE_KEY).
 // `price` (cents, USD): sold on its own and never free. No price: a free pick, sold only inside the bundle,
@@ -104,6 +105,8 @@ const notify = (subject, lines, idem) => send({ from: 'Teroir Guides <waitlist@t
   .catch(e => console.error('guides notify failed', e.message));
 
 const linkFor = (id, email, days) => `https://teroir.com/api/guide?t=${sign(id, email, days)}`;
+// a district pass: a signed link that opens that district's pages on wyattworldwide.com (two years, like the guides)
+const passFor = (district, email, days = 730) => `${D.WW}/d/${district}?k=${sign(`district:${district}`, email, days)}`;
 
 // A paid Checkout Session (payment_intent expanded) -> its links; emails them once.
 // Both the success page (api/order) and the Stripe webhook call this. The delivered flag on the payment intent
@@ -112,15 +115,18 @@ async function deliver(s) {
   const email = String(s.metadata?.email || s.customer_email || s.customer_details?.email || '').toLowerCase();
   const guides = String(s.metadata?.guides || '').split(',').map(g => BY_ID[g]).filter(Boolean);
   const links = guides.map(g => ({ id: g.id, title: g.title, url: linkFor(g.id, email, 730) }));
+  const dist = D.BY_DISTRICT[s.metadata?.district];
+  const pass = dist ? { district: dist.id, name: dist.name, url: passFor(dist.id, email) } : null;
   const pi = s.payment_intent;
-  if (links.length && pi && typeof pi === 'object' && !pi.metadata?.delivered) {
+  if ((links.length || pass) && pi && typeof pi === 'object' && !pi.metadata?.delivered) {
     const sale = `$${(s.amount_total / 100).toFixed(2)} · ${email}`;
     let sent;
     try {
       sent = await send({
       from: FROM, to: [email], reply_to: 'wyatt@teroir.com',
-      subject: links.length > 1 ? 'Your Teroir guides' : `Your guide: ${links[0].title}`,
-      text: [`Hey, it's Wyatt. Thanks for buying${links.length > 1 ? ' the guides' : ''}.`, '',
+      subject: pass ? `Your ${pass.name} pass` : links.length > 1 ? 'Your Teroir guides' : `Your guide: ${links[0].title}`,
+      text: [`Hey, it's Wyatt. Thanks for buying${pass ? ` the ${pass.name} pass` : links.length > 1 ? ' the guides' : ''}.`, '',
+        ...(pass ? [`Your pass (it opens ${pass.name} on wyattworldwide.com, no login needed):`, pass.url, ''] : []),
         ...links.flatMap(l => [`${l.title}:`, l.url, '']),
         'These links work for two years. Save the PDFs somewhere you will see them again.', '',
         'Questions, or want something like this built for your business? Just reply to this email.', '',
@@ -129,17 +135,17 @@ async function deliver(s) {
     } catch (e) {
       // loud: the owner gets the error and the buyer's links to forward by hand; Stripe retries the webhook
       await notify(`GUIDE DELIVERY FAILED: ${sale}`, [`The buyer's email did not send: ${e.message}`, '',
-        'Send these links to the buyer yourself:', ...links.flatMap(l => [`${l.title}:`, l.url]), '', `Stripe session: ${s.id}`], `guide-fail-${s.id}`);
+        'Send these links to the buyer yourself:', ...(pass ? [`${pass.name} pass:`, pass.url] : []), ...links.flatMap(l => [`${l.title}:`, l.url]), '', `Stripe session: ${s.id}`], `guide-fail-${s.id}`);
       throw e;
     }
     await stripe('POST', `payment_intents/${pi.id}`, { metadata: { delivered: new Date().toISOString(), resend_id: String(sent?.id || '') } });
     await notify(`Guide sale: ${sale}`, [
-      `Bought: ${guides.map(g => g.title).join(', ')}`, `Paid: $${(s.amount_total / 100).toFixed(2)}`,
+      `Bought: ${[pass && `${pass.name} pass`, ...guides.map(g => g.title)].filter(Boolean).join(', ')}`, `Paid: $${(s.amount_total / 100).toFixed(2)}`,
       `Email: ${email}`, `Came from: ${s.metadata?.src || '(direct)'}`, `Stripe session: ${s.id}`,
       `Buyer email accepted by Resend: ${sent?.id || '(no id)'} (if the buyer can't find it: Resend → Emails → this id shows delivered, bounced or junked)`, '',
-      'Their links, in case they need them again:', ...links.flatMap(l => [`${l.title}:`, l.url])], `guide-sale-${s.id}`);
+      'Their links, in case they need them again:', ...(pass ? [`${pass.name} pass:`, pass.url] : []), ...links.flatMap(l => [`${l.title}:`, l.url])], `guide-sale-${s.id}`);
   }
-  return { email, links };
+  return { email, links, pass };
 }
 
-module.exports = { BRAND, originOf, OFFER_PRICE, offerFor, offerOk, deliver, FROM, GUIDES, BY_ID, PRICE_BUNDLE, EMAIL_RE, clean, sign, verify, encrypt, decrypt, stripe, send, notify, linkFor };
+module.exports = { passFor, BRAND, originOf, OFFER_PRICE, offerFor, offerOk, deliver, FROM, GUIDES, BY_ID, PRICE_BUNDLE, EMAIL_RE, clean, sign, verify, encrypt, decrypt, stripe, send, notify, linkFor };

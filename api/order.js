@@ -8,9 +8,9 @@ module.exports = async (req, res) => {
   try {
     const s = await G.stripe('GET', `checkout/sessions/${id}`, { expand: ['payment_intent'] });
     if (s.payment_status !== 'paid') return res.status(402).json({ ok: false, error: 'unpaid' });
-    const { email, links } = await G.deliver(s);
+    const { email, links, pass } = await G.deliver(s);
     res.setHeader('Cache-Control', 'no-store');
-    return res.status(200).json({ ok: true, email, links });
+    return res.status(200).json({ ok: true, email, links, pass });
   } catch (e) {
     console.error('order failed', e.message);
     return res.status(502).json({ ok: false, error: 'stripe' });

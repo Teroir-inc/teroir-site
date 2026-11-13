@@ -153,3 +153,54 @@ body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-even
   @keyframes floor-run { to { background-position: 0 0, 0 64px; } }
   .grid-floor { animation: floor-run 1.6s linear infinite; }
 }
+
+/* ---------------------------------------------------------------------------------------------------------------
+   NEW district gates (Wyatt 11-13: a purchase unlocks content in a district of the W; site-85 builds the mechanics).
+   One component, three states. Markup:
+     <a class="card gate gate--open" data-district="lab" href="...">
+       <span class="door" aria-hidden="true"></span>
+       <span class="gate-body"><span class="label">The Lab // upgrade</span><b>Make Claude build it</b>
+         <span class="gate-status">Open</span></span></a>
+   States: gate--open (your pass covers it: the door is lit, light spills out), gate--locked (it exists, you need a
+   pass: shutter down, one scan line, the status names the pass that opens it), gate--soon (not built yet: dashed
+   hoarding, hatch, no glow, a meter toward the REAL number that opens it; never a made-up count).
+   Districts set --accent: free = magenta (the FREE sign), lab = cyan (holograms), studio = hot pink (the ON AIR
+   lamp), hq = gold (the one place gold is allowed to lead: the all-access keycard), vip = white chrome.
+   Rules: a locked gate is inviting, not scolding: never red, never a padlock wall of text; one line says which pass
+   opens it. Only gate--open glows. Opening-soon panels never link to a checkout. */
+.gate { --accent: var(--cyan); display: grid; grid-template-columns: 64px 1fr; gap: 14px; align-items: center; padding: 14px 16px;
+  text-decoration: none; color: var(--ink); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
+.gate::before, .gate::after { border-color: var(--accent); }
+.gate[data-district="free"] { --accent: var(--magenta); }
+.gate[data-district="lab"] { --accent: var(--cyan); }
+.gate[data-district="studio"] { --accent: var(--pink); }
+.gate[data-district="hq"] { --accent: var(--gold); }
+.gate[data-district="vip"] { --accent: #EAF6FF; }
+.gate .door { position: relative; width: 64px; height: 84px; border: 1px solid var(--accent); border-radius: 32px 32px 0 0; overflow: hidden;
+  background: rgba(3, 1, 13, .85); }
+.gate-body { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.gate-body .label { color: var(--accent); }
+.gate-body b { font: 600 1.1rem/1.25 var(--font-display); }
+.gate-status { font: 500 var(--text-label)/1.2 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
+/* open: light spills out of the doorway */
+.gate--open { box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 35%, transparent); }
+.gate--open .door { background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 85%, #fff) 0%, color-mix(in srgb, var(--accent) 55%, transparent) 60%, rgba(3, 1, 13, .2) 100%);
+  box-shadow: 0 0 22px color-mix(in srgb, var(--accent) 70%, transparent); }
+.gate--open .gate-status { color: var(--accent); }
+.gate--open .gate-status::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 7px; background: var(--accent); }
+/* locked: the shutter is down, a scan line waits */
+.gate--locked .door { background: repeating-linear-gradient(0deg, color-mix(in srgb, var(--accent) 22%, transparent) 0 2px, rgba(3, 1, 13, .9) 2px 9px); }
+.gate--locked .door::after { content: ""; position: absolute; left: 0; right: 0; top: 46%; height: 2px; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+/* opening soon: a hoarding, not a door */
+.gate--soon { border-style: dashed; border-color: var(--line-dim); background: repeating-linear-gradient(135deg, rgba(0, 229, 255, .05) 0 10px, transparent 10px 20px); }
+.gate--soon::before, .gate--soon::after { border-color: var(--line); }
+.gate--soon .door { border-style: dashed; border-color: var(--line); background: none; }
+.gate--soon .gate-body .label, .gate--soon .gate-status { color: var(--muted); }
+.gate--soon b { color: var(--muted); }
+.gate-meter { height: 4px; background: var(--line-dim); margin-top: 4px; }
+.gate-meter i { display: block; height: 100%; background: var(--cyan); width: var(--pct, 0%); }   /* --pct = real progress, set inline */
+@media (prefers-reduced-motion: no-preference) {
+  @keyframes gate-scan { 0%, 100% { top: 20%; } 50% { top: 78%; } }
+  .gate--locked .door::after { animation: gate-scan 3.2s ease-in-out infinite; }
+  .gate--open:hover .door, .gate--locked:hover .door { transform: scale(1.04); transition: transform var(--t-fast) var(--ease-snap); }
+}
