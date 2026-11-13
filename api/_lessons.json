@@ -1,0 +1,66 @@
+{
+ "the-lab": [
+  {
+   "slug": "what-is-an-agent",
+   "title": "what is an ai agent, in plain words",
+   "description": "an agent is a robot that plans, acts and checks its own work toward a goal. here's a one-page brief you can copy.",
+   "order": 1
+  },
+  {
+   "slug": "context-window",
+   "title": "the context window, why ai forgets",
+   "description": "the context window is everything an ai can see right now. old lines fall out the top. here's how to work with that.",
+   "order": 2
+  },
+  {
+   "slug": "how-ai-thinks",
+   "title": "how ai thinks, one step at a time",
+   "description": "ai models work through problems in steps. ask for the steps and you get better answers. here's a prompt to try.",
+   "order": 3
+  },
+  {
+   "slug": "tokens-explained",
+   "title": "tokens, how ai reads in pieces",
+   "description": "models read text in small pieces called tokens, not whole words. that's why limits and costs are counted this way.",
+   "order": 4
+  },
+  {
+   "slug": "prompts-are-specs",
+   "title": "prompts are specs, not wishes",
+   "description": "a prompt works best when it's a clear spec. here's a simple spec template that gets good output on the first try.",
+   "order": 5
+  },
+  {
+   "slug": "memory-for-ai",
+   "title": "memory, what ai keeps between chats",
+   "description": "ai doesn't remember you by default. memory is notes it files and pulls back when needed. here's how to build your own.",
+   "order": 6
+  },
+  {
+   "slug": "tools-for-ai",
+   "title": "tools, how ai does things, not just says things",
+   "description": "tools let an ai search, open files and run code. here's how to decide what to give it and what to keep locked.",
+   "order": 7
+  },
+  {
+   "slug": "hallucination",
+   "title": "hallucination, when ai makes things up",
+   "description": "ai can state something false with total confidence. here's why it happens and a prompt that cuts it down.",
+   "order": 8
+  },
+  {
+   "slug": "temperature",
+   "title": "temperature, how ai picks between safe and surprising",
+   "description": "temperature controls how adventurous a model's word picks are. low for steady and exact, high for fresh ideas. try both.",
+   "order": 9
+  }
+ ],
+ "the-studio": [
+  {
+   "slug": "how-i-automated-my-content-pipeline",
+   "title": "how i automated my content pipeline",
+   "description": "how i film on my phone and let ai agents edit, check and schedule every video. the method, plus five templates you can copy today.",
+   "order": 1
+  }
+ ]
+}

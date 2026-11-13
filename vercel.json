@@ -120,6 +120,9 @@
  "functions": {
   "api/guide.js": {
    "includeFiles": "guides/**"
+  },
+  "api/lesson.js": {
+   "includeFiles": "lessons/**"
   }
  }
 }

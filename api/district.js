@@ -3,6 +3,7 @@
 // download links for that email. Tokens are the same HMAC links as guide downloads; nothing is stored.
 const G = require('./_guides');
 const D = require('./_districts');
+const L = require('./_lessons.json');
 
 module.exports = async (req, res) => {
   res.setHeader('Cache-Control', 'no-store');
@@ -19,5 +20,6 @@ module.exports = async (req, res) => {
   if (!pass || d.status !== 'open') return res.status(200).json({ ok: true, open: false, district: pub });
   const email = pass.e;
   const guides = (d.guides === 'all' ? G.GUIDES.map(g => g.id) : d.guides).map(id => G.BY_ID[id]).filter(Boolean).map(g => ({ id: g.id, title: g.title, url: G.linkFor(g.id, email, 30) }));
-  return res.status(200).json({ ok: true, open: true, district: pub, email, guides, lessons: d.lessons });
+  const reads = (L[d.id] || []).map(({ slug, title, description }) => ({ slug, title, description }));
+  return res.status(200).json({ ok: true, open: true, district: pub, email, guides, lessons: d.lessons, reads });
 };
