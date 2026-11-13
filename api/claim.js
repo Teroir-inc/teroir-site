@@ -34,6 +34,8 @@ module.exports = async (req, res) => {
       subject: `Your free guide: ${guide.title}`,
       text: [`Hey, it's Wyatt.`, '', `Here's your free guide, "${guide.title}":`, link, '',
         'The link works for 30 days. Save the PDF somewhere you will see it again.', '',
+        // on wyattworldwide.com the claim is the Free Street day pass
+        ...(/wyattworldwide/.test(G.originOf(req)) ? ['Your Free Street pass (it opens Free Street on wyattworldwide.com, no login needed):', G.passFor('free-street', email, 365), ''] : []),
         `For the next 24 hours, any of the longer guides is $29:`,
         `${G.originOf(req)}/free?offer=${G.offerFor(email)}#buy`, '',
         'Questions, or want something like this built for your business? Just reply to this email.', '',

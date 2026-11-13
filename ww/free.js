@@ -78,6 +78,7 @@
       if (!j.ok) throw 0;
       $('gd-done-p').textContent = `Your download links are below, and they're in your inbox at ${j.email} too.`;
       const ul = $('gd-links');
+      if (j.pass) { const li = document.createElement('li'); const a = document.createElement('a'); a.href = j.pass.url; a.textContent = `Enter ${j.pass.name} →`; li.append(a); ul.append(li); }
       for (const l of j.links) { const li = document.createElement('li'); const a = document.createElement('a');
         a.href = l.url; a.textContent = `Download: ${l.title}`; a.className = 'more'; li.append(a); ul.append(li); }
     }).catch(() => { $('gd-done-p').textContent = "Your payment went through. If the guides aren't in your inbox in a few minutes, email wyatt@teroir.com and I'll send them right away."; });
