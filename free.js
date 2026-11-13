@@ -4,6 +4,7 @@
   const qs = new URLSearchParams(location.search);
   const TITLES = {};
   document.querySelectorAll('.gd-card[data-guide]').forEach(f => { TITLES[f.dataset.guide] = f.querySelector('b').textContent; });
+  document.querySelectorAll('.gd-pick input').forEach(i => { TITLES[i.value] = i.parentNode.querySelector('b').textContent; });
 
   // where the visitor came from (ManyChat link: /free?src=manychat)
   let src = (qs.get('src') || qs.get('utm_source') || '').replace(/[^\w.\-]/g, '').slice(0, 60);
@@ -50,7 +51,7 @@
   if (offerEnd > Date.now() && offerEmail) $('gd-buy-email').value = offerEmail;
   if (offerEnd > Date.now()) document.querySelectorAll('#buy form[data-guide]').forEach(f => {
     f.insertAdjacentHTML('beforeend', '<input type="hidden" name="offer">'); f.elements.offer.value = offer;
-    f.querySelector('.gd-price').innerHTML = '<s>$169</s> $29 <small>for 24 hours</small>';
+    const p = f.querySelector('.gd-price'); p.innerHTML = `<s>${p.textContent}</s> $29 <small>for 24 hours</small>`;
   });
 
   // Buy buttons: JSON first so the email they gave carries into Stripe; plain form post is the fallback

@@ -7,13 +7,13 @@ module.exports = async (req, res) => {
   const wantsJson = String(req.headers['content-type'] || '').includes('application/json');
   const item = G.clean(b.item, 40);
   const one = G.BY_ID[item];
-  if (!one && item !== 'bundle') return res.status(400).json({ ok: false, error: 'item' });
+  if ((!one || !one.price) && item !== 'bundle') return res.status(400).json({ ok: false, error: 'item' }); // free guides are not sold singly
   const email = G.clean(b.email, 200).toLowerCase();
   const src = G.clean(b.src, 60).replace(/[^\w.\-]/g, '');
   const host = String(req.headers.host || '');
   const origin = /^(teroir\.com|www\.teroir\.com|[\w-]+\.vercel\.app)$/.test(host) ? `https://${host}` : 'https://teroir.com';
 
-  // 24-hour $29 offer from the free-guide email: single guides only, locked to the email it was sent to
+  // 24-hour $29 offer from the free-guide email: single paid guides only, locked to the email it was sent to
   const offer = one && b.offer ? G.offerOk(G.clean(b.offer, 400)) : null;
   const buyer = offer ? offer.e : G.EMAIL_RE.test(email) ? email : undefined;
   // the page always sends the email typed on teroir.com; it is locked into Checkout so a wallet (Apple Pay, Link) can't swap it
@@ -23,7 +23,7 @@ module.exports = async (req, res) => {
   try {
     const s = await G.stripe('POST', 'checkout/sessions', {
       mode: 'payment',
-      line_items: [{ quantity: 1, price_data: { currency: 'usd', unit_amount: offer ? G.OFFER_PRICE : one ? G.PRICE_EACH : G.PRICE_BUNDLE,
+      line_items: [{ quantity: 1, price_data: { currency: 'usd', unit_amount: offer ? G.OFFER_PRICE : one ? one.price : G.PRICE_BUNDLE,
         product_data: { name: one ? `Teroir guide: ${one.title}` : `Teroir guides: all ${ids.length}`,
           description: one ? 'PDF guide, sent to your email' : G.GUIDES.map(g => g.title).join(' · ') } } }],
       customer_email: buyer,
