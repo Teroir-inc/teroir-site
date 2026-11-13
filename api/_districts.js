@@ -7,11 +7,11 @@ const DISTRICTS = [
   { id: 'free-street', key: 'free', name: 'Free Street', status: 'open', price: 0, kind: 'free day pass',
     line: 'your free day pass: a starter guide, sent to your inbox.', guides: [], lessons: [] },
   { id: 'the-lab', key: 'lab', name: 'The Lab', status: 'open', price: 9700, kind: 'upgrade',
-    line: 'deep AI explainers and the templates that go with them.', guides: ['claude-artifacts', 'harness-engineering'], lessons: [] },
+    line: 'two deep guides: Make Claude build it, and Build the harness.', guides: ['claude-artifacts', 'harness-engineering'], lessons: [] },
   { id: 'the-studio', key: 'studio', name: 'The Studio', status: 'soon', price: 9700, kind: 'upgrade',
     line: 'content systems and pipelines, the way this channel is made.', guides: ['agent-engineering'], lessons: [] },
   { id: 'rooftop-hq', key: 'hq', name: 'Rooftop HQ', status: 'open', price: 24900, kind: 'all-access pass',
-    line: 'everything, plus the company-from-your-phone track.', guides: 'all', lessons: [] },
+    line: 'all seven guides, and every open district.', guides: 'all', lessons: [] },
   { id: 'vip', key: 'vip', name: 'VIP', status: 'link', price: 20000, kind: 'vip tour',
     line: '1:1 with wyatt, by appointment.', href: 'https://teroir.com/talk?for=coaching&src=wyattworldwide-vip', guides: [], lessons: [] },
 ];
