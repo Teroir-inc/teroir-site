@@ -310,6 +310,39 @@
    "source": "/ai/:path*",
    "destination": "https://www.wyattworldwide.com/free?src=instagram",
    "statusCode": 301
+  },
+  {
+   "source": "/ig",
+   "has": [
+    {
+     "type": "host",
+     "value": "www.wyattworldwide.com"
+    }
+   ],
+   "destination": "/free?src=ig-bio",
+   "permanent": false
+  },
+  {
+   "source": "/tt",
+   "has": [
+    {
+     "type": "host",
+     "value": "www.wyattworldwide.com"
+    }
+   ],
+   "destination": "/free?src=tiktok-bio",
+   "permanent": false
+  },
+  {
+   "source": "/x",
+   "has": [
+    {
+     "type": "host",
+     "value": "www.wyattworldwide.com"
+    }
+   ],
+   "destination": "/free?src=x-bio",
+   "permanent": false
   }
  ],
  "functions": {
