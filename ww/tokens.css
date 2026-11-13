@@ -40,7 +40,7 @@
   --grad-sun: linear-gradient(180deg, #FFD23F 0%, #FF2BD6 50%, #8C1EFF 100%);
   --grad-sky: linear-gradient(180deg, #07021A 0%, #1A0633 62%, #3B0A5E 100%);
   --grad-edge: linear-gradient(90deg, #FF2BD6, #00E5FF);            /* neon card edge, underline */
-  --grad-chrome: linear-gradient(180deg, #FFFFFF 0%, #C9D4FF 38%, #5B6B9A 52%, #FFFFFF 70%, #C9D4FF 100%);
+  --grad-chrome: linear-gradient(180deg, #FFFFFF 0%, #DDE4FF 40%, #8E9BD0 52%, #FFFFFF 68%, #DDE4FF 100%);   /* lighter steel band: the darker one went muddy at phone size */
 
   /* type */
   --font-display: "Space Grotesk", "Inter", system-ui, sans-serif;   /* 600 / 700 */
@@ -75,7 +75,7 @@ a { color: var(--cyan); }
 /* chrome wordmark (hero title only) */
 .chrome { font: 700 var(--text-hero)/1 var(--font-display); letter-spacing: -.01em; transform: skewX(-8deg);
   background: var(--grad-chrome); -webkit-background-clip: text; background-clip: text; color: transparent;
-  filter: drop-shadow(0 0 10px rgba(255, 43, 214, .6)) drop-shadow(0 2px 0 rgba(0, 229, 255, .5)); }
+  filter: drop-shadow(0 0 6px rgba(255, 43, 214, .55)) drop-shadow(0 2px 0 rgba(0, 229, 255, .45)); }
 
 /* dark glass card with a neon top edge: the only panel style */
 .card { background: var(--glass); border: 1px solid var(--line); border-radius: var(--radius-card);
@@ -87,15 +87,16 @@ a { color: var(--cyan); }
 .btn { font: 600 1rem/1 var(--font-body); padding: 16px 22px; border-radius: var(--radius-control); border: 0;
   background: var(--magenta); color: var(--night); box-shadow: var(--glow-magenta); cursor: pointer; }
 .btn:hover { background: var(--pink); }
-.btn-ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--cyan); box-shadow: var(--glow-cyan); }
+.btn-ghost { background: transparent; color: var(--ink); border: 1.5px solid var(--line); box-shadow: none; }
+.btn-ghost:hover, .btn-ghost:focus-visible { border-color: var(--cyan); box-shadow: var(--glow-cyan); }   /* glow on touch only: a column of glowing buttons drowns the main action */
 
 /* the sun: stripes cut from the lower half. One per page. */
 .sun { width: min(60vw, 320px); aspect-ratio: 1; border-radius: 50%; background: var(--grad-sun);
   box-shadow: 0 0 60px rgba(255, 43, 214, .55);
-  -webkit-mask: linear-gradient(#000 50%, transparent 0) top / 100% 50% no-repeat,
-    repeating-linear-gradient(#000 0 9%, transparent 9% 14%) bottom / 100% 50% no-repeat;
-  mask: linear-gradient(#000 50%, transparent 0) top / 100% 50% no-repeat,
-    repeating-linear-gradient(#000 0 9%, transparent 9% 14%) bottom / 100% 50% no-repeat; }
+  --sun-top: linear-gradient(#000, #000) top / 100% 50% no-repeat;
+  --sun-slits: linear-gradient(#000 0 16%, transparent 16% 20%, #000 20% 36%, transparent 36% 42%, #000 42% 58%,
+    transparent 58% 67%, #000 67% 82%, transparent 82% 93%, #000 93% 100%) bottom / 100% 50% no-repeat;
+  -webkit-mask: var(--sun-top), var(--sun-slits); mask: var(--sun-top), var(--sun-slits); }
 
 /* the grid floor: put inside a hero with overflow hidden, under the sun */
 .grid-floor { height: 38vh; transform: perspective(420px) rotateX(62deg); transform-origin: top;
