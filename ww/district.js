@@ -48,7 +48,23 @@
       fr.src = `https://www.youtube-nocookie.com/embed/${encodeURIComponent(l.youtube)}`;
       const c = document.createElement('figcaption'); c.textContent = l.title; f.append(fr, c); lv.append(f);
     }
-    $('.d-lessons-wrap').hidden = !(j.lessons || []).length;
+    const rl = $('.d-reads');
+    for (const l of j.reads || []) {
+      const a = document.createElement('a'); a.className = 'btn-ghost'; a.href = `?l=${encodeURIComponent(l.slug)}`;
+      const b = document.createElement('b'); b.textContent = l.title; const sp = document.createElement('span'); sp.className = 'muted'; sp.textContent = 'read →';
+      a.append(b, sp); rl.append(a);
+    }
+    $('.d-lessons-wrap').hidden = !((j.lessons || []).length || (j.reads || []).length);
+    const want = new URLSearchParams(location.search).get('l');
+    if (want && (j.reads || []).some(l => l.slug === want)) {
+      fetch(`/api/lesson?d=${encodeURIComponent(id)}&s=${encodeURIComponent(want)}&k=${encodeURIComponent(passes.join(','))}`).then(r => r.json()).then(x => {
+        if (!x.ok) throw 0;
+        const art = $('.d-read'); art.hidden = false;
+        art.querySelector('h1').textContent = x.title;
+        art.querySelector('.post-body').innerHTML = x.html; // rendered and escaped at build time; no raw HTML from authors
+        art.scrollIntoView({ block: 'start' });
+      }).catch(() => { $('.d-error').hidden = false; });
+    }
   }).catch(() => { $('.d-error').hidden = false; const st = document.querySelector('.gate[data-id] .gate-status'); if (st) st.textContent = 'pass check unavailable'; });
 })();
 
