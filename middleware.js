@@ -11,6 +11,6 @@ export default function middleware(req) {
   if (!WW.test(host) && req.headers.get('x-ww-preview') !== '1') return; // teroir.com: carry on as before
   if (host.startsWith('www.')) return Response.redirect(`https://wyattworldwide.com${url.pathname}${url.search}`, 308);
   if (url.pathname.startsWith('/ww/')) return; // already rewritten
-  const path = url.pathname === '/' ? '/ww/index.html' : `/ww${url.pathname}`;
+  const path = url.pathname === '/' ? '/ww/' : `/ww${url.pathname}`;
   return new Response(null, { headers: { 'x-middleware-rewrite': new URL(path + url.search, url).toString() } });
 }
