@@ -3,21 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>free AI guides — wyatt worldwide</title>
-<meta name="description" content="Short, plain AI guides for people running a business. Pick one and get it free by email.">
+<title>free day pass — wyatt worldwide</title>
+<meta name="description" content="Your free day pass: one short, plain AI guide for people running a business, sent to your email. Upgrades and the all-access pass too.">
 <meta name="theme-color" content="#07021A">
 <meta name="color-scheme" content="dark">
 <link rel="canonical" href="https://wyattworldwide.com/free">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="wyatt worldwide">
 <meta property="og:url" content="https://wyattworldwide.com/free">
-<meta property="og:title" content="free AI guides — wyatt worldwide">
-<meta property="og:description" content="Short, plain AI guides for people running a business. Pick one and get it free by email.">
+<meta property="og:title" content="free day pass — wyatt worldwide">
+<meta property="og:description" content="Your free day pass: one short, plain AI guide for people running a business, sent to your email. Upgrades and the all-access pass too.">
 <meta property="og:image" content="https://wyattworldwide.com/ww/og.png">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@WyattHorton">
-<meta name="twitter:title" content="free AI guides — wyatt worldwide">
-<meta name="twitter:description" content="Short, plain AI guides for people running a business. Pick one and get it free by email.">
+<meta name="twitter:title" content="free day pass — wyatt worldwide">
+<meta name="twitter:description" content="Your free day pass: one short, plain AI guide for people running a business, sent to your email. Upgrades and the all-access pass too.">
 <meta name="twitter:image" content="https://wyattworldwide.com/ww/og.png">
 <link rel="icon" href="/ww/favicon.svg" type="image/svg+xml">
 <link rel="alternate" type="application/rss+xml" title="wyatt worldwide blog" href="https://wyattworldwide.com/blog/rss.xml">
@@ -33,13 +33,13 @@
 <header class="hud"><a class="mark" href="/">wyatt<b>.</b>worldwide</a><nav aria-label="Pages"><a href="/free" aria-current=page>guides</a><a href="/blog">log</a></nav></header>
 <main id="main" class="stage wide">
 <section id="get" aria-labelledby="free-h">
-  <p class="label">// free AI guide</p>
+  <p class="label">// free day pass</p>
   <div class="card boot" style="--i:0">
-    <h1 id="free-h">pick a guide. it's free.</h1>
-    <p class="muted">Short, plain guides for people running a business. Each one gets one real task done with AI, with copy-paste templates.</p>
+    <h1 id="free-h">get your free day pass.</h1>
+    <p class="muted">Your pass is one short, plain AI guide for people running a business. Pick one: it gets one real task done with AI, with copy-paste templates.</p>
     <form id="gd-form" action="/api/claim" method="post">
       <fieldset class="pick gd-pick">
-        <legend class="vh">Which guide do you want?</legend>
+        <legend class="vh">Which guide is your day pass?</legend>
           <label><input type="radio" name="guide" value="repeat-task" checked><span><b>Hand AI your most repeated task</b><i>Find the boring part of your week, explain it to AI once, get the draft back.</i><small>9 pages · 10-minute read</small></span></label>
           <label><input type="radio" name="guide" value="run-while-out"><span><b>Keep your business running while you're out</b><i>Hand off your week, get a weekly report drafted, turn calls into to-dos.</i><small>8 pages · 10-minute read</small></span></label>
           <label><input type="radio" name="guide" value="get-paid"><span><b>Get paid for AI: build and sell one small automation</b><i>Pick one local business, build one small AI helper for them, and sell it.</i><small>9 pages · 10-minute read</small></span></label>
@@ -48,9 +48,9 @@
       <label class="wl-hp" aria-hidden="true">Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label>
       <input type="hidden" name="t" id="gd-t">
       <input type="hidden" name="src" id="gd-src">
-      <button class="btn wide" type="submit">email me my guide <span aria-hidden="true">→</span></button>
+      <button class="btn wide" type="submit">send my day pass <span aria-hidden="true">→</span></button>
       <p class="msg" id="gd-msg" role="status" aria-live="polite"></p>
-      <p class="note">One free guide per email address. The link arrives in your inbox, so use one you check.</p>
+      <p class="note">One day pass per email address. The link arrives in your inbox, so use one you check.</p>
     </form>
     <div id="gd-done" hidden>
       <h2 id="gd-done-h">Check your inbox.</h2>
@@ -60,40 +60,40 @@
   </div>
 </section>
 <section id="buy" aria-labelledby="buy-h">
-  <p class="label" id="buy-h">// the full set</p>
-  <p class="muted">The longer guides are $49 to $97 each, or all seven for $249. Pay by card; the PDFs come straight to your email.</p>
+  <p class="label" id="buy-h">// upgrades</p>
+  <p class="muted">Upgrades are the longer guides, $49 to $97 each. The all-access pass is all seven guides for $249. Pay by card; the PDFs come straight to your email.</p>
   <label class="field"><span>your email</span><input id="gd-buy-email" type="email" autocomplete="email" maxlength="200" placeholder="you@example.com"></label>
   <p class="msg" id="gd-buy-msg" role="status" aria-live="polite"></p>
   <div class="shop">
     <form class="card gd-card all gd-all boot" action="/api/checkout" method="post">
       <input type="hidden" name="item" value="bundle"><input type="hidden" name="src" class="gd-src">
-      <b>All seven guides</b><span>Every guide on this page, as PDFs.</span>
+      <b>All-access pass</b><span>All seven guides, as PDFs.</span>
       <span class="price gd-price">$249</span>
-      <button class="btn" type="submit">get all seven <span aria-hidden="true">→</span></button>
+      <button class="btn" type="submit">get the all-access pass <span aria-hidden="true">→</span></button>
     </form>
       <form class="card gd-card boot" action="/api/checkout" method="post" data-guide="claude-artifacts">
         <input type="hidden" name="item" value="claude-artifacts"><input type="hidden" name="src" class="gd-src">
         <b>Make Claude build it: a field guide to artifacts</b><span>Turn a chat into a chart, a tool, or a page you can share.</span>
         <span class="price gd-price">$49</span>
-        <button class="btn-ghost" type="submit">buy this guide</button>
+        <button class="btn-ghost" type="submit">get this upgrade</button>
       </form>
       <form class="card gd-card boot" action="/api/checkout" method="post" data-guide="harness-engineering">
         <input type="hidden" name="item" value="harness-engineering"><input type="hidden" name="src" class="gd-src">
         <b>Build the harness: what your AI agents need from you</b><span>Write your rules once, enforce them in code, and keep them true.</span>
         <span class="price gd-price">$97</span>
-        <button class="btn-ghost" type="submit">buy this guide</button>
+        <button class="btn-ghost" type="submit">get this upgrade</button>
       </form>
       <form class="card gd-card boot" action="/api/checkout" method="post" data-guide="agent-engineering">
         <input type="hidden" name="item" value="agent-engineering"><input type="hidden" name="src" class="gd-src">
         <b>Run AI agents like a team</b><span>Brief one agent, check its work, then run many without losing control.</span>
         <span class="price gd-price">$97</span>
-        <button class="btn-ghost" type="submit">buy this guide</button>
+        <button class="btn-ghost" type="submit">get this upgrade</button>
       </form>
       <form class="card gd-card boot" action="/api/checkout" method="post" data-guide="remote-dev-setup">
         <input type="hidden" name="item" value="remote-dev-setup"><input type="hidden" name="src" class="gd-src">
         <b>Build from your phone: a remote AI workshop</b><span>Set up a private server your AI agents work on, run from your phone.</span>
         <span class="price gd-price">$97</span>
-        <button class="btn-ghost" type="submit">buy this guide</button>
+        <button class="btn-ghost" type="submit">get this upgrade</button>
       </form>
   </div>
   <p class="note">Want AI built into your business instead? <a href="https://teroir.com/talk?for=business&amp;src=wyattworldwide">Book a call with Teroir</a></p>

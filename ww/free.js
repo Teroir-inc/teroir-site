@@ -19,10 +19,10 @@
 
   const form = $('gd-form'), msg = $('gd-msg'), done = $('gd-done');
   const show = (h, p) => { form.hidden = true; done.hidden = false; $('gd-done-h').textContent = h; $('gd-done-p').textContent = p; };
-  const claimed = id => show('This email already has its free guide.',
-    `${id && TITLES[id] ? `It got "${TITLES[id]}". ` : ''}Check your inbox for the link, or get the other guides below.`);
+  const claimed = id => show('This email already has its day pass.',
+    `${id && TITLES[id] ? `It got "${TITLES[id]}". ` : ''}Check your inbox for the link, or see the upgrades below.`);
 
-  if (qs.get('sent')) show('Check your inbox.', "Your guide is on its way. If it's not there in a few minutes, look in spam or promotions.");
+  if (qs.get('sent')) show('Check your inbox.', "Your day pass is on its way. If it's not there in a few minutes, look in spam or promotions.");
   if (qs.get('claimed')) claimed();
 
   form.addEventListener('submit', async e => {
