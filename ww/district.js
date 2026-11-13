@@ -22,6 +22,11 @@
     g.href = `/d/${g.dataset.id}`;
   });
 
+  document.querySelectorAll('.pnl[data-id]').forEach(g => {
+    if (g.classList.contains('is-soon') || !has(g.dataset.id) || g.dataset.id === 'vip') return;
+    g.classList.add('is-open'); const st = g.querySelector('.status'); if (st) st.textContent = 'open · your pass';
+  });
+
   // a district page: ask the server what this device's passes open
   const box = document.getElementById('district');
   if (!box) return;
