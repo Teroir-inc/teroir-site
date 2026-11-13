@@ -27,12 +27,12 @@
 .ring-dots{display:none}
 
 /* 3D ring */
-.ring-on .ring-stage{position:relative;height:420px;perspective:1100px;perspective-origin:50% 40%;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.ring-on .ring-stage{position:relative;height:380px;perspective:1100px;perspective-origin:50% 40%;touch-action:pan-y;user-select:none;-webkit-user-select:none}
 .ring-on .ring-track{position:absolute;inset:0;display:block;transform-style:preserve-3d}
 .ring-on.ready .ring-track{transition:transform .45s var(--ease-snap)}
 .ring-on.dragging .ring-track{transition:none}
-.ring-on .ring-item{position:absolute;left:50%;top:0;width:min(78vw,300px);margin-left:calc(min(78vw,300px) / -2);backface-visibility:hidden;-webkit-backface-visibility:hidden;transition:opacity .3s}
-.ring-on .ring-item .pnl{min-height:400px;filter:saturate(.5) brightness(.75)}
+.ring-on .ring-item{position:absolute;left:50%;top:0;width:min(68vw,290px);margin-left:calc(min(68vw,290px) / -2);backface-visibility:hidden;-webkit-backface-visibility:hidden;transition:opacity .3s}
+.ring-on .ring-item .pnl{min-height:360px;filter:saturate(.5) brightness(.75)}
 .ring-on .ring-item.front .pnl{filter:none;box-shadow:0 0 0 1px var(--accent,var(--cyan)),0 0 28px color-mix(in srgb,var(--accent,var(--cyan)) 35%,transparent)}
 .ring-on .ring-item.front .pnl .scan{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,229,255,.05) 0 1px,transparent 1px 4px)}
 .ring-on .ring-ctl{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:8px}
@@ -48,3 +48,5 @@
 .ring-flat .ring-item{flex:0 0 min(84vw,320px);scroll-snap-align:center}
 .ring-stage{overflow-x:clip}
 .pnl .socials a{gap:8px}.pnl .socials span{font-size:.7rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.pnl .emblem{display:block;width:96px;height:96px;margin:2px auto 0}
