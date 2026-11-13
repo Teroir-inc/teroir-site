@@ -1,0 +1,22 @@
+# teroir.com: search engines and AI assistants are welcome
+User-agent: *
+Allow: /
+Disallow: /api/
+
+User-agent: Googlebot
+User-agent: Bingbot
+User-agent: GPTBot
+User-agent: OAI-SearchBot
+User-agent: ChatGPT-User
+User-agent: ClaudeBot
+User-agent: Claude-SearchBot
+User-agent: Claude-User
+User-agent: PerplexityBot
+User-agent: Perplexity-User
+User-agent: Google-Extended
+User-agent: Applebot
+Allow: /
+Disallow: /api/
+
+Sitemap: https://teroir.com/sitemap.xml
+Sitemap: https://teroir.com/blog/rss.xml
