@@ -1,0 +1,49 @@
+/* hub ring: holographic panels on a 3D ring (ring.js). No JS: a stacked list. Reduced motion: a flat swipe row. */
+.ring{position:relative;margin:4px 0 0;outline:none}
+.ring-track{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.ring-item{list-style:none}
+.pnl{position:relative;display:flex;flex-direction:column;gap:10px;min-height:340px;padding:20px 18px;overflow:hidden;
+  background:linear-gradient(rgba(0,229,255,.05),rgba(0,229,255,.05)),rgba(3,1,13,.9);border:1px solid var(--line);border-radius:2px;color:var(--ink)}
+.pnl::before,.pnl::after{content:"";position:absolute;width:16px;height:16px;pointer-events:none}
+.pnl::before{top:-1px;left:-1px;border-top:2px solid var(--accent,var(--cyan));border-left:2px solid var(--accent,var(--cyan))}
+.pnl::after{bottom:-1px;right:-1px;border-bottom:2px solid var(--accent,var(--cyan));border-right:2px solid var(--accent,var(--cyan))}
+.pnl[data-district="free"]{--accent:var(--magenta)}.pnl[data-district="lab"]{--accent:var(--cyan)}.pnl[data-district="studio"]{--accent:var(--pink)}
+.pnl[data-district="hq"]{--accent:var(--gold)}.pnl[data-district="vip"]{--accent:#EAF6FF}
+.pnl .kicker{font:500 var(--text-label)/1.2 var(--font-mono);letter-spacing:.14em;text-transform:uppercase;color:var(--accent,var(--cyan))}
+.pnl h2{margin:0;font:700 1.7rem/1.1 var(--font-display);letter-spacing:.03em;text-transform:uppercase;color:#fff;text-shadow:var(--glow-text)}
+.pnl p{margin:0;color:var(--muted)}
+.pnl .status{font:500 var(--text-label)/1.2 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:auto}
+.pnl .art{display:flex;justify-content:center;padding:4px 0}
+.pnl .art .door{width:72px;height:92px;border:1px solid var(--accent);border-radius:36px 36px 0 0;
+  background:repeating-linear-gradient(0deg,color-mix(in srgb,var(--accent) 22%,transparent) 0 2px,rgba(3,1,13,.9) 2px 9px)}
+.pnl.is-open .art .door{background:linear-gradient(180deg,color-mix(in srgb,var(--accent) 85%,#fff),color-mix(in srgb,var(--accent) 45%,transparent) 60%,rgba(3,1,13,.2));box-shadow:0 0 22px color-mix(in srgb,var(--accent) 60%,transparent)}
+.pnl.is-soon{border-style:dashed}.pnl.is-soon .art .door{border-style:dashed;background:none}.pnl.is-soon h2{color:var(--muted);text-shadow:none}
+.pnl .go{display:flex;justify-content:center;align-items:center;gap:8px;min-height:50px;text-decoration:none}
+.pnl .socials{display:grid;gap:8px}
+.pnl .socials a{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;min-height:48px;text-decoration:none;color:var(--ink);
+  border:1px solid var(--line);border-left:3px solid var(--cyan);background:rgba(0,229,255,.05)}
+.pnl .socials span{font:500 .8rem var(--font-mono);color:var(--muted)}
+.ring-ctl{display:none}
+.ring-dots{display:none}
+
+/* 3D ring */
+.ring-on .ring-stage{position:relative;height:420px;perspective:1100px;perspective-origin:50% 40%;touch-action:pan-y;user-select:none;-webkit-user-select:none}
+.ring-on .ring-track{position:absolute;inset:0;display:block;transform-style:preserve-3d}
+.ring-on.ready .ring-track{transition:transform .45s var(--ease-snap)}
+.ring-on.dragging .ring-track{transition:none}
+.ring-on .ring-item{position:absolute;left:50%;top:0;width:min(78vw,300px);margin-left:calc(min(78vw,300px) / -2);backface-visibility:hidden;-webkit-backface-visibility:hidden;transition:opacity .3s}
+.ring-on .ring-item .pnl{min-height:400px;filter:saturate(.5) brightness(.75)}
+.ring-on .ring-item.front .pnl{filter:none;box-shadow:0 0 0 1px var(--accent,var(--cyan)),0 0 28px color-mix(in srgb,var(--accent,var(--cyan)) 35%,transparent)}
+.ring-on .ring-item.front .pnl .scan{position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,rgba(0,229,255,.05) 0 1px,transparent 1px 4px)}
+.ring-on .ring-ctl{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:8px}
+.ring-on .ring-ctl button{min-width:52px;min-height:44px;font:600 1.1rem var(--font-mono);color:var(--cyan);background:rgba(3,1,13,.85);border:1px solid var(--line);border-radius:2px;cursor:pointer}
+.ring-on .ring-ctl button:hover{border-color:var(--cyan);box-shadow:var(--glow-cyan)}
+.ring-now{font:500 var(--text-label)/1.2 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-align:center;white-space:pre}
+.ring-on ~ .ring-dots,.ring-flat ~ .ring-dots{display:flex;justify-content:center;gap:8px;margin:10px 0 0}
+.ring-dots button{width:10px;height:10px;padding:0;border:1px solid var(--line);background:transparent;border-radius:0;cursor:pointer}
+.ring-dots button.on{background:var(--cyan);border-color:var(--cyan)}
+
+/* reduced motion: a flat row you swipe with native scroll-snap */
+.ring-flat .ring-track{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px}
+.ring-flat .ring-item{flex:0 0 min(84vw,320px);scroll-snap-align:center}
+.ring-stage{overflow-x:clip}

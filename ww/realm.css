@@ -118,3 +118,11 @@ a.gate{cursor:pointer}
 .lesson iframe{width:100%;aspect-ratio:16/9;border:1px solid var(--line);border-radius:2px;display:block;background:var(--surface)}
 .lesson figcaption{font:600 1rem/1.3 var(--font-display);margin-top:6px}
 #district .card + .card,#district .card{margin-top:10px}
+/* readability: no copy sits bare on the sun or the grid */
+.label{background:rgba(3,1,13,.86);padding:6px 8px;border-radius:2px}
+.stage > p,.stage > section > p,.stage > section > .field,.stage > section > .msg:not(:empty),.post-list + p{background:rgba(3,1,13,.86);padding:10px 12px;border-radius:2px}
+.stage > section > .field{display:flex}
+.readout{background:rgba(3,1,13,.86);padding:8px 8px}
+.d-read{scroll-margin-top:72px}
+.stage > section > p.msg:empty{padding:0;background:none}
+.label,.stage > p,.stage > section > p,.stage > section > .field,.readout{background:rgba(3,1,13,.93)}
