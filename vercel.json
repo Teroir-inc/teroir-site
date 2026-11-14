@@ -13,6 +13,15 @@
      "value": "text/vcard; charset=utf-8"
     }
    ]
+  },
+  {
+   "source": "/demo/(.*)",
+   "headers": [
+    {
+     "key": "X-Robots-Tag",
+     "value": "noindex, nofollow"
+    }
+   ]
   }
  ],
  "redirects": [

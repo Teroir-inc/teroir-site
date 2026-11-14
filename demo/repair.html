@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Repair requests, handled — Teroir demo</title>
+<meta name="robots" content="noindex, nofollow">
+<meta name="description" content="A damage photo becomes a work order, a safety call, a quote request and a vendor shortlist, waiting for your approval. Demo on sample data.">
+<meta name="theme-color" content="#F6F4EE">
+<meta name="color-scheme" content="light">
+<link rel="icon" href="/brand/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/brand/favicon.png" type="image/png" sizes="32x32">
+<link rel="apple-touch-icon" href="/brand/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="/pages.css">
+<style>
+/* Unlisted demo page (noindex; not in the sitemap or the nav). Four phone-screen recordings of real runs on sample data. */
+.demo-label{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:999px;border:1px solid var(--line-2);background:var(--panel);color:var(--muted)}
+.rd-lines{margin:0 0 28px;padding-left:20px;max-width:40em;color:var(--muted);font-size:clamp(16px,1.9vw,18px)}
+.rd-lines li{margin:6px 0}
+.rd-vids{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
+.rd-vids figure{margin:0;min-width:0;display:grid;gap:8px;align-content:start}
+.rd-vids video{width:100%;aspect-ratio:390/844;border-radius:18px;border:1px solid var(--line-2);background:var(--panel);display:block}
+.rd-vids figcaption{font-size:14px;color:var(--muted);line-height:1.5}
+.rd-vids figcaption b{color:var(--text);font-weight:600;display:block}
+.rd-note{font-size:13px;color:var(--dim);margin-top:24px;max-width:46em}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="nav pg-nav" id="top">
+  <div class="wrap nav-in">
+    <a class="brand" href="/" aria-label="Teroir — home"><img src="/brand/logo.svg" alt="Teroir" width="97" height="30"></a>
+    <nav class="links pg" aria-label="Pages"><a href="/property-management">Case study</a></nav>
+  </div>
+</header>
+
+<main id="main">
+<section class="hero page-hero">
+  <div class="wrap hero-in">
+    <div class="hero-copy">
+      <p><span class="demo-label">Demo on sample data</span></p>
+      <h1>A repair request, <em>handled before you open it.</em></h1>
+      <ul class="rd-lines">
+        <li>A tenant sends a photo and a few words by text, email or web form.</li>
+        <li>The system opens a work order, flags anything unsafe, and drafts a quote request with a shortlist of vendors.</li>
+        <li>Nothing goes to a vendor until you approve it.</li>
+      </ul>
+      <div class="ctas"><a class="btn btn-primary" href="/talk?for=business&amp;src=repair-demo">Book a 15-min walkthrough <span aria-hidden="true">→</span></a></div>
+    </div>
+  </div>
+</section>
+
+<section class="section" aria-labelledby="runs-h">
+  <div class="wrap">
+    <h2 id="runs-h">Four real runs, <em>recorded on a phone.</em></h2>
+    <div class="rd-vids">
+      <figure><video src="/demo/repair-media/ceiling.mp4" poster="/demo/repair-media/ceiling.jpg" controls playsinline preload="none" aria-label="Recording: ceiling water stain reported through the web form"></video>
+        <figcaption><b>Ceiling leak, web form</b>Seen versus guessed kept apart, marked an emergency, water-damage vendors shortlisted.</figcaption></figure>
+      <figure><video src="/demo/repair-media/outlet.mp4" poster="/demo/repair-media/outlet.jpg" controls playsinline preload="none" aria-label="Recording: scorched outlet reported through the web form"></video>
+        <figcaption><b>Scorched outlet, web form</b>Burn marks flagged as a safety issue first, electricians shortlisted.</figcaption></figure>
+      <figure><video src="/demo/repair-media/text.mp4" poster="/demo/repair-media/text.jpg" controls playsinline preload="none" aria-label="Recording: a tenant text conversation that is raised to an emergency"></video>
+        <figcaption><b>Tenant text</b>A kind reply with the work order number; a follow-up about a burning smell raises it to an emergency.</figcaption></figure>
+      <figure><video src="/demo/repair-media/email.mp4" poster="/demo/repair-media/email.jpg" controls playsinline preload="none" aria-label="Recording: a repair request emailed with a photo"></video>
+        <figcaption><b>Email with a photo</b>The same work order and quote request, plus the reply the sender got.</figcaption></figure>
+    </div>
+    <p class="rd-note">Sample data: the house, photos, tenant and vendors are invented. The text conversation is simulated. Photo analysis is a real AI model run, recorded November 2026.</p>
+    <div class="ctas" style="margin-top:28px"><a class="btn btn-primary" href="/talk?for=business&amp;src=repair-demo">Book a 15-min walkthrough <span aria-hidden="true">→</span></a></div>
+  </div>
+</section>
+</main>
+
+<footer class="foot">
+  <div class="wrap foot-in">
+    <a class="brand" href="/" aria-label="Teroir — home"><img src="/brand/logo.svg" alt="Teroir" width="84" height="26" loading="lazy"></a>
+    <p>© 2026 Teroir · Palo Alto, CA</p>
+    <nav class="foot-links" aria-label="Pages"><a href="/">Home</a><a href="/property-management">Property management</a><a href="/talk">Talk to us</a></nav>
+  </div>
+</footer>
+</body>
+</html>
