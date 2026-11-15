@@ -22,6 +22,7 @@
   }
 
   const BASE = 0.35;               // idle forward speed (grid cells per second)
+  const GL = {}; // filled by realm-gl.js on capable devices
   let z = 0, speed = BASE, push = 0, lastY = scrollY, pitch = 0, last = 0, drawn = 0;
   addEventListener('scroll', () => { push = Math.min(push + Math.abs(scrollY - lastY) * 0.02, 5); lastY = scrollY; }, { passive: true });
   addEventListener('pointerdown', () => { push = Math.min(push + 1.5, 5); }, { passive: true });
@@ -41,6 +42,7 @@
     const win = document.querySelector('.window');
     const base = win ? Math.min(h * 0.6, win.offsetTop + win.offsetHeight) : h * 0.38;   // the hub opens a window onto the sun
     const hy = base - pitch * h, cx = w / 2, f = (h - hy) * 1.1;
+    if (GL.draw) { GL.z = z; GL.hy = hy; GL.r = win ? Math.min(w * 0.3, win.offsetHeight * 0.8) : Math.min(w * 0.3, 150); GL.draw(); return; } // WebGL upgrade
 
     // sky
     const sky = ctx.createLinearGradient(0, 0, 0, hy);
@@ -115,6 +117,16 @@
 
   size();
   addEventListener('resize', size);
+  // WebGL upgrade: only with motion on, enough memory and cores, no data saver, not on a low battery; loaded after the page is idle.
+  // If it fails or the GPU drops the context, the 2D canvas above keeps drawing.
+  const capable = !reduce && !(navigator.connection && navigator.connection.saveData) && (navigator.deviceMemory || 8) >= 4 && (navigator.hardwareConcurrency || 4) >= 4;
+  const lowBattery = () => navigator.getBattery ? navigator.getBattery().then(b => !b.charging && b.level < 0.2).catch(() => false) : Promise.resolve(false);
+  if (capable) addEventListener('load', () => (window.requestIdleCallback || setTimeout)(() => lowBattery().then(low => {
+    if (low) return;
+    const sc = document.createElement('script'); sc.src = '/ww/realm-gl.js'; sc.async = true;
+    sc.onload = () => { try { window.__realmGL(c, GL) || (GL.draw = null); } catch (e) { GL.draw = null; } };
+    document.head.append(sc);
+  }), { timeout: 2500 }));
   if (!reduce) {
     requestAnimationFrame(frame);
     document.addEventListener('visibilitychange', () => { if (!document.hidden) requestAnimationFrame(frame); });
