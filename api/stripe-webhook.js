@@ -37,7 +37,7 @@ module.exports = async (req, res) => {
     catch (e) { return res.status(400).json({ ok: false, error: 'event' }); } // not a real event in our account
   }
   if (!['checkout.session.completed', 'checkout.session.async_payment_succeeded'].includes(ev.type)) {
-    return res.status(200).json({ ok: true, ignored: ev.type });
+    return res.status(200).json({ ok: true, ignored: true }); // never echo the event type to an unauthenticated caller
   }
   try {
     // re-read the session from Stripe rather than trusting the event body
