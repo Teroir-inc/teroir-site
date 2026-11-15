@@ -1,4 +1,20 @@
 {
+ "free-street": [
+  {
+   "slug": "start-here",
+   "title": "start here, your free day pass",
+   "description": "welcome to free street. pick one free guide by what you want done this week, finish it, then see what's next.",
+   "order": 1
+  }
+ ],
+ "rooftop-hq": [
+  {
+   "slug": "course-path",
+   "title": "the full course path, one checklist for everything",
+   "description": "your rooftop pass opens every lesson and guide. here's the order to take them in, with one thing to finish at each step.",
+   "order": 1
+  }
+ ],
  "the-lab": [
   {
    "slug": "what-is-an-agent",
