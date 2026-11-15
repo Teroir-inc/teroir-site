@@ -1,6 +1,23 @@
 // wyattworldwide.com/free: one free guide per email. The download link is emailed, so the address has to be real.
 // The record of who claimed what lives on the Stripe customer (metadata.free_guide), so there is no extra database.
 const G = require('./_guides');
+const E = require('./_email');
+
+// The claimer's email (html + text). Every link is on www.wyattworldwide.com: teroir.com/free redirects there anyway.
+const freeEmail = ({ guide, link, pass, offer }) => E.renderEmail({
+  preheader: `Your free guide: ${guide.title}`,
+  kicker: '// free day pass',
+  heading: 'Your free guide',
+  intro: [`Hey, it's Wyatt. Here's your free guide, "${guide.title}".`],
+  buttons: [
+    { label: 'Download the guide', url: link, note: guide.title, primary: true },
+    { label: 'Open Free Street', url: pass, note: 'Your Free Street pass · no login needed' },
+    { label: 'Get any guide for $29 — 24 hours', url: offer, note: 'For the next 24 hours, any of the longer guides is $29' },
+  ],
+  notes: ['The download link works for 30 days. Save the PDF somewhere you will see it again.',
+    'Questions, or want something like this built for your business? Just reply to this email.'],
+  signoff: ['Wyatt', G.SIGNOFF],
+});
 
 module.exports = async (req, res) => {
   const b = typeof req.body === 'object' && req.body ? req.body : {};
@@ -32,14 +49,7 @@ module.exports = async (req, res) => {
     await G.send({
       from: G.FROM, to: [email], reply_to: 'wyatt@teroir.com',
       subject: `Your free guide: ${guide.title}`,
-      text: [`Hey, it's Wyatt.`, '', `Here's your free guide, "${guide.title}":`, link, '',
-        'The link works for 30 days. Save the PDF somewhere you will see it again.', '',
-        // on wyattworldwide.com the claim is the Free Street day pass
-        ...(/wyattworldwide/.test(G.originOf(req)) ? ['Your Free Street pass (it opens Free Street on wyattworldwide.com, no login needed):', G.passFor('free-street', email, 365), ''] : []),
-        `For the next 24 hours, any of the longer guides is $29:`,
-        `${G.originOf(req)}/free?offer=${G.offerFor(email)}#buy`, '',
-        'Questions, or want something like this built for your business? Just reply to this email.', '',
-        'Wyatt', G.SIGNOFF].join('\n'),
+      ...freeEmail({ guide, link, pass: G.passFor('free-street', email, 365), offer: `${E.WW}/free?offer=${G.offerFor(email)}#buy` }),
     });
 
     const meta = { brand: G.BRAND, free_guide: guide.id, free_src: src || 'direct', free_at: new Date().toISOString() };
@@ -55,3 +65,4 @@ module.exports = async (req, res) => {
     `Country: ${G.clean(req.headers['x-vercel-ip-country'], 4) || 'unknown'}`]);
   return reply(200, { ok: true });
 };
+module.exports.freeEmail = freeEmail; // for tests and the QA render
