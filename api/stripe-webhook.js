@@ -35,6 +35,7 @@ module.exports = async (req, res) => {
     if (!id) return res.status(400).json({ ok: false, error: 'signature' });
     try { ev = await G.stripe('GET', `events/${id}`); }
     catch (e) {
+      if (!/^stripe 40[13]\b/.test(e.message)) return res.status(400).json({ ok: false, error: 'event' }); // no such event: stop here
       // The site's key may not be allowed to read events. Then the body may only name a checkout session: it is re-read
       // from Stripe below and delivered only if Stripe says it is paid and not yet delivered, to the email Stripe holds.
       const cs = ev?.data?.object?.id;
