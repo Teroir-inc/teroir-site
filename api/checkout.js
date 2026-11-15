@@ -2,6 +2,8 @@
 const G = require('./_guides');
 const D = require('./_districts');
 
+const STATEMENT_SUFFIX = 'WWW GUIDES';
+
 module.exports = async (req, res) => {
   if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return res.status(405).json({ ok: false, error: 'method' }); }
   const b = typeof req.body === 'object' && req.body ? req.body : {};
@@ -23,17 +25,21 @@ module.exports = async (req, res) => {
   if (wantsJson && !buyer) return res.status(400).json({ ok: false, error: 'email' });
   const ids = dist ? (dist.guides === 'all' ? G.GUIDES.map(g => g.id) : dist.guides) : one ? [one.id] : G.GUIDES.map(g => g.id);
   const meta = { brand: G.BRAND, guides: ids.join(','), src: src || 'direct', ...(buyer ? { email: buyer } : {}), ...(offer ? { offer: '29' } : {}), ...(dist ? { district: dist.id } : one ? {} : { district: 'rooftop-hq' }) };
+  const amount = offer ? G.OFFER_PRICE : dist ? dist.price : one ? one.price : G.PRICE_BUNDLE;
   try {
     const s = await G.stripe('POST', 'checkout/sessions', {
       mode: 'payment',
-      line_items: [{ quantity: 1, price_data: { currency: 'usd', unit_amount: offer ? G.OFFER_PRICE : dist ? dist.price : one ? one.price : G.PRICE_BUNDLE,
+      line_items: [{ quantity: 1, price_data: { currency: 'usd', unit_amount: amount,
         product_data: { metadata: { brand: G.BRAND, ...(dist ? { district: dist.id } : {}) }, name: dist ? `${dist.name} pass (wyattworldwide.com)` : one ? `Guide: ${one.title}` : `Guides: all ${ids.length}`,
           description: dist ? `${dist.line} Sent to your email as a signed link.` : one ? 'PDF guide, sent to your email' : G.GUIDES.map(g => g.title).join(' · ') } } }],
       customer_email: buyer,
       customer_creation: 'always',
       allow_promotion_codes: 'true',
       metadata: meta,
-      payment_intent_data: { metadata: meta },
+      // fewer bank fraud declines (owner 11-15): a statement line buyers recognise ("TEROIR, IN* WWW GUIDES", 22 chars, the
+      // limit), a Stripe receipt to the buyer, and 3D Secure on $97 and up (below that, Stripe decides: 'automatic')
+      payment_intent_data: { metadata: meta, statement_descriptor_suffix: STATEMENT_SUFFIX, ...(buyer ? { receipt_email: buyer } : {}) },
+      ...(amount >= 9700 ? { payment_method_options: { card: { request_three_d_secure: 'any' } } } : {}),
       success_url: `${origin}/free?paid={CHECKOUT_SESSION_ID}#get`,
       cancel_url: `${origin}/free#buy`,
     });
