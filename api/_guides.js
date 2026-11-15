@@ -1,4 +1,4 @@
-// Shared helpers for teroir.com/free: the guide catalog, signed download links, Stripe and Resend calls.
+// Shared helpers for wyattworldwide.com/free (served from this project; teroir.com/free redirects there): the guide catalog, signed download links, Stripe and Resend calls.
 // Files starting with "_" in api/ are not routes on Vercel.
 const crypto = require('crypto');
 const D = require('./_districts');
@@ -107,7 +107,8 @@ async function send(payload, idem) {
 const notify = (subject, lines, idem) => send({ from: 'Teroir Guides <waitlist@teroir.com>', to: NOTIFY_TO, subject, text: lines.join('\n') }, idem)
   .catch(e => console.error('guides notify failed', e.message));
 
-const linkFor = (id, email, days) => `https://teroir.com/api/guide?t=${sign(id, email, days)}`;
+const linkFor = (id, email, days) => `https://www.wyattworldwide.com/api/guide?t=${sign(id, email, days)}`;
+const SIGNOFF = 'WyattWorldwide · wyattworldwide.com';
 // a district pass: a signed link that opens that district's pages on wyattworldwide.com (two years, like the guides)
 const passFor = (district, email, days = 730) => `${D.WW}/d/${district}?k=${sign(`district:${district}`, email, days)}`;
 
@@ -127,13 +128,13 @@ async function deliver(s) {
     try {
       sent = await send({
       from: FROM, to: [email], reply_to: 'wyatt@teroir.com',
-      subject: pass ? `Your ${pass.name} pass` : links.length > 1 ? 'Your Teroir guides' : `Your guide: ${links[0].title}`,
+      subject: pass ? `Your ${pass.name} pass` : links.length > 1 ? 'Your guides' : `Your guide: ${links[0].title}`,
       text: [`Hey, it's Wyatt. Thanks for buying${pass ? ` the ${pass.name} pass` : links.length > 1 ? ' the guides' : ''}.`, '',
         ...(pass ? [`Your pass (it opens ${pass.name} on wyattworldwide.com, no login needed):`, pass.url, ''] : []),
         ...links.flatMap(l => [`${l.title}:`, l.url, '']),
         'These links work for two years. Save the PDFs somewhere you will see them again.', '',
         'Questions, or want something like this built for your business? Just reply to this email.', '',
-        'Wyatt', 'Teroir · teroir.com'].join('\n'),
+        'Wyatt', SIGNOFF].join('\n'),
       }, `guide-order-${s.id}`);
     } catch (e) {
       // loud: the owner gets the error and the buyer's links to forward by hand; Stripe retries the webhook
@@ -151,4 +152,4 @@ async function deliver(s) {
   return { email, links, pass };
 }
 
-module.exports = { passFor, BRAND, originOf, OFFER_PRICE, offerFor, offerOk, deliver, FROM, GUIDES, BY_ID, PRICE_BUNDLE, EMAIL_RE, clean, sign, verify, encrypt, decrypt, stripe, send, notify, linkFor };
+module.exports = { SIGNOFF, passFor, BRAND, originOf, OFFER_PRICE, offerFor, offerOk, deliver, FROM, GUIDES, BY_ID, PRICE_BUNDLE, EMAIL_RE, clean, sign, verify, encrypt, decrypt, stripe, send, notify, linkFor };

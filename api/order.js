@@ -1,4 +1,4 @@
-// teroir.com/free?paid=<session>: after Stripe Checkout, check the payment, show the download links, and email them once.
+// wyattworldwide.com/free?paid=<session>: after Stripe Checkout, check the payment, show the download links, and email them once.
 // The Stripe webhook (api/stripe-webhook) also delivers, so a buyer who closes the tab still gets the email.
 const G = require('./_guides');
 
