@@ -1,0 +1,61 @@
+# Handover: site (teroir-site)
+
+Edited in place; keep under ~150 lines. Old notes go to roles/site/archive/ (never delete).
+roles/ and CLAUDE.md are in .vercelignore, so nothing here is published.
+Last updated 2026-11-15 by site-85.
+
+## Mission
+Run the Teroir website repo (Teroir-inc/teroir-site) and Wyatt's creator site wyattworldwide.com, both served from
+one Vercel project (wyatt-3376s-projects/v0-modernize-landing-page). That covers the guide shop, district passes and
+lessons, checkout (Stripe), delivery emails (Resend), blog, SEO and redirects.
+
+## Owns / doesn't own
+- Owns: everything in this repo; teroir.com and www.wyattworldwide.com pages; api/* (claim, checkout, order,
+  stripe-webhook, guide, district, lesson, waitlist, apply); guide PDFs (encrypted); lessons (encrypted); blog publisher.
+- Doesn't own: DNS and registrar (Wyatt); the Stripe dashboard, public details and payouts (Wyatt); Vercel env vars
+  (Wyatt); the look of social content (creative-director); lesson and guide writing (curator); pm-operations (never touch).
+
+## Status (2026-11-15)
+- Live and verified: guide shop with ten guides, district passes (Free Street free; The Lab $97; Rooftop HQ all-access
+  $499 since PR #50), 16 Lab lessons plus Free Street start-here plus the HQ course-path, gated.
+- Delivery emails: branded HTML with buttons (PR #49), one support line (PR #53).
+- Checkout fraud settings (PR #51): suffix WWW GUIDES, receipt_email, 3DS "any" at $97 and up.
+- Stripe webhook: verify-by-fetch with a session fallback (PR #47); endpoint created.
+- Running: first-sale watcher (/root/.local/share/site-95/sale_watch.py, 24 h from 11-15). When a paid sale lands,
+  report the PI suffix, receipt_email and 3DS to the orchestrator.
+
+## Waiting on owner
+- Five-tip audit decisions: artifact SSpqA8reTxc326xeFNiK3p.
+- District decisions (Free Street one vs three guides, singles, Rooftop open, Studio): artifact 4uiN5ca1D1VZvWRTvDGBjX.
+- teroir.com/pricing and llms.txt yes/no: branch pricing-page, artifact NDYJvT81DMP5Jmqz15se5U.
+- www.teroir.com DNS (orchestrator has it; don't repeat).
+- Stripe public-details support email (orchestrator routing to Wyatt).
+- Optional: Events:Read on the site Stripe key, or STRIPE_WEBHOOK_SECRET in Vercel.
+
+## Next 3–5 actions
+1. When the watcher reports a sale, check the PaymentIntent fields and ping orchestrator-82.
+2. When Studio lessons or video IDs arrive: lessons_build.js, then the districts lessons array, then a PR.
+3. On owner answers above: ship the matching branch or change.
+4. Keep the daily blog publisher healthy (blog/publish.js).
+
+## Key paths
+- Worktree: /root/orca/workspaces/teroir-site/site. PRs via `teroir-gh`; main is push-guarded (PR, then merge).
+- Tools: /root/.local/share/site-95/
+  - ww_build.py: builds the ww/ pages; run on an up-to-date main.
+  - blog/publish.js, lessons_build.js, enc.js.
+  - Tests: tg.js, td.js, tw.js. Usage: `node <t>.js <site> guide_key.txt`.
+  - qa/: lh.sh (Lighthouse), crawl.py, email_render.js (390px email screenshots in qa/email/).
+- Vault key names: secret/org/teroir-finance/stripe (field key, restricted). GUIDE_KEY local copy: guide_key.txt
+  (mode 600). There is no Resend key on the server; real sends happen through the live site.
+- Log: /root/orchestration/LOG.md ("<UTC> site-85 DONE|FYI: …").
+- Host routing: middleware.js (wyattworldwide hosts go to /ww/*); canonical host is www.wyattworldwide.com.
+
+## Hard rules
+- /root/.claude/CLAUDE.md server guardrails; AGENTS.md (no dates or permanence promises; verify; fail loudly).
+- New public wording and redesigns go to Wyatt (via the orchestrator) unless already approved. Money changes need
+  owner approval.
+- Promises drive code: build what the site promises; don't soften the copy.
+- Never print or commit secrets (Stripe, GUIDE_KEY, Resend). Never share buyer emails externally.
+- QA on the tailnet only (python http.server bound to 100.97.147.63, one port, with a timeout); no Vercel previews.
+- Always `git checkout -B <branch> origin/main` before new work; no bare git stash.
+- Test addresses to ignore in stats: wyatt+qa-*@teroir.com (src=qa-site85), opstest claims.

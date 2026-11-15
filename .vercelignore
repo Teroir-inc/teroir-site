@@ -15,3 +15,6 @@ sim/test/
 sim/README.md
 sim/package.json
 scripts/
+roles/
+CLAUDE.md
+AGENTS.md
