@@ -2,6 +2,7 @@
 // Files starting with "_" in api/ are not routes on Vercel.
 const crypto = require('crypto');
 const D = require('./_districts');
+const { renderEmail } = require('./_email');
 
 // The order here is the order on the page. `file` is guides/<id>.pdf.enc (AES-256-GCM, key from GUIDE_KEY).
 // `price` (cents, USD): sold on its own and never free. No price: a free pick, sold only inside the bundle,
@@ -112,6 +113,21 @@ const SIGNOFF = 'WyattWorldwide · wyattworldwide.com';
 // a district pass: a signed link that opens that district's pages on wyattworldwide.com (two years, like the guides)
 const passFor = (district, email, days = 730) => `${D.WW}/d/${district}?k=${sign(`district:${district}`, email, days)}`;
 
+// The buyer's email (html + text). Buttons only in the HTML; each URL on its own line in the text.
+const paidEmail = ({ pass, links }) => renderEmail({
+  preheader: pass ? `Your pass to ${pass.name} and your guides are inside.` : 'Your download links are inside.',
+  kicker: pass ? '// pass unlocked' : '// order complete',
+  heading: pass ? `Your pass to ${pass.name}` : links.length > 1 ? 'Your guides' : 'Your guide',
+  intro: [`Hey, it's Wyatt. Thanks for buying${pass ? ` a pass to ${pass.name}` : links.length > 1 ? ' the guides' : ''}.`],
+  buttons: [
+    ...(pass ? [{ label: `Open ${pass.name}`, url: pass.url, note: 'Your pass · no login needed', primary: true }] : []),
+    ...links.map((l, i) => ({ label: links.length > 1 ? `Download: ${l.title}` : 'Download the guide', url: l.url, note: links.length > 1 ? null : l.title, primary: !pass && i === 0 })),
+  ],
+  notes: ['These links work for two years. Save the PDFs somewhere you will see them again.',
+    'Questions, or want something like this built for your business? Just reply to this email.'],
+  signoff: ['Wyatt', SIGNOFF],
+});
+
 // A paid Checkout Session (payment_intent expanded) -> its links; emails them once.
 // Both the success page (api/order) and the Stripe webhook call this. The delivered flag on the payment intent
 // stops repeats, and the Resend idempotency key stops a double email if both arrive at the same moment.
@@ -128,13 +144,8 @@ async function deliver(s) {
     try {
       sent = await send({
       from: FROM, to: [email], reply_to: 'wyatt@teroir.com',
-      subject: pass ? `Your ${pass.name} pass` : links.length > 1 ? 'Your guides' : `Your guide: ${links[0].title}`,
-      text: [`Hey, it's Wyatt. Thanks for buying${pass ? ` the ${pass.name} pass` : links.length > 1 ? ' the guides' : ''}.`, '',
-        ...(pass ? [`Your pass (it opens ${pass.name} on wyattworldwide.com, no login needed):`, pass.url, ''] : []),
-        ...links.flatMap(l => [`${l.title}:`, l.url, '']),
-        'These links work for two years. Save the PDFs somewhere you will see them again.', '',
-        'Questions, or want something like this built for your business? Just reply to this email.', '',
-        'Wyatt', SIGNOFF].join('\n'),
+      subject: pass ? `Your pass to ${pass.name}` : links.length > 1 ? 'Your guides' : `Your guide: ${links[0].title}`,
+      ...paidEmail({ pass, links }),
       }, `guide-order-${s.id}`);
     } catch (e) {
       // loud: the owner gets the error and the buyer's links to forward by hand; Stripe retries the webhook
@@ -152,4 +163,4 @@ async function deliver(s) {
   return { email, links, pass };
 }
 
-module.exports = { SIGNOFF, passFor, BRAND, originOf, OFFER_PRICE, offerFor, offerOk, deliver, FROM, GUIDES, BY_ID, PRICE_BUNDLE, EMAIL_RE, clean, sign, verify, encrypt, decrypt, stripe, send, notify, linkFor };
+module.exports = { paidEmail, SIGNOFF, passFor, BRAND, originOf, OFFER_PRICE, offerFor, offerOk, deliver, FROM, GUIDES, BY_ID, PRICE_BUNDLE, EMAIL_RE, clean, sign, verify, encrypt, decrypt, stripe, send, notify, linkFor };
