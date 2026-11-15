@@ -34,7 +34,15 @@ module.exports = async (req, res) => {
     const id = typeof ev?.id === 'string' && /^evt_\w{8,80}$/.test(ev.id) ? ev.id : null;
     if (!id) return res.status(400).json({ ok: false, error: 'signature' });
     try { ev = await G.stripe('GET', `events/${id}`); }
-    catch (e) { return res.status(400).json({ ok: false, error: 'event' }); } // not a real event in our account
+    catch (e) {
+      if (!/^stripe 40[13]\b/.test(e.message)) return res.status(400).json({ ok: false, error: 'event' }); // no such event: stop here
+      // The site's key may not be allowed to read events. Then the body may only name a checkout session: it is re-read
+      // from Stripe below and delivered only if Stripe says it is paid and not yet delivered, to the email Stripe holds.
+      const cs = ev?.data?.object?.id;
+      console.warn('webhook: event fetch refused, falling back to the session', e.message.slice(0, 80));
+      if (!(typeof cs === 'string' && /^cs_(live|test)_\w{8,200}$/.test(cs))) return res.status(400).json({ ok: false, error: 'event' });
+      ev = { type: 'checkout.session.completed', data: { object: { id: cs } }, fallback: true };
+    }
   }
   if (!['checkout.session.completed', 'checkout.session.async_payment_succeeded'].includes(ev.type)) {
     return res.status(200).json({ ok: true, ignored: true }); // never echo the event type to an unauthenticated caller
@@ -42,7 +50,7 @@ module.exports = async (req, res) => {
   try {
     // re-read the session from Stripe rather than trusting the event body
     const s = await G.stripe('GET', `checkout/sessions/${ev.data.object.id}`, { expand: ['payment_intent'] });
-    if (s.payment_status === 'paid') await G.deliver(s);
+    if (s.payment_status === 'paid' && (!ev.fallback || s.status === 'complete')) await G.deliver(s);
     return res.status(200).json({ ok: true });
   } catch (e) {
     console.error('webhook delivery failed', e.message);
