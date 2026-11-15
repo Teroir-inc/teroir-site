@@ -1,4 +1,4 @@
-// teroir.com/free: claim one free guide by email, buy the rest through Stripe Checkout, show links after payment.
+// wyattworldwide.com/free: claim one free guide by email, buy the rest through Stripe Checkout, show links after payment.
 (() => {
   const $ = id => document.getElementById(id);
   const qs = new URLSearchParams(location.search);

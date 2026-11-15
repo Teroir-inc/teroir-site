@@ -1,4 +1,4 @@
-// teroir.com/free: one free guide per email. The download link is emailed, so the address has to be real.
+// wyattworldwide.com/free: one free guide per email. The download link is emailed, so the address has to be real.
 // The record of who claimed what lives on the Stripe customer (metadata.free_guide), so there is no extra database.
 const G = require('./_guides');
 
@@ -39,12 +39,12 @@ module.exports = async (req, res) => {
         `For the next 24 hours, any of the longer guides is $29:`,
         `${G.originOf(req)}/free?offer=${G.offerFor(email)}#buy`, '',
         'Questions, or want something like this built for your business? Just reply to this email.', '',
-        'Wyatt', 'Teroir · teroir.com'].join('\n'),
+        'Wyatt', G.SIGNOFF].join('\n'),
     });
 
     const meta = { brand: G.BRAND, free_guide: guide.id, free_src: src || 'direct', free_at: new Date().toISOString() };
     if (found[0]) await G.stripe('POST', `customers/${found[0].id}`, { metadata: meta });
-    else await G.stripe('POST', 'customers', { email, description: 'Free guide signup (teroir.com/free)', metadata: meta });
+    else await G.stripe('POST', 'customers', { email, description: 'Free guide signup (wyattworldwide.com/free)', metadata: meta });
   } catch (e) {
     console.error('claim failed', e.message);
     return reply(502, { ok: false, error: 'send' });

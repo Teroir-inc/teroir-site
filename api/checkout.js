@@ -1,4 +1,4 @@
-// teroir.com/free: starts a Stripe Checkout for one guide or the bundle of all guides (prices in _guides.js).
+// wyattworldwide.com/free: starts a Stripe Checkout for one guide or the bundle of all guides (prices in _guides.js).
 const G = require('./_guides');
 const D = require('./_districts');
 
