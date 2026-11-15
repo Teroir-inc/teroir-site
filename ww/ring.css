@@ -47,6 +47,6 @@
 .ring-flat .ring-track{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:8px}
 .ring-flat .ring-item{flex:0 0 min(84vw,320px);scroll-snap-align:center}
 .ring-stage{overflow-x:clip}
-.pnl .socials a{gap:8px}.pnl .socials span{font-size:.7rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pnl .socials a{gap:8px}.pnl .socials span{font-size:.8rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 .pnl .emblem{display:block;width:96px;height:96px;margin:2px auto 0}

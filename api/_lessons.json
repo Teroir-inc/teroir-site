@@ -53,6 +53,48 @@
    "title": "temperature, how ai picks between safe and surprising",
    "description": "temperature controls how adventurous a model's word picks are. low for steady and exact, high for fresh ideas. try both.",
    "order": 9
+  },
+  {
+   "slug": "automate-one-task",
+   "title": "automate one weekly task, start to finish",
+   "description": "pick one task you repeat every week and hand it to ai end to end. find it, write it down, run it, check it, save it.",
+   "order": 10
+  },
+  {
+   "slug": "claude-artifacts-first-tool",
+   "title": "your first tool with claude artifacts",
+   "description": "build a small shareable page, like a quote calculator or a checklist, by describing it in plain words to claude.",
+   "order": 11
+  },
+  {
+   "slug": "phone-first-workflow",
+   "title": "run your work from your phone",
+   "description": "talk into your phone, let ai turn it into a task list or draft, then approve it. a simple loop for work on the go.",
+   "order": 12
+  },
+  {
+   "slug": "save-instructions-once",
+   "title": "save your instructions once",
+   "description": "write your standing instructions one time and save them where the ai can always see them. here's how in most chat apps.",
+   "order": 13
+  },
+  {
+   "slug": "second-ai-checker",
+   "title": "a second ai checks the first",
+   "description": "have a different ai chat grade the draft against your list before you see it. here's the setup and a prompt.",
+   "order": 14
+  },
+  {
+   "slug": "show-one-example",
+   "title": "show one example, get the style you want",
+   "description": "paste one piece of work you're proud of and ai copies its shape and tone. here's how to pick it and a prompt to use it.",
+   "order": 15
+  },
+  {
+   "slug": "prompt-library",
+   "title": "your prompt library, the best prompts in one place",
+   "description": "keep the prompts that work in one note on your phone, named by job. here's how to build it and a template for each entry.",
+   "order": 16
   }
  ],
  "the-studio": [
