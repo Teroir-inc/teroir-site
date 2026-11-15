@@ -124,8 +124,7 @@ const paidEmail = ({ pass, links }) => renderEmail({
     ...links.map((l, i) => ({ label: links.length > 1 ? `Download: ${l.title}` : 'Download the guide', url: l.url, note: links.length > 1 ? null : l.title, primary: !pass && i === 0 })),
   ],
   notes: ['These links work for two years. Save the PDFs somewhere you will see them again.',
-    'Questions, or want something like this built for your business? Just reply to this email.',
-    'Questions? support@teroir.com'],
+    'Questions, or want something like this built for your business? Reply to this email or write support@teroir.com.'],
   signoff: ['Wyatt', SIGNOFF],
 });
 
