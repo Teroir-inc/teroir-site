@@ -65,14 +65,14 @@
 </section>
 <section id="buy" aria-labelledby="buy-h">
   <p class="label" id="buy-h">// upgrades</p>
-  <p class="muted">Upgrades are the longer guides, $49 to $97 each. The all-access pass is all ten guides for $249. Pay by card; the PDFs come straight to your email.</p>
+  <p class="muted">Upgrades are the longer guides, $49 to $97 each. The all-access pass is all ten guides for $499. Pay by card; the PDFs come straight to your email.</p>
   <label class="field"><span>your email</span><input id="gd-buy-email" type="email" autocomplete="email" maxlength="200" placeholder="you@example.com"></label>
   <p class="msg" id="gd-buy-msg" role="status" aria-live="polite"></p>
   <div class="shop">
     <form class="card gd-card all gd-all boot" action="/api/checkout" method="post">
       <input type="hidden" name="item" value="bundle"><input type="hidden" name="src" class="gd-src">
       <b>All-access pass</b><span>All ten guides, as PDFs.</span>
-      <span class="price gd-price">$249</span>
+      <span class="price gd-price">$499</span>
       <button class="btn" type="submit">get the all-access pass <span aria-hidden="true">→</span></button>
     </form>
       <form class="card gd-card boot" action="/api/checkout" method="post" data-guide="claude-artifacts">

@@ -20,7 +20,7 @@ const GUIDES = [
   { id: 'remote-dev-setup', title: 'Build from your phone: a remote AI workshop', price: 9700 },
 ];
 GUIDES.forEach(g => { g.paidOnly = !!g.price; });
-const PRICE_BUNDLE = 24900;
+const PRICE_BUNDLE = 49900;
 const OFFER_PRICE = 2900, OFFER_DAYS = 1; // the free-guide email's offer: any paid guide at $29 for 24 hours from the claim
 const offerFor = email => sign('offer29', email, OFFER_DAYS);
 const offerOk = t => { const o = verify(t); return o && o.d === 'offer29' && o.x > Date.now() && EMAIL_RE.test(o.e) ? o : null; };
