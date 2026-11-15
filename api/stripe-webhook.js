@@ -1,6 +1,9 @@
 // Stripe webhook: emails paid guides even if the buyer never returns to /free.
-// Setup (Stripe dashboard): endpoint https://teroir.com/api/stripe-webhook, events checkout.session.completed and
-// checkout.session.async_payment_succeeded; put its signing secret (whsec_...) in Vercel as STRIPE_WEBHOOK_SECRET.
+// Endpoint: https://www.wyattworldwide.com/api/stripe-webhook, events checkout.session.completed and
+// checkout.session.async_payment_succeeded.
+// Trust: a valid Stripe-Signature (STRIPE_WEBHOOK_SECRET) is enough. Without one (secret missing or not this endpoint's),
+// the body is used only for its event id: the event is re-fetched from Stripe with our own key, and only the fetched
+// copy is acted on. A forged body can at most make us re-check a real event, and delivery is idempotent per session.
 const crypto = require('crypto');
 const G = require('./_guides');
 
@@ -24,11 +27,15 @@ function verified(sig, body, secret, now = Date.now()) {
 module.exports = async (req, res) => {
   if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return res.status(405).end(); }
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
-  if (!secret) { console.error('STRIPE_WEBHOOK_SECRET missing'); return res.status(500).end(); }
   const body = await raw(req);
-  if (!verified(req.headers['stripe-signature'], body, secret)) return res.status(400).json({ ok: false, error: 'signature' });
   let ev;
   try { ev = JSON.parse(body.toString('utf8')); } catch { return res.status(400).end(); }
+  if (!(secret && verified(req.headers['stripe-signature'], body, secret))) {
+    const id = typeof ev?.id === 'string' && /^evt_\w{8,80}$/.test(ev.id) ? ev.id : null;
+    if (!id) return res.status(400).json({ ok: false, error: 'signature' });
+    try { ev = await G.stripe('GET', `events/${id}`); }
+    catch (e) { return res.status(400).json({ ok: false, error: 'event' }); } // not a real event in our account
+  }
   if (!['checkout.session.completed', 'checkout.session.async_payment_succeeded'].includes(ev.type)) {
     return res.status(200).json({ ok: true, ignored: ev.type });
   }
