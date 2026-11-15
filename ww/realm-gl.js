@@ -7,6 +7,10 @@ window.__realmGL = (old, state, ready) => {
   c.className = 'realm'; c.setAttribute('aria-hidden', 'true');
   const gl = c.getContext('webgl2', { antialias: false, alpha: false, powerPreference: 'low-power' });
   if (!gl) return false;
+  // software GL (no real GPU) is not "capable": it would cost the main thread more than the 2D canvas
+  const dbg = gl.getExtension('WEBGL_debug_renderer_info');
+  const renderer = String(dbg ? gl.getParameter(dbg.UNMASKED_RENDERER_WEBGL) : gl.getParameter(gl.RENDERER));
+  if (/swiftshader|llvmpipe|software|softpipe/i.test(renderer)) return false;
   const vs = `#version 300 es
   in vec2 p; void main(){ gl_Position = vec4(p, 0., 1.); }`;
   const fs = `#version 300 es
