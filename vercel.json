@@ -361,5 +361,11 @@
   "api/lesson.js": {
    "includeFiles": "lessons/**"
   }
- }
+ },
+ "crons": [
+  {
+   "path": "/api/nurture",
+   "schedule": "0 17 * * *"
+  }
+ ]
 }
