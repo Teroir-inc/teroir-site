@@ -132,6 +132,12 @@ const paidEmail = ({ pass, links }) => renderEmail({
 // Both the success page (api/order) and the Stripe webhook call this. The delivered flag on the payment intent
 // stops repeats, and the Resend idempotency key stops a double email if both arrive at the same moment.
 async function deliver(s) {
+  // a cart recovered from an expired session (abandoned-checkout email): if Stripe did not carry our metadata over,
+  // take it from the original session, so the buyer still gets what they picked
+  if (!s.metadata?.guides && /^cs_(live|test)_\w+$/.test(String(s.recovered_from || ''))) {
+    const orig = await stripe('GET', `checkout/sessions/${s.recovered_from}`);
+    s = { ...s, metadata: { ...(orig.metadata || {}), ...(s.metadata || {}) } };
+  }
   const email = String(s.metadata?.email || s.customer_email || s.customer_details?.email || '').toLowerCase();
   const guides = String(s.metadata?.guides || '').split(',').map(g => BY_ID[g]).filter(Boolean);
   const links = guides.map(g => ({ id: g.id, title: g.title, url: linkFor(g.id, email, 730) }));
