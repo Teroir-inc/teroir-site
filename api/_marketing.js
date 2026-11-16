@@ -5,7 +5,7 @@
 const G = require('./_guides');
 const E = require('./_email');
 
-// The wording is a DRAFT until Wyatt approves it. While LIVE is false nothing is sent: each send is logged and
+// Wording approved by Wyatt 11-16. Sending stays off until go-live: While LIVE is false nothing is sent: each send is logged and
 // returned as { dry: true }. Flip to true in the PR that ships the approved wording.
 const cfg = { live: false }; // tests may set cfg.live; production changes it only by a reviewed commit
 // Postal address for the footer (CAN-SPAM), from the FOOTER_POSTAL env var (set in Vercel by the owner; supplied by ops-61).
@@ -63,13 +63,13 @@ async function abandoned(s) {
   const item = itemOf(s);
   return sendMarketing({
     to: email, kind: 'abandoned', idem: `abandon-${s.id}`,
-    subject: 'Your guide is still in the cart', // DRAFT wording, held for Wyatt
+    subject: `Still want ${/^"/.test(item) ? 'the guide' : item}? Your cart is saved`, // a guide title is too long for a subject // approved 11-16 (Wyatt: "emails approved"), tightened by the team
     content: {
-      preheader: 'Pick up where you left off.', kicker: '// order saved',
-      heading: 'Still want it?',
-      intro: [`Hey, it's Wyatt. You started checking out for ${item} and didn't finish. If something got in the way, the button below picks up where you left off.`],
+      preheader: 'One tap picks up where you left off.', kicker: '// order saved',
+      heading: 'Your cart is saved',
+      intro: [`Hey, it's Wyatt. You started checking out for ${item} and didn't finish. One tap picks up where you left off.`],
       buttons: [{ label: 'Finish your order', url, primary: true }],
-      notes: ['Questions? Reply to this email.'],
+      notes: ['If something got in the way, reply and tell me.'],
       signoff: ['Wyatt', G.SIGNOFF],
     },
   });
