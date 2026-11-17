@@ -3,11 +3,11 @@ const Y = require('./_yard');
 const P = require('./_yard_page');
 
 const MSG = {
-  day: "Today's image limit is reached. It resets at midnight UTC, which is late afternoon in the US.",
-  month: "This month's image limit is reached. Ask Tyler to raise it.",
-  session: 'This phone has made its 15 images for this session. A session lasts 12 hours.',
-  no_counter: "Image limits aren't set up yet, so designing is off. Tell Tyler.",
-  no_key: "The image service isn't connected yet. Tell Tyler.",
+  day: "Today's design limit is reached. It resets at midnight.",
+  month: "This month's limit is reached.",
+  session: 'Session limit reached. Close and reopen to start a new visit.',
+  no_counter: "Designing isn't switched on yet.",
+  no_key: "Designing isn't switched on yet.",
   no_image: "The design didn't come back for that one. Try again, or change the wording.",
   gemini: 'The image service is busy. Wait a minute and try again.',
 };
@@ -23,18 +23,24 @@ function html(res, code, body) {
 const json = (res, code, body) => { res.setHeader('Cache-Control', 'no-store'); res.setHeader('X-Robots-Tag', 'noindex'); return res.status(code).json(body); };
 
 module.exports = async (req, res) => {
-  if (req.method === 'GET') return html(res, 200, Y.session(req) ? P.app(Y.GROUPS) : P.login());
+  if (req.method === 'GET') {
+    const s = Y.session(req);
+    if (!s) return html(res, 200, P.login());
+    res.setHeader('Set-Cookie', Y.cookie(Y.newSession(s.until), s.until)); // a new visit on every page open
+    return html(res, 200, P.app(Y.GROUPS));
+  }
   if (req.method !== 'POST') return json(res, 405, { error: 'POST only' });
   const b = typeof req.body === 'string' ? (() => { try { return JSON.parse(req.body); } catch { return {}; } })() : (req.body || {});
   try {
     if (b.op === 'login') {
       if (!process.env.YARD_PASSCODE) return json(res, 503, { error: "Yard Studio isn't switched on yet." });
+      if (!Y.kv()) return json(res, 503, { error: "Yard Studio isn't switched on yet." });
       if (await Y.loginLocked()) return json(res, 429, { error: 'Too many wrong passcodes. Try again next hour.' });
       if (!Y.passOk(b.passcode)) { await Y.loginFailed(); return json(res, 401, { error: "That passcode isn't right." }); }
       res.setHeader('Set-Cookie', Y.cookie(Y.newSession()));
       return json(res, 200, { ok: true });
     }
-    const sid = Y.session(req);
+    const sid = Y.session(req)?.sid;
     if (!sid) return json(res, 401, { error: 'Signed out. Reload the page and enter the passcode.', code: 'signed_out' });
     if (b.op !== 'design' && b.op !== 'edit') return json(res, 400, { error: 'Unknown request.' });
     const m = JPEG.exec(String(b.image || ''));

@@ -61,15 +61,17 @@ function passOk(given) {
   const a = crypto.createHash('sha256').update(String(given || '')).digest(), b = crypto.createHash('sha256').update(want).digest();
   return crypto.timingSafeEqual(a, b);
 }
-const newSession = () => G.sign('yard', `${crypto.randomBytes(9).toString('base64url')}.${phash()}`, 0.5); // a session is one working day: 12 hours
+// The passcode sign-in lasts 12 hours (`until`). Each page open starts a new visit (a new sid, same `until`), and the
+// 15-image cap is per visit, so closing and reopening the page starts a new visit; the daily cap still holds.
+const newSession = (until = Date.now() + 12 * 3600e3) => G.sign('yard', `${crypto.randomBytes(9).toString('base64url')}.${phash()}`, (until - Date.now()) / 86400e3);
 function session(req) {
   const m = String(req.headers.cookie || '').match(/(?:^|;\s*)yard_s=([^;]+)/);
   const t = m && G.verify(decodeURIComponent(m[1]));
   if (!t || t.d !== 'yard' || !(t.x > Date.now()) || !process.env.YARD_PASSCODE) return null;
   const [sid, p] = String(t.e).split('.');
-  return p === phash() ? sid : null;
+  return p === phash() ? { sid, until: t.x } : null;
 }
-const cookie = v => `yard_s=${encodeURIComponent(v)}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=43200`;
+const cookie = (v, until = Date.now() + 12 * 3600e3) => `yard_s=${encodeURIComponent(v)}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${Math.max(0, Math.round((until - Date.now()) / 1000))}`;
 
 // ---- counters (Upstash Redis REST; Vercel's Upstash integration sets KV_REST_API_*). No counter, no images.
 function kv() {
@@ -86,7 +88,7 @@ async function pipeline(cmds) {
   return out.map(x => x.result);
 }
 const keys = (sid, now = new Date()) => {
-  const d = now.toISOString().slice(0, 10);
+  const d = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Los_Angeles' }).format(now); // YYYY-MM-DD, Pacific: resets at local midnight
   return { day: `yard:d:${d}`, month: `yard:m:${d.slice(0, 7)}`, session: `yard:s:${sid}` };
 };
 // Takes one image off every cap, or none: returns null if it fits, else which cap was hit.
