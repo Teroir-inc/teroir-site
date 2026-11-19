@@ -352,6 +352,17 @@
    ],
    "destination": "/free?src=x-bio",
    "permanent": false
+  },
+  {
+   "source": "/yt",
+   "has": [
+    {
+     "type": "host",
+     "value": "www.wyattworldwide.com"
+    }
+   ],
+   "destination": "/free?src=yt-bio",
+   "permanent": false
   }
  ],
  "functions": {
