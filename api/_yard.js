@@ -4,7 +4,7 @@
 const crypto = require('crypto');
 const G = require('./_guides');
 
-const CAP = { day: 60, month: 600, session: 15 };
+const CAP = { day: 20, month: 115, session: 15 }; // sized to Gemini prepaid credit ($5 on 11-19, ~4c an image); raise when more is added
 const MODELS = () => [process.env.YARD_MODEL || 'gemini-3.1-flash-lite-image', 'gemini-2.5-flash-image'];
 const ENDING = 'Keep the house, windows, doors, fence line and yard size exactly as in the photo. Photorealistic, late-afternoon light, eye level, no people, no text.';
 
@@ -51,7 +51,7 @@ function designPrompt(picked, notes, style) {
     ENDING,
   ].filter(Boolean).join(' ');
 }
-const editPrompt = instruction => `Edit this backyard design: ${tidy(instruction, 300).replace(/"/g, "'")}. Keep everything else in the design the same. ${ENDING}`;
+const editPrompt = instruction => `Edit this backyard design: ${tidy(instruction, 300).replace(/"/g, "'")}. If the change adds something of the same kind as a feature already in the design (for example a fire pit where there is a fire table, a new seating set where there is one, a new path where there is one), replace the existing one with it rather than adding a second. Keep everything else in the design the same. ${ENDING}`;
 
 // ---- passcode gate: a signed cookie that dies when YARD_PASSCODE changes
 const phash = () => crypto.createHash('sha256').update('yard|' + (process.env.YARD_PASSCODE || '')).digest('hex').slice(0, 16);
