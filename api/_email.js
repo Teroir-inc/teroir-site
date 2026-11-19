@@ -20,7 +20,8 @@ function button({ label, url, primary }) {
 }
 
 // { preheader, kicker, heading, intro:[para], buttons:[{label,url,note?,primary?}], notes:[para], signoff:[line] }
-function renderEmail({ preheader = '', kicker = '// wyattworldwide', heading, intro = [], buttons = [], notes = [], signoff = [] }) {
+// footer (marketing only): { unsub, postal } adds an unsubscribe link and the postal address under the card.
+function renderEmail({ preheader = '', kicker = '// wyattworldwide', heading, intro = [], buttons = [], notes = [], signoff = [], footer = null }) {
   const p = t => `<p style="margin:0 0 16px 0;font-family:${FONT_BODY};font-size:16px;line-height:1.55;color:${C.ink};">${esc(t)}</p>`;
   const small = t => `<p style="margin:0 0 12px 0;font-family:${FONT_BODY};font-size:14px;line-height:1.5;color:${C.muted};">${esc(t)}</p>`;
   const btns = buttons.map(b => (b.note ? `<p style="margin:8px 0 8px 0;font-family:${FONT_MONO};font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:${C.cyan};">${esc(b.note)}</p>` : '') + button(b)).join('\n');
@@ -49,12 +50,14 @@ ${signoff.length ? `<p style="margin:16px 0 0 0;font-family:${FONT_BODY};font-si
 </td></tr>
 <tr><td bgcolor="${C.night}" style="padding:16px 4px;background-color:${C.night};font-family:${FONT_MONO};font-size:12px;line-height:1.6;color:${C.muted};">
 <a href="${WW}/" target="_blank" style="color:${C.cyan};text-decoration:none;">wyattworldwide.com</a> &middot; reply to this email to reach Wyatt
+${footer ? `<br>Wyatt Horton &middot; ${esc(footer.postal)}<br><a href="${esc(footer.unsub)}" target="_blank" style="color:${C.cyan};">Unsubscribe</a> from these emails` : ''}
 </td></tr>
 </table></td></tr></table>
 </body></html>`;
   const text = [heading, '', ...intro.flatMap(t => [t, '']),
     ...buttons.flatMap(b => [...(b.note ? [`${b.note}.`] : []), `${b.label}:`, b.url, '']),
-    ...notes.flatMap(t => [t, '']), ...signoff].join('\n');
+    ...notes.flatMap(t => [t, '']), ...signoff,
+    ...(footer ? ['', '--', `Wyatt Horton · ${footer.postal}`, 'Unsubscribe:', footer.unsub] : [])].join('\n');
   return { html, text };
 }
 
