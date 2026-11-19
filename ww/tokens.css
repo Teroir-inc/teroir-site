@@ -1,206 +1,125 @@
-/* Realm HUD web tokens v1 (creative director, 11-13) for wyattworldwide.com. REPLACES web_tokens_v3.css.
-   Wyatt 11-13 on the first site: "too much like a magazine"; he wants "much more modern, fluid, like Tron, IN THE
-   SIMULATION". Rule of the realm (vision/world_bible_v1.html): ENVIRONMENTS are Outrun / 80s Miami + rainy neon
-   city (the sun, the grid floor, chrome, palms). The INTERFACE (site, overlays, captions, lower thirds) is the HUD:
-   thin glowing lines, see-through holographic panels, a grid space, fluid motion. Same class names as v3, so this
-   file drops in over ww/tokens.css; new pieces are marked NEW.
-
-   Fonts (Google Fonts), replace the old link:
-   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap">
+@import url("https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@500&display=swap");
+/* Horizon tokens v1 (11-19) for wyattworldwide.com. REPLACES the Realm HUD tokens (11-13).
+   Wyatt 11-19: "go minimalist, like Dune vibes, gradient cyan and neon pink."
+   Same class names as before, so the pages keep their markup; only the look changes.
 
    RULES
-   - Cyan is the interface: every line, bracket, label and link. Magenta is the ONE live action per screen and the
-     selected state. Gold only for a price tag or a "done". No orange. No violet fills.
-   - Panels are see-through with a hairline and two corner brackets. Radius 2 px everywhere: no soft rounded cards,
-     no drop-shadow "paper", no gradient blobs behind text. That softness is what read as a magazine.
-   - Hairlines are 1 px. Glow is small and tight (it is light from a line, not a halo).
-   - Labels are short mono caps ("// LATEST VIDEO"). Headings are Chakra Petch. Reading text stays Inter, never
-     glowing, never all caps, at most 65 characters wide.
-   - The sun and grid floor are the world seen THROUGH the interface: keep them in the hero inside .hud-frame.
-   - Motion is part of the look: panels boot in (line first, then fill), a light sweeps a panel on hover, the grid
-     drifts slowly. All of it off under prefers-reduced-motion; the page is complete without it.
-   - Dark only. Handle @wyattworldwide.ai. Prices are live text. No hype words; never lead with a negative. */
+   - Minimal and calm: lots of negative space, few elements per screen, big quiet headlines.
+   - Scale comes from type and composition: wide-tracked display caps (Syncopate) and a soft horizon glow.
+     No grid floor, no sun, no brackets, no scan lines, no sand clip-art, no film IP.
+   - Colour: a deep dark base. The cyan → neon pink gradient (#00E5FF → #FF2BD6, the social palette) is the accent:
+     the horizon, the one primary button, hairline highlights. Body text is never gradient and never glows.
+   - Contrast: --ink 17.8:1 and --muted 8.1:1 on --night (WCAG AA and better). Gradient buttons carry dark text.
+   - Shape: square corners, 1 px hairlines, no drop shadows, no glass.
+   - Motion is slow and optional (a fade up); off under prefers-reduced-motion. */
 
 :root {
   color-scheme: dark;
 
   /* colour */
-  --night: #03010D;                    /* the void: page background */
-  --night-1: #0B0524;
-  --surface: #070318;                  /* opaque fallback */
-  --glass: rgba(0, 229, 255, .045);    /* panel fill */
-  --line: rgba(0, 229, 255, .34);      /* hairlines, panel borders */
-  --line-dim: rgba(0, 229, 255, .16);
-  --ink: #EAF6FF;                      /* text (18.4:1 on --night) */
-  --muted: #9DB3CC;                    /* secondary text (9.4:1) */
+  --night: #07060B;                     /* page background */
+  --night-1: #0E0C16;
+  --surface: #0B0A11;
+  --glass: rgba(255, 255, 255, .025);   /* panel fill: barely there */
+  --line: rgba(242, 240, 247, .14);     /* hairlines */
+  --line-dim: rgba(242, 240, 247, .08);
+  --ink: #F2F0F7;
+  --muted: #A7A2B6;
   --cyan: #00E5FF;
   --magenta: #FF2BD6;
-  --pink: #FF2E97;
-  --violet: #8C1EFF;
-  --gold: #FFD23F;
-
-  /* gradients */
-  --grad-sun: linear-gradient(180deg, #FFD23F 0%, #FF2BD6 50%, #8C1EFF 100%);
-  --grad-sky: linear-gradient(180deg, #03010D 0%, #070318 70%, #0B0524 100%);
-  --grad-edge: linear-gradient(90deg, #00E5FF, rgba(0, 229, 255, 0));
-  --grad-chrome: linear-gradient(180deg, #FFFFFF 0%, #DDE4FF 40%, #8E9BD0 52%, #FFFFFF 68%, #DDE4FF 100%);   /* environment art only */
+  --pink: #FF2BD6;
+  --violet: #7B5CFF;
+  --gold: #F2F0F7;                      /* prices are plain ink now */
+  --grad: linear-gradient(90deg, #00E5FF 0%, #FF2BD6 100%);
+  --grad-soft: linear-gradient(90deg, rgba(0, 229, 255, .55), rgba(255, 43, 214, .55));
+  --grad-edge: linear-gradient(90deg, rgba(0, 229, 255, .5), rgba(255, 43, 214, .35) 60%, transparent);
 
   /* type */
-  --font-display: "Chakra Petch", "Inter", system-ui, sans-serif;   /* 600 / 700 */
+  --font-display: "Syncopate", "Inter", system-ui, sans-serif;   /* caps only, wide */
   --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;   /* labels, handles, prices, meta */
-  --text-hero: clamp(2rem, 9vw, 3.5rem);
-  --text-h2: 1.4rem;
+  --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;   /* code only */
+  --text-hero: clamp(1.5rem, 7.6vw, 5rem);
+  --text-h2: 1.15rem;
   --text-body: 1.0625rem;
   --text-small: .875rem;
-  --text-label: .75rem;
+  --text-label: .6875rem;
+  --track-wide: .32em;
+  --track-label: .26em;
 
-  /* glow and shadow */
-  --glow-cyan: 0 0 4px rgba(0, 229, 255, .8), 0 0 16px rgba(0, 229, 255, .35);
-  --glow-magenta: 0 0 4px rgba(255, 43, 214, .85), 0 0 18px rgba(255, 43, 214, .45);
-  --glow-text: 0 0 14px rgba(0, 229, 255, .6);
+  /* legacy names, kept so older markup still resolves */
+  --glow-cyan: none;
+  --glow-magenta: none;
+  --glow-text: none;
   --shadow-card: none;
 
   /* shape, space, motion */
-  --radius-card: 2px;
-  --radius-control: 2px;
-  --radius-pill: 2px;
+  --radius-card: 0;
+  --radius-control: 0;
+  --radius-pill: 0;
   --space: 8px;
-  --ease-snap: cubic-bezier(.2, .8, .2, 1);
-  --t-fast: 160ms;
-  --t-boot: 420ms;
+  --ease-snap: cubic-bezier(.2, .7, .1, 1);
+  --t-fast: 200ms;
+  --t-boot: 900ms;
 }
 
-body { background: var(--night); color: var(--ink); font: 400 var(--text-body)/1.6 var(--font-body); }
-a { color: var(--cyan); text-underline-offset: 3px; }
-:focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; }
+body { background: var(--night); color: var(--ink); font: 400 var(--text-body)/1.65 var(--font-body); }
+a { color: var(--ink); text-decoration-color: rgba(0, 229, 255, .6); text-underline-offset: 4px; }
+a:hover { text-decoration-color: var(--magenta); }
+:focus-visible { outline: 1px solid var(--cyan); outline-offset: 4px; }
 
-/* NEW the grid space: fixed behind everything */
-body::before { content: ""; position: fixed; inset: 0; z-index: -1; pointer-events: none;
-  background:
-    radial-gradient(110% 55% at 50% 0%, rgba(140, 30, 255, .22), transparent 62%),
-    repeating-linear-gradient(90deg, rgba(0, 229, 255, .07) 0 1px, transparent 1px 48px),
-    repeating-linear-gradient(0deg, rgba(0, 229, 255, .07) 0 1px, transparent 1px 48px); }
+/* the sky: deep at the top, a soft cyan → pink horizon glow low on the screen. Fixed, behind everything. */
+body::before { content: none; }   /* a calm, flat night; the horizon glow lives in the hub hero */
 
-/* NEW mono HUD label: section names, meta, handles. Keep them short. */
-.label, .eyebrow { font: 500 var(--text-label)/1.2 var(--font-mono); letter-spacing: .14em; text-transform: uppercase; color: var(--cyan); }
+/* small tracked caps: section names, meta */
+.label, .eyebrow { font: 500 var(--text-label)/1.4 var(--font-body); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--muted); }
 
 /* headings */
-.neon { font: 600 var(--text-h2)/1.2 var(--font-display); color: #fff; text-shadow: var(--glow-text); }
-.chrome { font: 700 var(--text-hero)/1 var(--font-display); letter-spacing: .04em; text-transform: uppercase; color: #fff;
-  text-shadow: 0 0 2px #fff, 0 0 18px rgba(0, 229, 255, .7); transform: none; background: none; filter: none; }   /* the wordmark is interface now: light, not chrome */
+.neon { font: 700 var(--text-h2)/1.35 var(--font-display); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); }
+.chrome { font: 700 var(--text-hero)/1.05 var(--font-display); letter-spacing: .18em; text-transform: uppercase; color: var(--ink); background: none; text-shadow: none; }
 
-/* the holographic panel (class name kept: .card) */
-.card { position: relative; background: var(--glass); border: 1px solid var(--line); border-radius: var(--radius-card);
-  box-shadow: none; -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); }
-.card::before, .card::after { content: ""; position: absolute; width: 16px; height: 16px; pointer-events: none;
-  background: none; box-shadow: none; border-radius: 0; inset: auto; }
-.card::before { top: -1px; left: -1px; border-top: 2px solid var(--cyan); border-left: 2px solid var(--cyan); }
-.card::after { bottom: -1px; right: -1px; border-bottom: 2px solid var(--cyan); border-right: 2px solid var(--cyan); }
+/* panel (class name kept: .card): a quiet block with a hairline */
+.card { position: relative; background: var(--glass); border: 1px solid var(--line-dim); border-radius: 0; box-shadow: none; }
+.card::before, .card::after { content: none; }
 
-/* NEW frame for the hero art (sun + grid floor): brackets on all four corners, a readout line under it */
-.hud-frame { position: relative; border-bottom: 1px solid var(--line);
-  background:
-    linear-gradient(var(--cyan), var(--cyan)) top left / 18px 2px, linear-gradient(var(--cyan), var(--cyan)) top left / 2px 18px,
-    linear-gradient(var(--cyan), var(--cyan)) top right / 18px 2px, linear-gradient(var(--cyan), var(--cyan)) top right / 2px 18px;
-  background-repeat: no-repeat; }
-.readout { display: flex; justify-content: space-between; gap: 12px; padding: 8px 2px; font: 500 var(--text-label)/1.2 var(--font-mono);
-  letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
-.readout b { color: var(--cyan); font-weight: 500; }
-.readout b::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 7px; background: var(--cyan); box-shadow: var(--glow-cyan); }
+/* frame and readout (legacy hub pieces): reduced to a thin line */
+.hud-frame { position: relative; background: none; border: 0; }
+.readout { display: flex; justify-content: space-between; gap: 12px; font: 500 var(--text-label)/1.4 var(--font-body);
+  letter-spacing: var(--track-label); text-transform: uppercase; color: var(--muted); }
+.readout b { font-weight: 500; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
-/* buttons: magenta = the one live action; ghost = a console row */
-.btn { font: 600 1rem/1 var(--font-display); letter-spacing: .06em; text-transform: uppercase; padding: 17px 20px;
-  border-radius: var(--radius-control); border: 0; background: var(--magenta); color: var(--night); box-shadow: var(--glow-magenta);
-  cursor: pointer; position: relative; overflow: hidden; }
-.btn:hover { background: var(--pink); }
-.btn-ghost { background: var(--glass); color: var(--ink); border: 1px solid var(--line); border-left: 3px solid var(--cyan);
-  box-shadow: none; text-transform: none; letter-spacing: 0; font: 500 1rem/1.2 var(--font-body); }
-.btn-ghost:hover, .btn-ghost:focus-visible { background: rgba(0, 229, 255, .1); border-color: var(--cyan); box-shadow: var(--glow-cyan); }
-.btn-ghost .muted { font: 500 .8rem/1 var(--font-mono); letter-spacing: .04em; }
+/* buttons: the gradient is the one primary action; ghost is a hairline */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 12px;
+  font: 600 .8rem/1.2 var(--font-body); letter-spacing: .22em; text-transform: uppercase; padding: 18px 24px;
+  border-radius: 0; border: 0; background: var(--grad); color: #07060B; box-shadow: none; cursor: pointer; position: relative; }
+.btn:hover { filter: brightness(1.08); }
+.btn-ghost { display: inline-flex; align-items: center; gap: 12px; background: transparent; color: var(--ink); border: 1px solid var(--line);
+  border-radius: 0; box-shadow: none; font: 500 .8rem/1.2 var(--font-body); letter-spacing: .18em; text-transform: uppercase; padding: 16px 20px; cursor: pointer; }
+.btn-ghost:hover, .btn-ghost:focus-visible { border-color: rgba(242, 240, 247, .45); background: rgba(255, 255, 255, .03); box-shadow: none; }
+.btn-ghost .muted { font: 400 .8rem/1.2 var(--font-body); letter-spacing: .04em; text-transform: none; }
 
-/* the world through the interface: the sun and the grid floor (unchanged from v3) */
-.sun { width: min(60vw, 320px); aspect-ratio: 1; border-radius: 50%; background: var(--grad-sun);
-  box-shadow: 0 0 60px rgba(255, 43, 214, .55);
-  --sun-top: linear-gradient(#000, #000) top / 100% 50% no-repeat;
-  --sun-slits: linear-gradient(#000 0 16%, transparent 16% 20%, #000 20% 36%, transparent 36% 42%, #000 42% 58%,
-    transparent 58% 67%, #000 67% 82%, transparent 82% 93%, #000 93% 100%) bottom / 100% 50% no-repeat;
-  -webkit-mask: var(--sun-top), var(--sun-slits); mask: var(--sun-top), var(--sun-slits); }
-.grid-floor { height: 38vh; transform: perspective(420px) rotateX(62deg); transform-origin: top;
-  background:
-    repeating-linear-gradient(90deg, rgba(0, 229, 255, .6) 0 2px, transparent 2px 64px),
-    repeating-linear-gradient(0deg, rgba(0, 229, 255, .6) 0 2px, transparent 2px 64px);
-  -webkit-mask: linear-gradient(transparent, #000 35%); mask: linear-gradient(transparent, #000 35%); }
-.vhs { position: relative; }
-.vhs::after { content: ""; position: absolute; inset: 0; pointer-events: none;
-  background: repeating-linear-gradient(0deg, rgba(0, 0, 0, .06) 0 2px, transparent 2px 4px); }
+/* retired world pieces: hidden if any old markup still carries them */
+.sun, .grid-floor { display: none; }
+.vhs::after { content: none; }
 
-/* fluid motion (all optional; the page is complete without it) */
 @media (prefers-reduced-motion: no-preference) {
-  .btn, .btn-ghost, .card { transition: background var(--t-fast) var(--ease-snap), border-color var(--t-fast), box-shadow var(--t-fast), transform var(--t-fast) var(--ease-snap); }
-  .btn:active, .btn-ghost:active { transform: scale(.98); }
-  /* boot-in: a panel's line draws, then it settles. Stagger siblings with style="--i:1", 2, 3 ... */
-  @keyframes hud-boot { from { opacity: 0; transform: translateY(10px); clip-path: inset(0 100% 0 0); } to { opacity: 1; transform: none; clip-path: inset(0); } }
-  .boot { animation: hud-boot var(--t-boot) var(--ease-snap) both; animation-delay: calc(var(--i, 0) * 70ms); }
-  /* a light sweeps across a panel or button on hover */
-  .card::marker { content: none; }
-  .btn::after { content: ""; position: absolute; inset: 0; background: linear-gradient(100deg, transparent 30%, rgba(255, 255, 255, .35) 50%, transparent 70%);
-    transform: translateX(-120%); transition: transform 500ms var(--ease-snap); pointer-events: none; }
-  .btn:hover::after { transform: translateX(120%); }
-  /* the grid drifts toward the viewer, slowly */
-  @keyframes grid-drift { to { background-position: 0 0, 0 0, 0 48px; } }
-  body::before { animation: grid-drift 6s linear infinite; }
-  @keyframes floor-run { to { background-position: 0 0, 0 64px; } }
-  .grid-floor { animation: floor-run 1.6s linear infinite; }
+  .btn, .btn-ghost, .card, .pnl { transition: filter var(--t-fast), border-color var(--t-fast), background var(--t-fast); }
+  @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  .boot { animation: rise var(--t-boot) var(--ease-snap) both; animation-delay: calc(var(--i, 0) * 90ms); }
 }
 
-/* ---------------------------------------------------------------------------------------------------------------
-   NEW district gates (Wyatt 11-13: a purchase unlocks content in a district of the W; site-85 builds the mechanics).
-   One component, three states. Markup:
-     <a class="card gate gate--open" data-district="lab" href="...">
-       <span class="door" aria-hidden="true"></span>
-       <span class="gate-body"><span class="label">The Lab // upgrade</span><b>Make Claude build it</b>
-         <span class="gate-status">Open</span></span></a>
-   States: gate--open (your pass covers it: the door is lit, light spills out), gate--locked (it exists, you need a
-   pass: shutter down, one scan line, the status names the pass that opens it), gate--soon (not built yet: dashed
-   hoarding, hatch, no glow, a meter toward the REAL number that opens it; never a made-up count).
-   Districts set --accent: free = magenta (the FREE sign), lab = cyan (holograms), studio = hot pink (the ON AIR
-   lamp), hq = gold (the one place gold is allowed to lead: the all-access keycard), vip = white chrome.
-   Rules: a locked gate is inviting, not scolding: never red, never a padlock wall of text; one line says which pass
-   opens it. Only gate--open glows. Opening-soon panels never link to a checkout. */
-.gate { --accent: var(--cyan); display: grid; grid-template-columns: 64px 1fr; gap: 14px; align-items: center; padding: 14px 16px;
-  text-decoration: none; color: var(--ink); border-color: color-mix(in srgb, var(--accent) 45%, transparent); }
-.gate::before, .gate::after { border-color: var(--accent); }
-.gate[data-district="free"] { --accent: var(--magenta); }
-.gate[data-district="lab"] { --accent: var(--cyan); }
-.gate[data-district="studio"] { --accent: var(--pink); }
-.gate[data-district="hq"] { --accent: var(--gold); }
-.gate[data-district="vip"] { --accent: #EAF6FF; }
-.gate .door { position: relative; width: 64px; height: 84px; border: 1px solid var(--accent); border-radius: 32px 32px 0 0; overflow: hidden;
-  background: rgba(3, 1, 13, .85); }
-.gate-body { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
-.gate-body .label { color: var(--accent); }
-.gate-body b { font: 600 1.1rem/1.25 var(--font-display); }
-.gate-status { font: 500 var(--text-label)/1.2 var(--font-mono); letter-spacing: .12em; text-transform: uppercase; color: var(--muted); }
-/* open: light spills out of the doorway */
-.gate--open { box-shadow: 0 0 18px color-mix(in srgb, var(--accent) 35%, transparent); }
-.gate--open .door { background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 85%, #fff) 0%, color-mix(in srgb, var(--accent) 55%, transparent) 60%, rgba(3, 1, 13, .2) 100%);
-  box-shadow: 0 0 22px color-mix(in srgb, var(--accent) 70%, transparent); }
-.gate--open .gate-status { color: var(--accent); }
-.gate--open .gate-status::before { content: ""; display: inline-block; width: 7px; height: 7px; margin-right: 7px; background: var(--accent); }
-/* locked: the shutter is down, a scan line waits */
-.gate--locked .door { background: repeating-linear-gradient(0deg, color-mix(in srgb, var(--accent) 22%, transparent) 0 2px, rgba(3, 1, 13, .9) 2px 9px); }
-.gate--locked .door::after { content: ""; position: absolute; left: 0; right: 0; top: 46%; height: 2px; background: var(--accent); box-shadow: 0 0 8px var(--accent); }
-/* opening soon: a hoarding, not a door */
-.gate--soon { border-style: dashed; border-color: var(--line-dim); background: repeating-linear-gradient(135deg, rgba(0, 229, 255, .05) 0 10px, transparent 10px 20px); }
-.gate--soon::before, .gate--soon::after { border-color: var(--line); }
-.gate--soon .door { border-style: dashed; border-color: var(--line); background: none; }
-.gate--soon .gate-body .label, .gate--soon .gate-status { color: var(--muted); }
+/* district gates: one component, three states (open, locked, soon). Same markup as before.
+   The door is a thin arch; an open door holds the horizon gradient. A locked gate names the pass that opens it. */
+.gate { display: grid; grid-template-columns: 52px 1fr; gap: 18px; align-items: center; padding: 20px; text-decoration: none; color: var(--ink); }
+.gate .door { position: relative; width: 52px; height: 70px; border: 1px solid var(--line); border-radius: 26px 26px 0 0; overflow: hidden; background: transparent; }
+.gate-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.gate-body .label { color: var(--muted); }
+.gate-body b { font: 400 1.05rem/1.45 var(--font-body); }
+.gate-status { font: 500 var(--text-label)/1.4 var(--font-body); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--muted); }
+.gate--open .door { border-color: transparent; background: linear-gradient(180deg, rgba(0, 229, 255, .85), rgba(255, 43, 214, .85)); }
+.gate--open .gate-status { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.gate--locked .door::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--grad); }
+.gate--soon { border-style: dashed; }
+.gate--soon .door { border-style: dashed; }
 .gate--soon b { color: var(--muted); }
-.gate-meter { height: 4px; background: var(--line-dim); margin-top: 4px; }
-.gate-meter i { display: block; height: 100%; background: var(--cyan); width: var(--pct, 0%); }   /* --pct = real progress, set inline */
-@media (prefers-reduced-motion: no-preference) {
-  @keyframes gate-scan { 0%, 100% { top: 20%; } 50% { top: 78%; } }
-  .gate--locked .door::after { animation: gate-scan 3.2s ease-in-out infinite; }
-  .gate--open:hover .door, .gate--locked:hover .door { transform: scale(1.04); transition: transform var(--t-fast) var(--ease-snap); }
-}
+.gate-meter { height: 2px; background: var(--line-dim); margin-top: 6px; }
+.gate-meter i { display: block; height: 100%; background: var(--grad); width: var(--pct, 0%); }   /* --pct = real progress, set inline */

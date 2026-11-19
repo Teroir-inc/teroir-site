@@ -39,6 +39,8 @@ module.exports = async (req, res) => {
       // fewer bank fraud declines (owner 11-15): a statement line buyers recognise ("TEROIR, IN* WWW GUIDES", 22 chars, the
       // limit), a Stripe receipt to the buyer, and 3D Secure on $97 and up (below that, Stripe decides: 'automatic')
       payment_intent_data: { metadata: meta, statement_descriptor_suffix: STATEMENT_SUFFIX, ...(buyer ? { receipt_email: buyer } : {}) },
+      // an expired session gets a Stripe recovery link (restores the cart), used by the abandoned-checkout email
+      after_expiration: { recovery: { enabled: 'true', allow_promotion_codes: 'true' } },
       ...(amount >= 9700 ? { payment_method_options: { card: { request_three_d_secure: 'any' } } } : {}),
       success_url: `${origin}/free?paid={CHECKOUT_SESSION_ID}#get`,
       cancel_url: `${origin}/free#buy`,

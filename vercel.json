@@ -379,5 +379,11 @@
    "source": "/yard",
    "destination": "/api/yard"
   }
+ ],
+ "crons": [
+  {
+   "path": "/api/nurture",
+   "schedule": "0 17 * * *"
+  }
  ]
 }
