@@ -1,11 +1,12 @@
 // Stripe webhook: emails paid guides even if the buyer never returns to /free.
 // Endpoint: https://www.wyattworldwide.com/api/stripe-webhook, events checkout.session.completed and
-// checkout.session.async_payment_succeeded.
+// checkout.session.async_payment_succeeded, checkout.session.expired (the abandoned-checkout email).
 // Trust: a valid Stripe-Signature (STRIPE_WEBHOOK_SECRET) is enough. Without one (secret missing or not this endpoint's),
 // the body is used only for its event id: the event is re-fetched from Stripe with our own key, and only the fetched
 // copy is acted on. A forged body can at most make us re-check a real event, and delivery is idempotent per session.
 const crypto = require('crypto');
 const G = require('./_guides');
+const M = require('./_marketing');
 
 const raw = req => new Promise((ok, fail) => {
   const parts = [];
@@ -41,15 +42,19 @@ module.exports = async (req, res) => {
       const cs = ev?.data?.object?.id;
       console.warn('webhook: event fetch refused, falling back to the session', e.message.slice(0, 80));
       if (!(typeof cs === 'string' && /^cs_(live|test)_\w{8,200}$/.test(cs))) return res.status(400).json({ ok: false, error: 'event' });
-      ev = { type: 'checkout.session.completed', data: { object: { id: cs } }, fallback: true };
+      ev = { type: 'session', data: { object: { id: cs } }, fallback: true }; // the type comes from the re-read session below
     }
   }
-  if (!['checkout.session.completed', 'checkout.session.async_payment_succeeded'].includes(ev.type)) {
+  if (!['checkout.session.completed', 'checkout.session.async_payment_succeeded', 'checkout.session.expired', 'session'].includes(ev.type)) {
     return res.status(200).json({ ok: true, ignored: true }); // never echo the event type to an unauthenticated caller
   }
   try {
     // re-read the session from Stripe rather than trusting the event body
     const s = await G.stripe('GET', `checkout/sessions/${ev.data.object.id}`, { expand: ['payment_intent'] });
+    if (s.status === 'expired' && (ev.fallback || ev.type === 'checkout.session.expired')) {
+      const r = await M.abandoned(s);
+      return res.status(200).json({ ok: true, ...(r.skipped ? { skipped: true } : {}) });
+    }
     if (s.payment_status === 'paid' && (!ev.fallback || s.status === 'complete')) await G.deliver(s);
     return res.status(200).json({ ok: true });
   } catch (e) {

@@ -52,7 +52,7 @@ module.exports = async (req, res) => {
       ...freeEmail({ guide, link, pass: G.passFor('free-street', email, 365), offer: `${E.WW}/free?offer=${G.offerFor(email)}#buy` }),
     });
 
-    const meta = { brand: G.BRAND, free_guide: guide.id, free_src: src || 'direct', free_at: new Date().toISOString() };
+    const meta = { brand: G.BRAND, free_guide: guide.id, free_src: src || 'direct', free_at: new Date().toISOString(), nurture: 'on', nurture_step: '0' }; // follow-ups: api/_nurture.js
     if (found[0]) await G.stripe('POST', `customers/${found[0].id}`, { metadata: meta });
     else await G.stripe('POST', 'customers', { email, description: 'Free guide signup (wyattworldwide.com/free)', metadata: meta });
   } catch (e) {
