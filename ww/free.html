@@ -36,8 +36,8 @@
 <section id="get" aria-labelledby="free-h">
   <p class="label">// free day pass</p>
   <div class="card boot" style="--i:0">
-    <h1 id="free-h">win more jobs.</h1>
-    <p class="muted">Pick a free guide on how. It takes 5 minutes to read, and each one gets one real task done, with copy-paste templates.</p>
+    <h1 id="free-h">get your free day pass.</h1>
+    <p class="muted">Your pass is one short, plain AI guide for people running a business. Pick one: it gets one real task done with AI, with copy-paste templates.</p>
     <form id="gd-form" action="/api/claim" method="post">
       <fieldset class="pick gd-pick">
         <legend class="vh">Which guide is your day pass?</legend>
@@ -46,7 +46,7 @@
           <label><input type="radio" name="guide" value="get-paid"><span><b>Get paid for AI: build and sell one small automation</b><i>Pick one local business, build one small AI helper for them, and sell it.</i><small>9 pages · 5-minute read</small></span></label>
           <label><input type="radio" name="guide" value="ai-starter-kit"><span><b>AI starter kit</b><i>Pick an app, set it up, and get five real jobs done this week.</i><small>9 pages · 5-minute read</small></span></label>
           <label><input type="radio" name="guide" value="prompts-small-business"><span><b>10 prompts for small business</b><i>Ten copy-paste templates you can use in any AI chat app today.</i><small>12 pages · 5-minute read</small></span></label>
-          <label><input type="radio" name="guide" value="maintenance-intake"><span><b>For landlords: a checklist for tenant maintenance texts</b><i>Turn a tenant's text into a clean maintenance request, with a person in charge.</i><small>10 pages · 5-minute read</small></span></label>
+          <label><input type="radio" name="guide" value="maintenance-intake"><span><b>AI maintenance-intake checklist for property managers</b><i>Turn a tenant's text into a clean maintenance request, with a person in charge.</i><small>10 pages · 5-minute read</small></span></label>
       </fieldset>
       <label class="field"><span>your email</span><input name="email" type="email" required autocomplete="email" maxlength="200" placeholder="you@example.com"></label>
       <label class="wl-hp" aria-hidden="true">Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label>
@@ -71,7 +71,7 @@
   <div class="shop">
     <form class="card gd-card all gd-all boot" action="/api/checkout" method="post">
       <input type="hidden" name="item" value="bundle"><input type="hidden" name="src" class="gd-src">
-      <b>All-access pass</b><span>Guides on how to get a bigger team's work done, without hiring. All ten, as PDFs.</span>
+      <b>All-access pass</b><span>All ten guides, as PDFs.</span>
       <span class="price gd-price">$499</span>
       <button class="btn" type="submit">get the all-access pass <span aria-hidden="true">→</span></button>
     </form>
