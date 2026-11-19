@@ -7,7 +7,7 @@ const E = require('./_email');
 
 // Wording approved by Wyatt 11-16. Sending stays off until go-live: While LIVE is false nothing is sent: each send is logged and
 // returned as { dry: true }. Flip to true in the PR that ships the approved wording.
-const cfg = { live: false }; // tests may set cfg.live; production changes it only by a reviewed commit
+const cfg = { live: true };  // tests may set cfg.live; production changes it only by a reviewed commit
 // Postal address for the footer (CAN-SPAM), from the FOOTER_POSTAL env var (set in Vercel by the owner; supplied by ops-61).
 // It must never be committed: this repo is deployed as-is. Marketing sends refuse to go without it.
 const postal = () => String(process.env.FOOTER_POSTAL || '').trim();
