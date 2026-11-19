@@ -35,7 +35,7 @@ for s in systems:
     cards.append(f'''      <li class="sys reveal" id="{e(s['key'])}">
         <h3>PM.BOS for {e(s['name'])} users</h3>
         <span class="status dev-tag">Compatibility in progress</span>
-        <p>We're working on bringing {WHAT.get(s['kind'], 'your portfolio')} from {e(s['name'])} into PM.BOS, for co-living operators who run on it.{f" Includes {e(', '.join(also))}." if also else ''}</p>
+        <p>Run on {e(s['name'])}? We're working on bringing {WHAT.get(s['kind'], 'your portfolio')} into PM.BOS.{f" Includes {e(', '.join(also))}." if also else ''}</p>
       </li>''')
 
 desc = f"PM.BOS is built for co-living operators. Compatibility in progress with {len(systems)} property management systems, including {', '.join(names[:3])} and more."
