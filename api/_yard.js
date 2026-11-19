@@ -133,7 +133,8 @@ async function gemini(prompt, jpegB64) {
       }
       last = Object.assign(new Error(`${model} HTTP ${r.status}: ${String(j.error?.message || '').slice(0, 160)}`), { code: 'gemini', status: r.status });
       if (r.status === 400 && size && /image_?size|imageConfig/i.test(j.error?.message || '')) continue; // retry without the size option
-      if (r.status === 401 || r.status === 403) throw last; // bad key: the fallback won't help
+      // bad key (401/403) or no API credit (402): the fallback won't help, and it isn't "busy". Show "not switched on".
+      if (r.status === 401 || r.status === 402 || r.status === 403) { last.code = 'no_key'; throw last; }
       break; // 404 (no such model), 429, 5xx: try the fallback model
     }
   }
