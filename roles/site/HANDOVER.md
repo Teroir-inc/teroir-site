@@ -39,10 +39,9 @@ lessons, checkout (Stripe), delivery emails (Resend), blog, SEO and redirects.
 - www.teroir.com DNS (orchestrator has it; don't repeat).
 - Stripe public-details support email (orchestrator routing to Wyatt).
 - Optional: Events:Read on the site Stripe key, or STRIPE_WEBHOOK_SECRET in Vercel.
-- Vercel token (secret/org/teroir/vercel, field token), or the same steps done in the dashboard. Needed for:
-  - FOOTER_POSTAL, CRON_SECRET, GEMINI_API_KEY, YARD_PASSCODE, and Upstash for #58.
-  - A firewall bypass for the server IP (teroir.com challenged it once, 11-16).
-  - Turning branch preview deployments back on: none since at least 11-15; only main deploys.
+- Vercel (token in secret/org/teroir/vercel, field token), done 11-19: env vars set, #55-58 merged, a firewall rule
+  bypasses the server IP 5.78.217.132 only, branch previews back on (behind Vercel login). GEMINI_API_KEY still
+  waits on the vault key.
 
 ## Next 3–5 actions
 1. When the watcher reports a sale, check the PaymentIntent fields and ping the orchestrator.
@@ -69,7 +68,7 @@ lessons, checkout (Stripe), delivery emails (Resend), blog, SEO and redirects.
   owner approval.
 - Promises drive code: build what the site promises; don't soften the copy.
 - Never print or commit secrets (Stripe, GUIDE_KEY, Resend). Never share buyer emails externally.
-- QA on the tailnet only (python http.server bound to 100.97.147.63, one port, with a timeout). Vercel builds no branch
-  previews, so a merge to main is the first public URL.
+- QA on the tailnet only (python http.server bound to 100.97.147.63, one port, with a timeout). Every branch gets a Vercel
+  preview (behind Vercel login); main is the only public URL.
 - Always `git checkout -B <branch> origin/main` before new work; no bare git stash.
 - Test addresses to ignore in stats: wyatt+qa-*@teroir.com (src=qa-site85), opstest claims.
