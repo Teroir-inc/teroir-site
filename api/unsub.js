@@ -6,11 +6,12 @@ const G = require('./_guides');
 const M = require('./_marketing');
 
 const page = (title, body) => `<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex"><meta name="color-scheme" content="dark"><title>${title}</title>
-<style>body{margin:0;background:#03010D;color:#EAF6FF;font:17px/1.55 Inter,system-ui,-apple-system,sans-serif;display:grid;place-items:center;min-height:100vh}
-main{max-width:30rem;padding:24px 16px}h1{font:700 1.5rem/1.2 "Chakra Petch",Inter,system-ui,sans-serif}p{color:#9DB3CC}
-button{min-height:48px;padding:0 20px;background:#FF2BD6;color:#03010D;border:0;border-radius:2px;font:700 1rem Inter,system-ui,sans-serif;cursor:pointer}
-a{color:#00E5FF}</style></head><body><main>${body}</main></body></html>`;
+<meta name="robots" content="noindex"><meta name="color-scheme" content="light"><title>${title}</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Inter:wght@400;700&display=swap">
+<style>body{margin:0;background:linear-gradient(180deg,#E4DCF6,#FFE1EE 60%,#FFEEDF) fixed;color:#2B1E3F;font:17px/1.55 Inter,system-ui,-apple-system,sans-serif;display:grid;place-items:center;min-height:100vh}
+main{max-width:30rem;margin:16px;padding:22px 18px;background:#FFF3E3;border:3px solid #2B1E3F;border-radius:18px;box-shadow:5px 5px 0 #2B1E3F}h1{margin:0 0 10px;font:800 1.8rem/1.05 "Bricolage Grotesque",Inter,system-ui,sans-serif;letter-spacing:-.02em}p{color:#5A4A75}
+button{min-height:52px;padding:0 20px;background:#FF8A7A;color:#2B1E3F;border:3px solid #2B1E3F;border-radius:14px;box-shadow:3px 3px 0 #2B1E3F;font:700 1rem Inter,system-ui,sans-serif;cursor:pointer}
+a{color:#5B2E8C;font-weight:700}</style></head><body><main>${body}</main></body></html>`;
 
 module.exports = async (req, res) => {
   const t = G.clean(req.query?.t, 600);

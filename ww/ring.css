@@ -1,34 +1,36 @@
-/* hub places (Horizon v1): a calm list on phones, a grid on wider screens. The 3D ring is retired; ring.js no
+/* hub places (look v5): stacked comic panels on phones, a grid on wider screens. The 3D ring is retired; ring.js no
    longer runs, so the markup's plain list is the layout. */
 .ring{position:relative;margin:0;outline:none}
-.ring-track{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr;gap:0}
-.ring-item{list-style:none;border-top:1px solid var(--line-dim)}
-.ring-item:last-child{border-bottom:1px solid var(--line-dim)}
-@media (min-width:760px){.ring-item:last-child{border-bottom:0}}
-.pnl{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:14px;padding:40px 0;color:var(--ink);background:none;border:0}
+.ring-track{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr;gap:18px}
+.ring-item{list-style:none}
+.pnl{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:10px;height:100%;padding:20px 18px 22px;color:var(--ink);
+  background:var(--cream);border:var(--edge) solid var(--ink);border-radius:var(--radius-card);box-shadow:var(--shadow)}
 .pnl::before,.pnl::after,.pnl .scan{content:none;display:none}
-.pnl .kicker{font:500 var(--text-label)/1.4 var(--font-body);letter-spacing:var(--track-label);text-transform:uppercase;color:var(--muted)}
-.pnl h2{margin:0;font:700 1.35rem/1.3 var(--font-display);letter-spacing:.16em;text-transform:uppercase;color:var(--ink)}
-.pnl p{margin:0;color:var(--muted);max-width:32em}
-.pnl .status{font:500 var(--text-label)/1.4 var(--font-body);letter-spacing:var(--track-label);text-transform:uppercase;color:var(--muted)}
+.pnl .kicker{font:700 var(--text-label)/1.4 var(--font-body);letter-spacing:var(--track-label);text-transform:uppercase;color:var(--muted)}
+.pnl h2{margin:0;font:800 1.75rem/1.02 var(--font-display);letter-spacing:-.025em;color:var(--ink)}
+.pnl p{margin:0;color:var(--ink);max-width:32em}
+.pnl .status{font:700 var(--text-label)/1.4 var(--font-body);letter-spacing:var(--track-label);text-transform:uppercase;color:var(--muted)}
 .pnl .art{display:none}
 .pnl .emblem{display:none}
+.pnl.is-soon{border-style:dashed;box-shadow:none;background:rgba(255,243,227,.7)}
 .pnl.is-soon h2{color:var(--muted)}
-.pnl .go{margin-top:8px;text-decoration:none}
-.pnl .btn.go{align-self:stretch}
-.pnl .socials{display:grid;gap:0;width:100%;margin-top:4px}
-.pnl .socials a{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:16px 0;min-height:52px;text-decoration:none;color:var(--ink);border-top:1px solid var(--line-dim)}
-.pnl .socials a:last-child{border-bottom:1px solid var(--line-dim)}
-.pnl .socials a:hover{color:var(--cyan)}
-.pnl .socials span{font-size:.85rem;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-/* the first place (the free day pass) leads: the one gradient button */
-.ring-item:first-child .pnl h2{font-size:1.6rem}
+.pnl .go{margin-top:6px;text-decoration:none}
+.pnl .btn.go,.pnl .btn-ghost.go{align-self:stretch;justify-content:center}
+.pnl .socials{display:grid;gap:8px;width:100%;margin-top:4px}
+.pnl .socials a{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 14px;min-height:52px;text-decoration:none;color:var(--ink);
+  font-weight:700;background:#fff;border:2px solid var(--ink);border-radius:12px}
+.pnl .socials a:hover{background:#FFE1EE}
+.pnl .socials span{font-size:.88rem;font-weight:500;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+/* the first place (the free day pass) leads: a sunset band across the top of its panel */
+.ring-item:first-child .pnl{padding-top:30px;background:linear-gradient(180deg,#FFE1EE 0,var(--cream) 46%)}
+.ring-item:first-child .pnl::before{content:"";display:block;position:absolute;left:0;right:0;top:0;height:10px;border-radius:15px 15px 0 0;background:var(--sunset)}
+.ring-item:first-child .pnl h2{font-size:2.1rem}
 .ring-ctl,.ring-dots{display:none!important}
 
 @media (min-width:760px){
   .stage:has(.ring){max-width:1120px;padding-left:32px;padding-right:32px}
-  .ring-track{grid-template-columns:1fr 1fr;column-gap:48px}
-  .pnl{height:100%;padding:44px 0}
+  .ring-track{grid-template-columns:1fr 1fr;gap:22px}
+  .stage:has(.ring) .hero{max-width:760px}
 }
 @media (min-width:1100px){
   .ring-track{grid-template-columns:1fr 1fr 1fr}
