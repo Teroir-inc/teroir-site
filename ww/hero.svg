@@ -88,7 +88,7 @@
 
 <!-- palms: far small, right medium, left big -->
 <use xlink:href="#palm" href="#palm" transform="translate(590 246) scale(.2)"/>
-<use xlink:href="#palm" href="#palm" transform="translate(150 266) scale(.19) translate(450 0) scale(-1 1)"/>
+<use xlink:href="#palm" href="#palm" transform="translate(160 202) scale(.15) translate(450 0) scale(-1 1)"/>
 <use xlink:href="#palm" href="#palm" transform="translate(624 128) scale(.42)"/>
 <use xlink:href="#palm" href="#palm" transform="translate(-74 30) scale(.58)"/>
 
@@ -104,7 +104,7 @@
   <path d="M-34 -72 h48 M-34 -58 h34" stroke="#FF8A7A" stroke-width="6" stroke-linecap="round"/>
   <rect x="-20" y="-36" width="62" height="30" rx="9" fill="#FF9EC7" stroke="#2B1E3F" stroke-width="3"/>
   <rect x="-42" y="4" width="54" height="30" rx="9" fill="#FFC8A2" stroke="#2B1E3F" stroke-width="3"/>
-  <rect x="-42" y="94" width="84" height="18" rx="9" fill="none" stroke="url(#hz)" stroke-width="3"/>
+  <rect x="-42" y="94" width="84" height="18" rx="9" fill="#FF9EC7" stroke="#2B1E3F" stroke-width="3"/>
   <path d="M-58 -104 L-14 -104 L-58 -20 Z" fill="#fff" opacity=".3"/>
   <g stroke="#2B1E3F" stroke-width="2.5" opacity=".55"><path d="M70 -80 l10 8 M70 -40 l10 8 M70 0 l10 8 M70 40 l10 8 M70 80 l10 8 M70 120 l10 8"/></g>
   <circle cx="0" cy="142" r="6" fill="none" stroke="#2B1E3F" stroke-width="3"/>
