@@ -33,13 +33,13 @@ cards = []
 for s in systems:
     also = aka(s)
     cards.append(f'''      <li class="sys reveal" id="{e(s['key'])}">
-        <h3>Houkee for {e(s['name'])} users</h3>
+        <h3>HouKee for {e(s['name'])} users</h3>
         <span class="status dev-tag">Compatibility in progress</span>
-        <p>Use {e(s['name'])}? We're working to move {WHAT.get(s['kind'], 'your portfolio')} to Houkee.{f" Includes {e(', '.join(also))}." if also else ''}</p>
+        <p>Use {e(s['name'])}? We're working to move {WHAT.get(s['kind'], 'your portfolio')} to HouKee.{f" Includes {e(', '.join(also))}." if also else ''}</p>
       </li>''')
 
-desc = f"Houkee, housekeeping for co-living houses, is built for co-living operators. Compatibility in progress with {len(systems)} property management systems, including {', '.join(names[:3])} and more."
-TITLE = 'PM software compatibility for co-living operators — Houkee by Teroir'
+desc = f"HouKee, housekeeping for co-living houses, is built for co-living operators. Compatibility in progress with {len(systems)} property management systems, including {', '.join(names[:3])} and more."
+TITLE = 'PM software compatibility for co-living operators — HouKee by Teroir'
 page = f'''<!doctype html>
 <html lang="en">
 <head>
@@ -106,7 +106,7 @@ page = f'''<!doctype html>
     <div class="hero-copy">
       <p class="eyebrow reveal">Software compatibility</p>
       <h1 class="reveal">Run more houses with the same team. <em>We're adding support for the software you already use.</em></h1>
-      <p class="lead reveal">Meet Houkee, housekeeping for co-living houses. It keeps tenant texts, maintenance requests, chores and fines in one place. As we add support for your software, your rooms and tenants can come with you.</p>
+      <p class="lead reveal">Meet HouKee, housekeeping for co-living houses. It keeps tenant texts, maintenance requests, chores and fines in one place. As we add support for your software, your rooms and tenants can come with you.</p>
       <div class="ctas reveal"><a class="btn btn-primary" href="#systems">See your software <span aria-hidden="true">→</span></a><a class="btn btn-ghost" href="/property-management">Read the case study</a></div>
     </div>
   </div>
