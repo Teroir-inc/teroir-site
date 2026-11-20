@@ -300,13 +300,19 @@ def boundary(p, hz, yb, level):
             col = 'url(#neon)' if k < 2 else GRAPHITE
             p.stroke(p._seg((x, y + r.uniform(-2, 2)), (x + L, y + r.uniform(-2, 2)), 3), w=1.1 - k * .15, col=col, op=.75 - k * .1, amp=.6 + k * .5, double=False)
             x += L + r.uniform(10, 50) * (1 + k)
-    # binary riding the boundary, then thinning out into pencil foam
-    for i in range(int(46 + 30 * level)):
-        x = r.uniform(10, W - 10); y = yb + r.uniform(-18, 10)
-        bits = ''.join(r.choice('01') for _ in range(r.randint(2, 6)))
-        fill = c if y < yb - 4 else '#3E3B46'
-        p.raw(f'<text x="{x:.0f}" y="{y:.0f}" font-family="ui-monospace,Menlo,monospace" font-size="{r.choice([9, 10, 11, 12])}" fill="{fill}" '
-              f'opacity="{(.55 if fill == c else .35) * (.6 + .4 * level):.2f}" stroke="none">{bits}</text>')
+    # binary riding the boundary in clean rows (no overlaps, one size per row), thinning out into pencil foam
+    rows = [(-16, 11, c, .6, 1.0), (-2, 10, c, .45, .7), (12, 9, '#3E3B46', .35, .45)]   # (dy, size, colour, opacity, density)
+    for dy, fs, fill, opy, dens in rows:
+        x = r.uniform(0, 30)
+        while x < W - 20:
+            n = r.randint(4, 8)
+            bits = ''.join(r.choice('01') for _ in range(n))
+            wtxt = n * fs * .62 + (n - 1) * 1.5
+            if r.random() < dens:
+                y = shore_y(x + wtxt / 2, yb) + dy
+                p.raw(f'<text x="{x:.0f}" y="{y:.0f}" font-family="ui-monospace,Menlo,monospace" font-size="{fs}" letter-spacing="1.5" fill="{fill}" '
+                      f'opacity="{opy * (.6 + .4 * level):.2f}" stroke="none">{bits}</text>')
+            x += wtxt + fs * r.uniform(2.5, 4.5)
     # the shoreline itself, drawn in pencil, and the foam: curls, bubbles, broken lines
     pts = [(x, shore_y(x, yb) + r.uniform(-1.5, 1.5)) for x in range(0, W + 1, 40)]
     p.stroke(pts, w=1.7, col=GRAPHITE, op=.85)
@@ -422,7 +428,8 @@ def dim(p, a, b, label, off=24, col=BLUE):
 
 
 def frame2(name, level, hz, yb, parts):
-    fade = ('<linearGradient id="fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/>'
+    top0 = 1 if level >= .8 else 0   # the night hero starts cleanly under the nav instead of fading to grey
+    fade = (f'<linearGradient id="fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="{top0}"/>'
             '<stop offset=".08" stop-color="#fff" stop-opacity="1"/><stop offset=".9" stop-color="#fff" stop-opacity="1"/>'
             '<stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>'
             f'<mask id="m" maskUnits="userSpaceOnUse" x="0" y="0" width="{W}" height="{H}"><rect width="{W}" height="{H}" fill="url(#fade)"/></mask>'
@@ -469,17 +476,22 @@ def shore():
     p.hatch([(fx + fw, fy - 8), (fx + fw + 18, fy + 4), (fx + fw + 24, fy + fh), (fx + fw + 6, fy + fh - 10)], angle=80, gap=3, op=.6)
     p.hatch([(fx + fw, fy - 8), (fx + fw + 18, fy + 4), (fx + fw + 24, fy + fh), (fx + fw + 6, fy + fh - 10)], angle=-10, gap=5, op=.35)
     p.hatch([(fx + 6, fy + fh), (fx + fw + 24, fy + fh), (fx + fw + 90, fy + fh + 34), (fx + 50, fy + fh + 40)], angle=15, gap=4, op=.42)
-    p.raw(f'<polygon points="{fx + 10},{fy + 12} {fx + fw - 10},{fy + 4} {fx + fw - 6},{fy + fh - 18} {fx + 14},{fy + fh - 10}" fill="{NIGHT}" fill-opacity=".85" stroke="none"/>')
-    for k in range(5):  # a tiny grid on the screen
-        y = fy + 40 + k * 22
-        p.raw(f'<path d="M{fx + 14} {y + 4}L{fx + fw - 8} {y}" stroke="url(#neon)" stroke-width="1" opacity=".9"/>')
+    # pencil body: bezel, speaker, button, a hatched lower edge; only the screen glows with the digital world
+    sx0, sy0, sx1, sy1 = fx + 14, fy + 22, fx + fw - 12, fy + fh - 26
+    p.line((fx + fw / 2 - 12, fy + 10), (fx + fw / 2 + 12, fy + 8), n=2, w=1.2, double=False)
+    p.circle(fx + fw / 2 + 2, fy + fh - 13, 4, n=10, w=1, double=False)
+    p.hatch([(fx + 6, fy + fh), (fx + fw + 6, fy + fh - 10), (fx + fw + 4, fy + fh - 22), (fx + 5, fy + fh - 14)], angle=-60, gap=3, op=.35)
+    p.raw(f'<polygon points="{sx0 - 6},{sy0 - 6} {sx1 + 6},{sy0 - 12} {sx1 + 8},{sy1 + 2} {sx0 - 2},{sy1 + 8}" fill="{NEON_M}" opacity=".16" stroke="none"/>')
+    p.raw(f'<polygon points="{sx0},{sy0} {sx1},{sy0 - 6} {sx1 + 2},{sy1 - 4} {sx0 + 3},{sy1 + 2}" fill="{NIGHT}" fill-opacity=".9" stroke="#3E3B46" stroke-width="1.2"/>')
+    for k in range(5):  # the screen: a tiny grid
+        y = sy0 + 16 + k * 22
+        p.raw(f'<path d="M{sx0 + 2} {y + 3}L{sx1} {y - 1}" stroke="url(#neon)" stroke-width="1" opacity=".9"/>')
     for k in range(4):
-        x = fx + 22 + k * 20
-        p.raw(f'<path d="M{x} {fy + 30}L{x + 4} {fy + fh - 16}" stroke="url(#neon)" stroke-width=".8" opacity=".7"/>')
+        x = sx0 + 8 + k * 18
+        p.raw(f'<path d="M{x} {sy0 + 4}L{x + 3} {sy1 - 4}" stroke="url(#neon)" stroke-width=".8" opacity=".7"/>')
     # dimensions
     dim(p, (470, 985), (730, 985), '6.00 m', off=-16)
-    dim(p, (fx - 4, fy + fh), (fx - 4, fy), '1.80', off=22)
-    dim(p, (180, 940), (180, 470), '4.70', off=0)
+    dim(p, (180, 940), (180, 470), '4.70 m', off=0)
     return frame2('the shoreline (hero)', L, hz, yb, p.parts)
 
 
@@ -533,8 +545,8 @@ def hut():
     both(p, yb, L, lambda: palm(p, 250, 720, 330, lean=.15, scale=.85))
     footprints(p, [(380, 990), (420, 900), (470, 830), (500, 790)], s=.9)
     rock(p, 760, 880, .9); rock(p, 160, 900, .7)
-    dim(p, (fx, gy + 52), gr, '2.40', off=26); dim(p, gl, (fx, gy + 0), '2.10', off=34)
-    dim(p, (gr[0] + 20, gr[1]), (er[0] + 20, er[1]), '2.80', off=14)
+    dim(p, (fx, gy + 52), gr, '2.40 m', off=26); dim(p, gl, (fx, gy + 0), '2.10 m', off=34)
+    dim(p, (gr[0] + 20, gr[1]), (er[0] + 20, er[1]), '2.80 m', off=14)
     return frame2('the beach hut', L, hz, yb, p.parts)
 
 
@@ -604,8 +616,8 @@ def stall():
     both(p, yb, L, lambda: palm(p, 500, 700, 330, lean=.1, scale=.85))
     footprints(p, [(120, 990), (160, 930), (210, 860)], s=.9)
     rock(p, 80, 760, .8)
-    dim(p, fb_l, fb_r, '2.70', off=34); dim(p, (x0 - 30, ybs), (x0 - 30, yr), '3.00', off=0)
-    dim(p, (vp[0] + (560 - vp[0]) * .7, hz + (1000 - hz) * .7), (vp[0] + (1140 - vp[0]) * .7, hz + (1000 - hz) * .7), '3.20', off=-14)
+    dim(p, fb_l, fb_r, '2.70 m', off=34); dim(p, (x0 - 30, ybs), (x0 - 30, yr), '3.00 m', off=0)
+    dim(p, (vp[0] + (560 - vp[0]) * .7, hz + (1000 - hz) * .7), (vp[0] + (1140 - vp[0]) * .7, hz + (1000 - hz) * .7), '3.20 m', off=-14)
     return frame2('the boardwalk stall', L, hz, yb, p.parts)
 
 
@@ -648,8 +660,8 @@ def tower():
     both(p, yb, L, lambda: palm(p, 1060, 900, 320, lean=-.1, scale=.85))
     footprints(p, [(760, 990), (720, 940), (660, 920)], s=1.0)
     rock(p, 300, 860, 1.2); rock(p, 360, 900, .6); rock(p, 900, 820, .8)
-    dim(p, (cx - 110, base + 30), (cx + 110, base + 22), '2.20', off=18)
-    dim(p, (cx + 190, base), (cx + 190, top - 175), '4.20', off=0)
+    dim(p, (cx - 110, base + 30), (cx + 110, base + 22), '2.20 m', off=18)
+    dim(p, (cx + 190, base), (cx + 190, top - 175), '4.20 m', off=0)
     dim(p, (60, 760), (60, 300), '12.5 m', off=0)
     return frame2('the lifeguard tower', L, hz, yb, p.parts)
 
@@ -691,7 +703,7 @@ def dunes():
     both(p, yb, L, lambda: palm(p, 700, 640, 260, lean=.1, scale=.7))
     footprints(p, [(1100, 990), (980, 900), (860, 860), (720, 850)], s=.9)
     rock(p, 300, 900, 1.0); rock(p, 1000, 700, .7)
-    dim(p, tw_[3], tw_[2], '1.80', off=20)
+    dim(p, tw_[3], tw_[2], '1.80 m', off=20)
     return frame2('the dunes', L, hz, yb, p.parts)
 
 
