@@ -22,7 +22,7 @@ function button({ label, url, primary }) {
 
 // { preheader, kicker, heading, intro:[para], buttons:[{label,url,note?,primary?}], notes:[para], signoff:[line] }
 // footer (marketing only): { unsub, postal } adds an unsubscribe link and the postal address under the card.
-function renderEmail({ preheader = '', kicker = '// wyattworldwide', heading, intro = [], buttons = [], notes = [], signoff = [], footer = null }) {
+function renderEmail({ preheader = '', kicker = 'wyattworldwide', heading, intro = [], buttons = [], notes = [], signoff = [], footer = null }) {
   const p = t => `<p style="margin:0 0 16px 0;font-family:${FONT_BODY};font-size:16px;line-height:1.55;color:${C.ink};">${esc(t)}</p>`;
   const small = t => `<p style="margin:0 0 12px 0;font-family:${FONT_BODY};font-size:14px;line-height:1.5;color:${C.muted};">${esc(t)}</p>`;
   const btns = buttons.map(b => (b.note ? `<p style="margin:8px 0 8px 0;font-family:${FONT_MONO};font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:${C.muted};">${esc(b.note)}</p>` : '') + button(b)).join('\n');

@@ -8,7 +8,7 @@ const S = require('./_share');
 // The claimer's email (html + text). Every link is on www.wyattworldwide.com: teroir.com/free redirects there anyway.
 const freeEmail = ({ guide, link, pass, offer, share }) => E.renderEmail({
   preheader: `Your free guide: ${guide.title}`,
-  kicker: '// free day pass',
+  kicker: 'free day pass',
   heading: 'Your free guide',
   intro: [`Hey, it's Wyatt. Here's your free guide, "${guide.title}".`],
   buttons: [

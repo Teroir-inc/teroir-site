@@ -15,12 +15,12 @@ const readMe = t => { const v = G.verify(t); return v && v.d === 'wr-me' && Date
 const bonusChoices = () => G.GUIDES.filter(g => g.paidOnly).map(g => ({ id: g.id, title: g.title }));
 
 const unlockEmail = (kind, code, email) => kind === 'bonus' ? E.renderEmail({
-  preheader: '3 friends claimed a guide with your link.', kicker: '// bonus unlocked', heading: 'You unlocked a bonus guide',
+  preheader: '3 friends claimed a guide with your link.', kicker: 'bonus unlocked', heading: 'You unlocked a bonus guide',
   intro: ["Hey, it's Wyatt. 3 friends claimed a free guide with your link. Thanks for sharing. Pick your bonus guide here."],
   buttons: [{ label: 'Pick your bonus guide', url: meUrl(code), primary: true }],
   notes: ['At 10 friends, you get all ten guides.'], signoff: ['Wyatt', G.SIGNOFF],
 }) : E.renderEmail({
-  preheader: '10 friends claimed a guide with your link. All ten guides are inside.', kicker: '// all ten guides', heading: 'You unlocked all ten guides',
+  preheader: '10 friends claimed a guide with your link. All ten guides are inside.', kicker: 'all ten guides', heading: 'You unlocked all ten guides',
   intro: ["Hey, it's Wyatt. 10 friends claimed a free guide with your link. Thanks for sharing. Here are all ten guides."],
   buttons: G.GUIDES.map((g, i) => ({ label: `Download: ${g.title}`, url: G.linkFor(g.id, email, 730), primary: i === 0 })),
   notes: ['These links work for two years. Save the PDFs somewhere you will see them again.'], signoff: ['Wyatt', G.SIGNOFF],
@@ -67,7 +67,7 @@ async function bonus(req, res, b) {
     if (!guide) return res.status(400).json({ ok: false, error: 'guide' });
     if (!(await Q.takeBonus(code, guide.id))) return res.status(409).json({ ok: false, error: 'sent' });
     await G.send({ from: G.FROM, to: [s.email], reply_to: 'wyatt@teroir.com', subject: `Your bonus guide: ${guide.title}`, ...E.renderEmail({
-      preheader: `Your bonus guide: ${guide.title}`, kicker: '// bonus guide', heading: 'Your bonus guide',
+      preheader: `Your bonus guide: ${guide.title}`, kicker: 'bonus guide', heading: 'Your bonus guide',
       intro: [`Hey, it's Wyatt. Thanks for sharing. Here's your bonus guide, "${guide.title}".`],
       buttons: [{ label: 'Download the guide', url: G.linkFor(guide.id, s.email, 730), note: guide.title, primary: true }],
       notes: ['The download link works for two years.'], signoff: ['Wyatt', G.SIGNOFF],

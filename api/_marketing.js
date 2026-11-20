@@ -65,7 +65,7 @@ async function abandoned(s) {
     to: email, kind: 'abandoned', idem: `abandon-${s.id}`,
     subject: `Still want ${/^"/.test(item) ? 'the guide' : item}? Your cart is saved`, // a guide title is too long for a subject // approved 11-16 (Wyatt: "emails approved"), tightened by the team
     content: {
-      preheader: 'One tap picks up where you left off.', kicker: '// order saved',
+      preheader: 'One tap picks up where you left off.', kicker: 'order saved',
       heading: 'Your cart is saved',
       intro: [`Hey, it's Wyatt. You started checking out for ${item} and didn't finish. One tap picks up where you left off.`],
       buttons: [{ label: 'Finish your order', url, primary: true }],
