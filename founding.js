@@ -22,7 +22,7 @@
     $('fq-you-h').textContent = d.place ? placeText(d.place) : "You're on the list.";
     $('fq-you-p').textContent = note;
     $('fq-invite').value = d.invite;
-    $('fq-count').textContent = `Each operator who joins with your link and confirms their email moves you up ${d.step || 3} places.` +
+    $('fq-count').textContent = `Each operator who joins with your link and confirms their email moves you up to ${d.step || 3} places.` +
       (typeof d.invites === 'number' ? ` So far, ${d.invites} ${d.invites === 1 ? 'has' : 'have'} joined with it.` : '');
     showTotal(d.total);
   }

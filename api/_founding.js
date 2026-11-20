@@ -20,19 +20,20 @@ function joinEmail({ name, place, confirm, invite, status }) {
       `Thanks for joining the founding list for Houkee. You're number ${place} right now.`, '',
       'Please confirm your email:', confirm, '',
       'Your invite link:', invite, '',
-      `Each operator who joins with your link and confirms their email moves you up ${Q.INVITE_STEP} places.`, '',
+      `Each operator who joins with your link and confirms their email moves you up to ${Q.INVITE_STEP} places.`, '',
       'See your place any time:', status, '',
-      'We offer the 3 founding spots in list order to operators who are a fit (co-living or shared housing, 25+ rooms), then bring on the rest in order.', "I'll email you when your turn comes up.", '',
+      'We offer the 3 founding spots in list order to operators who are a fit: co-living or shared housing, 25+ rooms. Then we bring on the rest in order.', "I'll email you when your turn comes up.", '',
       'Reply to this email to tell me about your houses, or to leave the list.', '',
       'Wyatt Horton', 'Founder, Teroir', 'https://teroir.com'].join('\n'),
   };
 }
-function movedEmail({ name, place, status }) {
+function movedEmail({ name, place, moved, status }) {
   return {
     subject: `You moved up to number ${place} on the Houkee founding list`,
     text: [`Hi ${name || 'there'},`, '',
-      `An operator you invited just confirmed their email, so you moved up ${Q.INVITE_STEP} places. You're number ${place} now.`, '',
+      `An operator you invited just confirmed their email, so you moved up ${moved} ${moved === 1 ? 'place' : 'places'}. You're number ${place} now.`, '',
       'See your place any time:', status, '',
+      'Reply to this email to leave the list.', '',
       'Wyatt Horton', 'Founder, Teroir'].join('\n'),
   };
 }
@@ -42,13 +43,22 @@ module.exports = async (req, res) => {
   const origin = G.originOf(req);
   res.setHeader('Cache-Control', 'no-store');
 
+  // admin: take someone off the list (a "leave the list" reply, or a test). Bearer CRON_SECRET, never public.
+  if (req.method === 'POST' && q.remove) {
+    const want = `Bearer ${process.env.CRON_SECRET || ''}`, got = String(req.headers.authorization || '');
+    if (!process.env.CRON_SECRET || got.length !== want.length || !require('crypto').timingSafeEqual(Buffer.from(got), Buffer.from(want))) return res.status(401).json({ ok: false });
+    const b = typeof req.body === 'object' && req.body ? req.body : {};
+    try { return res.status(200).json({ ok: true, removed: await Q.foundingRemove(G.clean(b.email, 200)) }); }
+    catch (e) { console.error('founding remove failed', e.message); return res.status(503).json({ ok: false, error: 'store' }); }
+  }
+
   if (req.method === 'GET' && q.confirm) {
     const code = readTok(q.confirm, 'fq-ok');
     const go = to => { res.setHeader('Location', to); return res.status(303).end(); };
     if (!code) return go('/founding?bad=1');
     try {
       const c = await Q.foundingConfirm(code);
-      if (c.credited && c.inviter?.email && c.inviter.place) {
+      if (c.credited && c.inviter?.email && c.inviter.place && c.inviter.moved > 0) {
         const status = `${origin}/founding?me=${meToken(c.inviter.code)}`;
         await G.send({ from: G.FROM, to: [c.inviter.email], reply_to: 'wyatt@teroir.com', ...movedEmail({ ...c.inviter, status }) }, `fq-moved-${code}`)
           .catch(e => console.error('founding moved email failed', e.message));

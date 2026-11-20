@@ -15,7 +15,7 @@ const freeEmail = ({ guide, link, pass, offer, share }) => E.renderEmail({
     { label: 'Download the guide', url: link, note: guide.title, primary: true },
     { label: 'Open Free Street', url: pass, note: 'Your Free Street pass · no login needed' },
     { label: 'Get any guide for $29 — 24 hours', url: offer, note: 'For the next 24 hours, any of the longer guides is $29' },
-    ...(share ? [{ label: 'Get your share link', url: share, note: '3 friends claim a guide with it: you pick a longer guide free' }] : []),
+    ...(share ? [{ label: 'Get your share link', url: share, note: 'When 3 friends claim a guide with it, you pick a longer guide free' }] : []),
   ],
   notes: ['The download link works for 30 days. Save the PDF somewhere you will see it again.',
     'Questions, or want something like this built for your business? Just reply to this email.'],

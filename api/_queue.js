@@ -149,8 +149,17 @@ async function foundingConfirm(code) {
   const why = noCredit(inv, u) || (await underDailyCap(F, u.invitedBy) ? null : 'daily cap');
   if (why) { await one(['HSET', `${F}:u:${code}`, 'noCredit', why]); return { first: true, credited: false, why }; }
   await one(['HINCRBY', `${F}:u:${u.invitedBy}`, 'invites', 1]);
+  const before = await foundingPlace(u.invitedBy);
   const place = await moveUp(u.invitedBy);
-  return { first: true, credited: true, why: null, inviter: { code: u.invitedBy, email: inv.email, name: inv.name, place } };
+  return { first: true, credited: true, why: null, inviter: { code: u.invitedBy, email: inv.email, name: inv.name, place, moved: before && place ? before - place : 0 } };
+}
+
+// Takes a person off the founding list. Returns true if they were on it.
+async function foundingRemove(email) {
+  const n = norm(email); if (!n) return false;
+  const code = await one(['GET', `${F}:e:${n}`]); if (!code) return false;
+  await pipe([['ZREM', `${F}:q`, code], ['DEL', `${F}:u:${code}`], ['DEL', `${F}:e:${n}`]]);
+  return true;
 }
 
 // ---- wyattworldwide share links (wr)
@@ -192,4 +201,4 @@ async function shareStatus(code) {
 const takeBonus = (code, guideId) => one(['HSETNX', `${W}:u:${code}`, 'bonusGuide', guideId]).then(Boolean);
 
 module.exports = { PV, foundingTotal, INVITE_STEP, SHOW_TOTAL_FROM, REWARDS, kv, pipe, norm, netOf, isDisposable, noCredit, okCode, newCode,
-  foundingJoin, foundingPlace, foundingStatus, foundingConfirm, moveUp, shareJoin, shareOpened, shareStatus, takeBonus, wUser, fUser };
+  foundingJoin, foundingRemove, foundingPlace, foundingStatus, foundingConfirm, moveUp, shareJoin, shareOpened, shareStatus, takeBonus, wUser, fUser };
