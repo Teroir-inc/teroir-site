@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Repair requests, handled — Teroir demo</title>
+<title>From a text to a work order — Teroir demo</title>
 <meta name="robots" content="noindex, nofollow">
-<meta name="description" content="A damage photo becomes a work order, a safety call, a quote request and a vendor shortlist, waiting for your approval. Demo on sample data.">
+<meta name="description" content="A tenant's text becomes a ticket, then a work order that waits for your OK. Demo on sample data.">
 <meta name="theme-color" content="#F6F4EE">
 <meta name="color-scheme" content="light">
 <link rel="icon" href="/brand/favicon.svg" type="image/svg+xml">
@@ -17,16 +17,47 @@
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="/pages.css">
 <style>
-/* Unlisted demo page (noindex; not in the sitemap or the nav). Four phone-screen recordings of real runs on sample data. */
+/* Unlisted demo (noindex). Show, don't tell (Wyatt 11-20): one phone, three steps, short captions, a replay button.
+   Sample data only: the tenant, the house and the text are made up. Reduced motion: the three steps sit side by side. */
+.rd{padding-top:28px}
 .demo-label{display:inline-block;font-family:var(--mono);font-size:12px;letter-spacing:.04em;text-transform:uppercase;padding:4px 10px;border-radius:999px;border:1px solid var(--line-2);background:var(--panel);color:var(--muted)}
-.rd-lines{margin:0 0 28px;padding-left:20px;max-width:40em;color:var(--muted);font-size:clamp(16px,1.9vw,18px)}
-.rd-lines li{margin:6px 0}
-.rd-vids{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:20px}
-.rd-vids figure{margin:0;min-width:0;display:grid;gap:8px;align-content:start}
-.rd-vids video{width:100%;aspect-ratio:390/844;border-radius:18px;border:1px solid var(--line-2);background:var(--panel);display:block}
-.rd-vids figcaption{font-size:14px;color:var(--muted);line-height:1.5}
-.rd-vids figcaption b{color:var(--text);font-weight:600;display:block}
-.rd-note{font-size:13px;color:var(--dim);margin-top:24px;max-width:46em}
+.rd h1{margin:14px 0 20px;font-size:clamp(34px,8vw,56px)}
+.rd-stage{display:grid;justify-items:center;gap:16px}
+.ph{position:relative;width:min(300px,82vw);aspect-ratio:300/560;border-radius:40px;background:#13261E;padding:12px;box-shadow:0 20px 60px -20px rgba(15,42,32,.45)}
+.ph::before{content:"";position:absolute;top:18px;left:50%;width:70px;height:6px;margin-left:-35px;border-radius:3px;background:#2A3D35}
+.scr{position:relative;height:100%;border-radius:30px;background:#F6F4EE;overflow:hidden;padding:44px 14px 14px;display:flex;flex-direction:column;gap:12px;font-size:14px}
+.scr .bar{position:absolute;top:14px;left:18px;right:18px;display:flex;justify-content:space-between;font:500 11px var(--mono);color:var(--muted)}
+.bub{align-self:flex-start;max-width:82%;padding:10px 12px;border-radius:16px 16px 16px 4px;background:#fff;border:1px solid var(--line-2);line-height:1.35}
+.bub small{display:block;font:500 11px var(--mono);color:var(--muted);margin-bottom:3px}
+.pic{width:96px;height:64px;border-radius:10px;margin-top:6px;background:linear-gradient(180deg,#C9D6CF,#9FB3A8);position:relative;overflow:hidden}
+.pic::after{content:"";position:absolute;left:38px;top:20px;width:12px;height:22px;border-radius:50% 50% 50% 50%/60% 60% 40% 40%;background:#5B8DB8;opacity:.8}
+.card{border-radius:16px;background:#fff;border:1px solid var(--line-2);padding:12px;display:grid;gap:6px;box-shadow:0 6px 20px -12px rgba(15,42,32,.4)}
+.card .k{font:500 11px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.card b{font-size:16px}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.tag{font-size:12px;padding:3px 8px;border-radius:999px;background:#EEF1EC;color:var(--text)}
+.tag.hot{background:#F7DCCF;color:#9A3412}
+.acts{display:flex;gap:8px;margin-top:4px}
+.acts span{flex:1;text-align:center;padding:8px 0;border-radius:10px;font-weight:600;font-size:13px;border:1px solid var(--line-2)}
+.acts .ok{background:var(--text);color:#F6F4EE;border-color:var(--text)}
+.wait{font-size:12px;color:#9A3412;font-weight:600}
+.cap{min-height:1.4em;margin:0;text-align:center;font-size:clamp(17px,2.4vw,21px);font-weight:600;letter-spacing:-.01em;max-width:28ch}
+.dots{display:flex;gap:8px}
+.dots i{width:9px;height:9px;border-radius:50%;background:var(--line-2)}
+.rd-ctl{display:flex;gap:12px;align-items:center;flex-wrap:wrap;justify-content:center}
+/* the timeline: each step's piece appears on its turn */
+.s1,.s2,.s3{opacity:0;transform:translateY(10px)}
+.st-1 .s1,.st-2 .s1,.st-2 .s2,.st-3 .s1,.st-3 .s2,.st-3 .s3{opacity:1;transform:none}
+.st-2 .s1,.st-3 .s1{opacity:.45}.st-3 .s2{opacity:.6}
+.st-1 .dots i:nth-child(1),.st-2 .dots i:nth-child(2),.st-3 .dots i:nth-child(3){background:var(--text)}
+@media (prefers-reduced-motion:no-preference){.s1,.s2,.s3{transition:opacity .5s ease,transform .5s ease}}
+/* reduced motion: no timeline; the three steps sit side by side, each with its caption */
+.rd-still{display:none}
+@media (prefers-reduced-motion:reduce){.rd-stage{display:none}.rd-still{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px}
+  .rd-still .ph{width:100%;max-width:280px;margin:0 auto}.rd-still .s1,.rd-still .s2,.rd-still .s3{opacity:1;transform:none}.rd-still figure{margin:0;display:grid;gap:10px;justify-items:center}}
+.rd-cta{margin-top:30px;display:grid;justify-items:center;gap:8px}
+.rd-cta p{margin:0;font-size:14px;color:var(--muted)}
+.rd-note{font-size:13px;color:var(--dim);text-align:center;margin-top:18px}
 </style>
 </head>
 <body>
@@ -35,44 +66,65 @@
 <header class="nav pg-nav" id="top">
   <div class="wrap nav-in">
     <a class="brand" href="/" aria-label="Teroir — home"><img src="/brand/logo.svg" alt="Teroir" width="97" height="30"></a>
-    <nav class="links pg" aria-label="Pages"><a href="/property-management">Case study</a></nav>
+    <nav class="links pg" aria-label="Pages"><a href="/talk">Talk to us</a></nav>
   </div>
 </header>
 
 <main id="main">
-<section class="hero page-hero">
-  <div class="wrap hero-in">
-    <div class="hero-copy">
-      <p><span class="demo-label">Demo on sample data</span></p>
-      <h1>A repair request, <em>handled before you open it.</em></h1>
-      <ul class="rd-lines">
-        <li>A tenant sends a photo and a few words by text, email or web form.</li>
-        <li>The system opens a work order, flags anything unsafe, and drafts a quote request with a shortlist of vendors.</li>
-        <li>Nothing goes to a vendor until you approve it.</li>
-      </ul>
-      <div class="ctas"><a class="btn btn-primary" href="/talk?for=business&amp;src=repair-demo">Book a 15-min walkthrough <span aria-hidden="true">→</span></a></div>
-    </div>
-  </div>
-</section>
-
-<section class="section" aria-labelledby="runs-h">
+<section class="section rd" aria-labelledby="rd-h">
   <div class="wrap">
-    <h2 id="runs-h">Four real runs, <em>recorded on a phone.</em></h2>
-    <div class="rd-vids">
-      <figure><video src="/demo/repair-media/ceiling.mp4" poster="/demo/repair-media/ceiling.jpg" controls playsinline preload="none" aria-label="Recording: ceiling water stain reported through the web form"></video>
-        <figcaption><b>Ceiling leak, web form</b>Seen versus guessed kept apart, marked an emergency, water-damage vendors shortlisted.</figcaption></figure>
-      <figure><video src="/demo/repair-media/outlet.mp4" poster="/demo/repair-media/outlet.jpg" controls playsinline preload="none" aria-label="Recording: scorched outlet reported through the web form"></video>
-        <figcaption><b>Scorched outlet, web form</b>Burn marks flagged as a safety issue first, electricians shortlisted.</figcaption></figure>
-      <figure><video src="/demo/repair-media/text.mp4" poster="/demo/repair-media/text.jpg" controls playsinline preload="none" aria-label="Recording: a tenant text conversation that is raised to an emergency"></video>
-        <figcaption><b>Tenant text</b>A kind reply with the work order number; a follow-up about a burning smell raises it to an emergency.</figcaption></figure>
-      <figure><video src="/demo/repair-media/email.mp4" poster="/demo/repair-media/email.jpg" controls playsinline preload="none" aria-label="Recording: a repair request emailed with a photo"></video>
-        <figcaption><b>Email with a photo</b>The same work order and quote request, plus the reply the sender got.</figcaption></figure>
+    <span class="demo-label">Sample data</span>
+    <h1 id="rd-h">From a text to <em>a work order.</em></h1>
+
+    <div class="rd-stage st-3" id="rd" aria-live="polite">
+      <div class="ph"><div class="scr">
+        <div class="bar"><span>9:41</span><span>Maple House</span></div>
+        <div class="bub s1"><small>Tenant · Room 3</small>My sink is leaking 😟<div class="pic" role="img" aria-label="Photo of a wet pipe under a sink"></div></div>
+        <div class="card s2"><span class="k">Ticket #1042</span><b>Kitchen sink leak</b><div class="tags"><span class="tag">Kitchen</span><span class="tag">Room 3</span></div></div>
+        <div class="card s3"><span class="k">Work order</span><b>Repair request: 3 plumbers to ask</b><span class="wait">Waiting for your OK</span><div class="acts"><span class="ok">Approve</span><span>Edit</span></div></div>
+      </div></div>
+      <p class="cap" id="rd-cap">A work order waits for your OK.</p>
+      <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
+      <div class="rd-ctl"><button class="btn btn-sm btn-ghost" type="button" id="rd-replay">Replay ↺</button></div>
     </div>
-    <p class="rd-note">Sample data: the house, photos, tenant and vendors are invented. The text conversation is simulated. Photo analysis is a real AI model run, recorded November 2026.</p>
-    <div class="ctas" style="margin-top:28px"><a class="btn btn-primary" href="/talk?for=business&amp;src=repair-demo">Book a 15-min walkthrough <span aria-hidden="true">→</span></a></div>
+
+    <div class="rd-still" aria-label="The three steps">
+      <figure><div class="ph"><div class="scr"><div class="bar"><span>9:41</span><span>Maple House</span></div>
+        <div class="bub s1"><small>Tenant · Room 3</small>My sink is leaking 😟<div class="pic" role="img" aria-label="Photo of a wet pipe under a sink"></div></div></div></div>
+        <figcaption class="cap">1. A tenant texts about a leak.</figcaption></figure>
+      <figure><div class="ph"><div class="scr"><div class="bar"><span>9:41</span><span>Maple House</span></div>
+        <div class="card s2"><span class="k">Ticket #1042</span><b>Kitchen sink leak</b><div class="tags"><span class="tag">Kitchen</span><span class="tag">Room 3</span></div></div></div></div>
+        <figcaption class="cap">2. It becomes a ticket, all in one place.</figcaption></figure>
+      <figure><div class="ph"><div class="scr"><div class="bar"><span>9:41</span><span>Maple House</span></div>
+        <div class="card s3"><span class="k">Work order</span><b>Repair request: 3 plumbers to ask</b><span class="wait">Waiting for your OK</span><div class="acts"><span class="ok">Approve</span><span>Edit</span></div></div></div></div>
+        <figcaption class="cap">3. A work order waits for your OK.</figcaption></figure>
+    </div>
+
+    <div class="rd-cta">
+      <a class="btn btn-primary" href="mailto:wyatt@teroir.com?subject=A%2015-minute%20call%20(demo)">Email Wyatt to book a 15-minute call <span aria-hidden="true">→</span></a>
+      <p>You'll get 2 or 3 times back by email.</p>
+    </div>
+    <p class="rd-note">Sample data: the house, tenant and text are made up. Nothing goes out until you say OK.</p>
   </div>
 </section>
 </main>
+<script>
+// three steps, about 3 s each (the whole run is under 10 s); Replay starts again. Reduced motion never runs this.
+(() => {
+  const el = document.getElementById('rd'), cap = document.getElementById('rd-cap');
+  if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const CAPS = ['A tenant texts about a leak.', 'It becomes a ticket, all in one place.', 'A work order waits for your OK.'];
+  let timers = [];
+  const go = n => { el.className = 'rd-stage st-' + n; cap.textContent = CAPS[n - 1]; };
+  function play() {
+    timers.forEach(clearTimeout); timers = [];
+    el.className = 'rd-stage st-0'; cap.textContent = '';
+    [1, 2, 3].forEach((n, i) => timers.push(setTimeout(() => go(n), 300 + i * 3000)));
+  }
+  document.getElementById('rd-replay').addEventListener('click', play);
+  play();
+})();
+</script>
 
 <footer class="foot">
   <div class="wrap foot-in">
