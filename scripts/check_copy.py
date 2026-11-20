@@ -80,6 +80,11 @@ FORBIDDEN = {
     'works with PadSplit': (r'\bworks? (?:with|on|in|for) PadSplit|(?:connects?|syncs?|integrates?|plugs? in(?:to)?) (?:with |to |into )?PadSplit'
                             r'|PadSplit (?:works|is supported|support is live|integration (?:is )?(?:live|ready))|\bPadSplit (?:portfolio|client|operator we ran)'
                             r'|(?:compatible|integrated) with PadSplit(?! is in progress)'),
+    # copy review 11-20: taking data out of PadSplit (its terms bar it). "move/import/bring/transfer … from PadSplit",
+    # or "move … to HouKee" within a sentence of a PadSplit mention.
+    'data out of PadSplit': (r'\b(?:mov|import|bring|bringing|transfer|migrat|export|pull)\w*\b[^.?!]{0,80}\bfrom PadSplit'
+                             r'|PadSplit[^.]{0,120}[.?!]?[^.?!]{0,120}\b(?:mov|import|bring|transfer|migrat)\w*\b[^.?!]{0,60}\b(?:to|into) (?:HouKee|PM\.BOS)'
+                             r'|\b(?:mov|import|bring|transfer|migrat)\w*\b[^.?!]{0,60}\b(?:to|into) (?:HouKee|PM\.BOS)[^.?!]{0,80}PadSplit'),
     # DECISIONS 2026-11-07, relayed by the ops session 2026-11-11.
     'by small businesses': r'by small businesses',
     'federated': r'\bfederat',  # technical and investor material only, never the site
@@ -125,6 +130,10 @@ CONTROL = {
     'cities': ['Houston.', 'In Houston, Texas.', 'Dallas.', 'Fort Worth.', 'Houston and Dallas.'],
     'revenue label': ['Pre-revenue.'],
     '70-second demo': ['Watch the 70-second demo.'],
+    'data out of PadSplit': ['We\'re working on bringing your properties, rooms and members from PadSplit into PM.BOS.',
+                             "Use PadSplit? We're working to move your houses, rooms and members to HouKee.",
+                             'Import your rooms from PadSplit.', 'Transfer tenants from PadSplit in one click.',
+                             'Move your houses to HouKee from PadSplit.'],
     'works with PadSplit': ['A PadSplit portfolio.', 'HouKee works with PadSplit.', 'It connects to PadSplit.',
                             'Syncs with PadSplit.', 'PadSplit is supported.', 'Compatible with PadSplit.', 'Our PadSplit client.'],
     'by small businesses': ['Built by small businesses.'],
@@ -149,8 +158,9 @@ CLEAN = (
     '2.8× the weekly workload. 900+ tickets tracked. Coffee roaster. Ads will never change ranking, ratings or '
     "the gate's decisions. Fees are never taken from funds in transit. Fines assessed from the photo records. "
     # FACTS 2026-11-19 approved forms
-    'It ran 218 rooms in Houston and DFW. HouKee is built for PadSplit hosts. Use PadSplit? We\'re working to move your '
-    "houses, rooms and members to HouKee. HouKee for PadSplit users. Software we're working on compatibility with: "
+    'It ran 218 rooms in Houston and DFW. HouKee is built for PadSplit hosts. Use PadSplit? HouKee is built for '
+    "PadSplit hosts. Compatibility is in progress. HouKee for PadSplit users. Use AppFolio? We're working on HouKee "
+    "compatibility with AppFolio. Software we're working on compatibility with: "
     'PadSplit, Hostaway and more. Compatibility in progress. The software you already run on. Co-living or PadSplit host. "key": "X-Robots-Tag".'
 )
 

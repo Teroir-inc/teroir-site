@@ -12,11 +12,14 @@ SRC = Path(sys.argv[1] if len(sys.argv) > 1 else '/root/teroir/pmbos/bos_pm_syst
 OUT = Path(__file__).resolve().parent.parent / 'integrations.html'
 e = html.escape
 
-WHAT = {  # what compatibility would bring in, by kind of system
-    'room_rental': 'your properties, rooms and members',
-    'maintenance': 'your maintenance requests',
-    'pm_system': 'your properties, units and tenants',
-}
+# Card wording (copy review 11-20): compatibility work only. Never "move … to HouKee" or "from PadSplit": that reads as
+# pulling data out of the other system, which PadSplit's terms bar.
+def card_text(s, also):
+    if s['name'] == 'PadSplit':
+        return 'Use PadSplit? HouKee is built for PadSplit hosts. Compatibility is in progress.'
+    n = e(s['name'])
+    inc = f" Includes {e(', '.join(also))}." if also else ''
+    return f"Use {n}? We're working on HouKee compatibility with {n}.{inc}"
 
 def aka(s):
     """Product-line names worth listing for search (e.g. Yardi Breeze), not spelling variants of the name."""
@@ -33,13 +36,13 @@ cards = []
 for s in systems:
     also = aka(s)
     cards.append(f'''      <li class="sys reveal" id="{e(s['key'])}">
-        <h3>PM.BOS for {e(s['name'])} users</h3>
+        <h3>HouKee for {e(s['name'])} users</h3>
         <span class="status dev-tag">Compatibility in progress</span>
-        <p>We're working on bringing {WHAT.get(s['kind'], 'your portfolio')} from {e(s['name'])} into PM.BOS, for co-living operators who run on it.{f" Includes {e(', '.join(also))}." if also else ''}</p>
+        <p>{card_text(s, also)}</p>
       </li>''')
 
-desc = f"PM.BOS is built for co-living operators. Compatibility in progress with {len(systems)} property management systems, including {', '.join(names[:3])} and more."
-TITLE = 'PM software compatibility for co-living operators — PM.BOS by Teroir'
+desc = f"HouKee, housekeeping for co-living houses, is built for co-living operators. Compatibility in progress with {len(systems)} property management systems, including {', '.join(names[:3])} and more."
+TITLE = 'PM software compatibility for co-living operators — HouKee by Teroir'
 page = f'''<!doctype html>
 <html lang="en">
 <head>
@@ -104,9 +107,9 @@ page = f'''<!doctype html>
   <div class="hero-bg" aria-hidden="true"></div>
   <div class="wrap hero-in">
     <div class="hero-copy">
-      <p class="eyebrow reveal">PM.BOS compatibility</p>
-      <h1 class="reveal">Built for <em>co-living operators.</em></h1>
-      <p class="lead reveal">PM.BOS keeps tenant messages, maintenance requests, chores and fines for shared housing in one place. We're working on compatibility with the property management software you already run on, so your properties, rooms and tenants come with you.</p>
+      <p class="eyebrow reveal">Software compatibility</p>
+      <h1 class="reveal">Run more doors with the team you have. <em>We're working on compatibility with the software you already use.</em></h1>
+      <p class="lead reveal">Meet HouKee, housekeeping for co-living houses. It keeps tenant texts, maintenance requests, chores and fines in one place. We're working on compatibility with the software you already run on.</p>
       <div class="ctas reveal"><a class="btn btn-primary" href="#systems">See your software <span aria-hidden="true">→</span></a><a class="btn btn-ghost" href="/property-management">Read the case study</a></div>
     </div>
   </div>
