@@ -72,7 +72,7 @@ FORBIDDEN = {
     '490 of 901': r'490 of 901|\b54%',
     'repair tickets': r'repair tickets',
     # FACTS: metro names only as "Houston and DFW" (never a city on its own, never the client's properties).
-    'cities': r'\bHouston\b(?! and DFW)|Dallas|Fort Worth',
+    'cities': r'\bHouston\b(?! and DFW)(?!-dfw)|Dallas|Fort Worth',   # the /coliving/houston-dfw URL slug is not a claim
     'revenue label': r'pre-revenue|revenue status',
     '70-second demo': r'70[- ]?s(?:ec(?:ond)?)?\b',
     # FACTS 2026-11-19: "built for PadSplit hosts" and in-progress compatibility wording are fine; never "works with
@@ -161,7 +161,7 @@ CLEAN = (
     'It ran 218 rooms in Houston and DFW. HouKee is built for PadSplit hosts. Use PadSplit? HouKee is built for '
     "PadSplit hosts. Compatibility is in progress. HouKee for PadSplit users. Use AppFolio? We're working on HouKee "
     "compatibility with AppFolio. Software we're working on compatibility with: "
-    'PadSplit, Hostaway and more. Compatibility in progress. The software you already run on. Co-living or PadSplit host. "key": "X-Robots-Tag".'
+    'https://teroir.com/coliving/houston-dfw. PadSplit, Hostaway and more. Compatibility in progress. The software you already run on. Co-living or PadSplit host. "key": "X-Robots-Tag".'
 )
 
 

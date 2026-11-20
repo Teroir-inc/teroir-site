@@ -10,7 +10,7 @@
   // the inviter's code from ?r=, kept for this visit so a reload still credits them
   const ref = (qs.get('r') || store.get('fq-ref') || '').toLowerCase().replace(/[^a-z2-9]/g, '').slice(0, 8);
   if (ref.length === 8) { $('fq-ref').value = ref; store.set('fq-ref', ref); $('fq-invited').hidden = false; }
-  let src = (qs.get('src') || qs.get('utm_source') || '').replace(/[^\w.\-]/g, '').slice(0, 60);
+  let src = (qs.get('src') || qs.get('utm_source') || form.dataset.src || '').replace(/[^\w.\-]/g, '').slice(0, 60); // city pages set data-src
   if (!src && ref) src = 'invite';
   $('fq-src').value = src;
   $('fq-t').value = String(Date.now());

@@ -240,3 +240,6 @@ a.pg-card:hover{border-color:rgba(226,112,63,.5);transform:translateY(-2px)}
 .fq-copy{display:flex;gap:10px;align-items:center}
 .fq-copy input{flex:1;min-width:0;min-height:48px;padding:12px 14px;border-radius:12px;border:1px solid var(--line-2);background:rgba(246,244,238,.9);color:var(--text);font:inherit;font-size:15px}
 .fq-count{margin:14px 0 0;font-size:15px;color:var(--muted)}
+
+/* /coliving/<city>: the result numbers lead, the raw counts sit small beside them (FACTS presentation rule) */
+.cv-big{display:block;font-size:34px;line-height:1.05;letter-spacing:-.02em;color:var(--text);margin-bottom:4px}
