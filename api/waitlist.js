@@ -17,6 +17,7 @@ async function send(payload) {
 }
 
 module.exports = async (req, res) => {
+  if ((req.query || {}).list === 'founding') return require('./_founding')(req, res); // teroir.com/founding (see api/_founding.js)
   const b = typeof req.body === 'object' && req.body ? req.body : {};
   const wantsJson = String(req.headers['content-type'] || '').includes('application/json');
   const reply = (status, body) => {

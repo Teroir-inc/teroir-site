@@ -2,6 +2,7 @@
 const fs = require('fs');
 const path = require('path');
 const G = require('./_guides');
+const S = require('./_share');
 
 const page = (res, status, msg) => {
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -16,6 +17,7 @@ module.exports = async (req, res) => {
   try { tok = G.verify(req.query?.t); } catch (e) { console.error('guide', e.message); return page(res, 500, 'Downloads are not available right now. Please email wyatt@teroir.com.'); }
   if (!tok || !G.BY_ID[tok.d]) return page(res, 404, 'This download link is not valid. Check that you copied the whole link from your email.');
   if (Date.now() > tok.x) return page(res, 410, 'This download link has expired. Reply to the email it came in and Wyatt will send you a fresh one.');
+  await S.opened(tok.e); // a friend's guide opened: counts toward their inviter's share rewards (never throws)
   try {
     const pdf = G.decrypt(fs.readFileSync(path.join(__dirname, '..', 'guides', `${tok.d}.pdf.enc`)));
     res.setHeader('Content-Type', 'application/pdf');
