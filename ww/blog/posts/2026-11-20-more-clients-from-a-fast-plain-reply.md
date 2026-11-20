@@ -1,5 +1,5 @@
 ---
-title: "more clients come from a fast, plain reply"
+title: "more clients from a fast reply"
 date: 2026-11-20
 slug: more-clients-from-a-fast-plain-reply
 description: "what i think matters more than any tool when you want more clients, and one small thing you can try this week."
@@ -10,7 +10,7 @@ you can get more clients without knowing how any of the tech works. i believe th
 
 when someone reaches out to a business, they are asking one thing. can you help me. if the reply comes quick and sounds like a real person, that is already half the sale. if it takes three days, they have moved on.
 
-i think about this a lot because i run my business from my phone. i am not always at a desk. some days i am on a trail, some days i am at the beach. what keeps the work moving is not a fancy setup. it is that i answer people and i answer plainly.
+i think about this a lot because i run my business from my phone. i am not always at a desk. some days i am on a trail, some days i am at the beach. what keeps the work moving is not a fancy setup. it is that i answer people, and i answer fast.
 
 ## the small habit behind my first 10k month
 
