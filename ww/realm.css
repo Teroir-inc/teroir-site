@@ -23,7 +23,7 @@ body{margin:0;min-height:100svh;overflow-x:hidden}
 .stage.wide{max-width:960px}
 
 /* hub hero: the shoreline of the sketch world, the name in a frosted panel standing in it */
-.hero{position:relative;isolation:isolate;margin:0 0 28px;padding:0;min-height:clamp(520px,78svh,860px);display:flex;flex-direction:column;justify-content:flex-end}
+.hero{--glass:rgba(255,245,232,.9);position:relative;isolation:isolate;margin:0 0 28px;padding:0;min-height:clamp(520px,78svh,860px);display:flex;flex-direction:column;justify-content:flex-end}
 .hero::before{content:"";position:absolute;z-index:-1;top:-28px;bottom:150px;left:50%;width:100vw;margin-left:-50vw;pointer-events:none;
   background:url(/ww/scene/shore.svg) 58% 100%/cover no-repeat} /* ends just under the panel's top: the whole shoreline shows above it */
 .hero .scene{display:none} /* the old coloured hero image, if a cached page still has it */
@@ -44,6 +44,7 @@ body{margin:0;min-height:100svh;overflow-x:hidden}
 .scene[data-scene=tower]::before{background-image:url(/ww/scene/tower.svg)}
 .scene[data-scene=dunes]::before{background-image:url(/ww/scene/dunes.svg)}
 .scene[data-scene=shore]::before{background-image:url(/ww/scene/shore.svg)}
+.scene[data-scene=shore]{--glass:rgba(255,245,232,.9)} /* the night sky behind: frost more so text keeps AA (measured) */
 /* the walk down the beach behind the hub's places: hut, stall, tower, dunes */
 .scene[data-scene=walk]::before{background-image:url(/ww/scene/hut.svg),url(/ww/scene/stall.svg),url(/ww/scene/tower.svg),url(/ww/scene/dunes.svg);
   background-position:center 0,center 34%,center 68%,center 100%}
