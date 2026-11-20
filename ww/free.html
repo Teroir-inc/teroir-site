@@ -52,6 +52,7 @@
       <label class="wl-hp" aria-hidden="true">Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label>
       <input type="hidden" name="t" id="gd-t">
       <input type="hidden" name="src" id="gd-src">
+      <input type="hidden" name="ref" id="gd-ref">
       <button class="btn wide" type="submit">send my day pass <span aria-hidden="true">→</span></button>
       <p class="msg" id="gd-msg" role="status" aria-live="polite"></p>
       <p class="note">One day pass per email address. The link arrives in your inbox, so use one you check. I'll also send a few short follow-ups. Unsubscribe anytime.</p>
@@ -61,6 +62,23 @@
       <p id="gd-done-p">Your guide is on its way. If it's not there in a few minutes, look in spam or promotions.</p>
       <ul class="done-links gd-links" id="gd-links"></ul>
     </div>
+  </div>
+</section>
+<section id="share" aria-labelledby="share-h" hidden>
+  <p class="label">// share your pass</p>
+  <div class="card">
+    <h2 id="share-h">share it. unlock more.</h2>
+    <p>This is your own link. When 3 friends claim a free guide with it, you get a bonus guide. At 10, you get an invite to my monthly live session.</p>
+    <label class="field"><span>your link</span><input id="sh-link" type="url" readonly></label>
+    <button class="btn-ghost wide" type="button" id="sh-copy">copy link</button>
+    <p class="note" id="sh-count"></p>
+    <form id="sh-bonus" hidden>
+      <h2>pick your bonus guide.</h2>
+      <fieldset class="pick" id="sh-pick"><legend class="vh">Which guide is your bonus?</legend></fieldset>
+      <button class="btn wide" type="submit">send my bonus guide <span aria-hidden="true">→</span></button>
+    </form>
+    <p class="msg" id="sh-msg" role="status" aria-live="polite"></p>
+    <p class="note">A friend counts once they open their guide. Each email address counts once.</p>
   </div>
 </section>
 <section id="buy" aria-labelledby="buy-h">
