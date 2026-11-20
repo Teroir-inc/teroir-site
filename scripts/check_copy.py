@@ -44,7 +44,7 @@ FORBIDDEN = {
     'automatic payment': r'\bpays? automatically|payments? (?:is|are) automatic\b',
     'old title': r'AI operating system for every business',
     # FACTS: outcomes in the past or present perfect.
-    'present-tense outcome': r'\brunning a real|\bruns a real|runs today|already runs?\b|\bis running\b|\b(?:PM\.BOS|it) runs (?:the|its) (?:operations )?week\b|\bPM\.BOS runs\b|\bruns a \d',
+    'present-tense outcome': r'\brunning a real|\bruns a real|runs today|already runs?\b(?! on\b)|\bis running\b|\b(?:PM\.BOS|it) runs (?:the|its) (?:operations )?week\b|\bPM\.BOS runs\b|\bruns a \d',
     # Teroir is the company, not the network; each owner signs its own rules.
     'Teroir is the network': r'\bTeroir(?:\s+in development)?\s*(?:is|=|:|—|,)?\s*(?:the|an|a|our)\s+(?:open\s+)?network\b',
     'Teroir network': r"\bTeroir(?:'s)? network\b",
@@ -71,14 +71,19 @@ FORBIDDEN = {
     # FACTS NEVER USE and the deck's list.
     '490 of 901': r'490 of 901|\b54%',
     'repair tickets': r'repair tickets',
-    'cities': r'Houston|Dallas|Fort Worth',
+    # FACTS: metro names only as "Houston and DFW" (never a city on its own, never the client's properties).
+    'cities': r'\bHouston\b(?! and DFW)|Dallas|Fort Worth',
     'revenue label': r'pre-revenue|revenue status',
     '70-second demo': r'70[- ]?s(?:ec(?:ond)?)?\b',
-    'first-project platform': r'PadSplit',  # allowed only as a public market option, see MARKET_OPTIONS
+    # FACTS 2026-11-19: "built for PadSplit hosts" and in-progress compatibility wording are fine; never "works with
+    # PadSplit" or any claim that it works today, and never the first project as a PadSplit portfolio (client).
+    'works with PadSplit': (r'\bworks? (?:with|on|in|for) PadSplit|(?:connects?|syncs?|integrates?|plugs? in(?:to)?) (?:with |to |into )?PadSplit'
+                            r'|PadSplit (?:works|is supported|support is live|integration (?:is )?(?:live|ready))|\bPadSplit (?:portfolio|client|operator we ran)'
+                            r'|(?:compatible|integrated) with PadSplit(?! is in progress)'),
     # DECISIONS 2026-11-07, relayed by the ops session 2026-11-11.
     'by small businesses': r'by small businesses',
     'federated': r'\bfederat',  # technical and investor material only, never the site
-    'robotics claim': r'\brobot(?:s|ic|ics)?\b',  # future direction only, no customer or product claim
+    'robotics claim': r'(?<!X-)\brobot(?:s|ic|ics)?\b',  # X-Robots-Tag (vercel.json headers) is not a claim  # future direction only, no customer or product claim
     'ads (unapproved wording)': r"\b(?:ads|advertis\w*|sponsored)\b(?!.{0,40}never change ranking, ratings or the gate's decisions)",
     'fees (unapproved wording)': r'\b(?:fees?|commissions?)\b(?!.{0,40}never taken from funds in transit)',
     'every fine from photo proof': r'every fine (?:from|by|via|with) (?:the )?photo',
@@ -117,10 +122,11 @@ CONTROL = {
     'hours saved': ['Hours saved.', '10-20 h a week.'],
     '490 of 901': ['490 of 901.'],
     'repair tickets': ['901 repair tickets.'],
-    'cities': ['Houston.'],
+    'cities': ['Houston.', 'In Houston, Texas.', 'Dallas.', 'Fort Worth.', 'Houston and Dallas.'],
     'revenue label': ['Pre-revenue.'],
     '70-second demo': ['Watch the 70-second demo.'],
-    'first-project platform': ['A PadSplit portfolio.'],
+    'works with PadSplit': ['A PadSplit portfolio.', 'HouKee works with PadSplit.', 'It connects to PadSplit.',
+                            'Syncs with PadSplit.', 'PadSplit is supported.', 'Compatible with PadSplit.', 'Our PadSplit client.'],
     'by small businesses': ['Built by small businesses.'],
     'federated': ['A federated network.', 'Federation of agents.'],
     'robotics claim': ['Robots do the chores.', 'A robotics customer.'],
@@ -141,7 +147,11 @@ CLEAN = (
     'live since May 2026. It will wrap the software and agents you already use. From the photo records. Your record will '
     'stay with you. Both sides will sign each receipt. '
     '2.8× the weekly workload. 900+ tickets tracked. Coffee roaster. Ads will never change ranking, ratings or '
-    "the gate's decisions. Fees are never taken from funds in transit. Fines assessed from the photo records."
+    "the gate's decisions. Fees are never taken from funds in transit. Fines assessed from the photo records. "
+    # FACTS 2026-11-19 approved forms
+    'It ran 218 rooms in Houston and DFW. HouKee is built for PadSplit hosts. Use PadSplit? We\'re working to move your '
+    "houses, rooms and members to HouKee. HouKee for PadSplit users. Software we're working on compatibility with: "
+    'PadSplit, Hostaway and more. Compatibility in progress. The software you already run on. Co-living or PadSplit host. "key": "X-Robots-Tag".'
 )
 
 
@@ -185,7 +195,7 @@ def scan_text(name, text):
     hits = []
     for label, pat in FORBIDDEN.items():
         # PadSplit is checked in the source too, so a link or file name cannot carry it either.
-        for where in ([seen, raw] if label == 'first-project platform' else [seen]):
+        for where in ([seen, raw] if label == 'works with PadSplit' else [seen]):
             m = re.search(pat, where, re.I)
             if m:
                 hits.append(f'{label}: "{where[max(0, m.start() - 40):m.end() + 40].strip()}"')
