@@ -174,7 +174,7 @@ def shore_y(x, yb):
 def shore_path(yb, below=False):
     pts = ' '.join(f'L{x} {shore_y(x, yb):.0f}' for x in range(0, W + 1, 20))
     return (f'M0 {H}{pts.replace("L0 ", "L0 ", 1)}L{W} {H}Z' if below else f'M0 0L0 {shore_y(0, yb):.0f}{pts}L{W} 0Z')
-NEON_C, NEON_M, NIGHT = '#00E5FF', '#FF2BD6', '#140A2E'
+NEON_C, NEON_M, NIGHT = '#00E5FF', '#FF2BD6', '#3B2C66'   # NIGHT: the dusk violet the hero's sea and phone screen use
 DEEP_C, DEEP_M = '#0097B8', '#C21AA6'   # the neon, deepened, for light (daytime) digital bands on paper
 
 
@@ -208,11 +208,14 @@ def digital(p, hz, yb, level, vp, sun=None, peaks=True):
     band of deeper neon lines on paper, fading as the page goes down into the real world"""
     dark = level >= .8
     if dark:
-        p.raw(f'<linearGradient id="nsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="{NIGHT}"/>'
-              f'<stop offset=".62" stop-color="#3A1252"/><stop offset=".9" stop-color="#7A1D78"/><stop offset="1" stop-color="#C2338F"/></linearGradient>'
+        # dusk, not night (orchestrator-81 for Wyatt, 11-20): the v5 sunset carries from the top of the page
+        p.raw(f'<linearGradient id="nsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6F5FB8"/>'
+              f'<stop offset=".35" stop-color="#8E7CC3"/><stop offset=".62" stop-color="#C9A7EB"/><stop offset=".84" stop-color="#FF9EC7"/>'
+              f'<stop offset=".95" stop-color="#FF8A7A"/><stop offset="1" stop-color="#FFC8A2"/></linearGradient>'
               f'<rect width="{W}" height="{hz}" fill="url(#nsky)" stroke="none"/>'
-              f'<path d="M0 {hz}' + ''.join(f'L{x} {shore_y(x, yb):.0f}' for x in range(0, W + 1, 20)).replace('L0 ', 'L0 ', 1) + f'L{W} {hz}Z" fill="#1A0C36" stroke="none"/>'
-              f'<rect y="{hz - 30}" width="{W}" height="40" fill="{NEON_M}" opacity=".18" stroke="none"/>')
+              f'<path d="M0 {hz}' + ''.join(f'L{x} {shore_y(x, yb):.0f}' for x in range(0, W + 1, 20)).replace('L0 ', 'L0 ', 1) + f'L{W} {hz}Z" fill="url(#dsea)" stroke="none"/>'
+              f'<linearGradient id="dsea" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFB4A0"/><stop offset=".25" stop-color="#9A7FCB"/><stop offset="1" stop-color="#5B4A99"/></linearGradient>'
+              f'<rect y="{hz - 26}" width="{W}" height="34" fill="#FFC8A2" opacity=".45" stroke="none"/>')
     else:
         p.raw(f'<linearGradient id="dsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#E8E0FA" stop-opacity="0"/>'
               f'<stop offset=".5" stop-color="#E6DDFA" stop-opacity="{.55 * level:.2f}"/><stop offset="1" stop-color="#F7DCEF" stop-opacity="{.7 * level:.2f}"/></linearGradient>'
@@ -230,20 +233,20 @@ def digital(p, hz, yb, level, vp, sun=None, peaks=True):
     if level >= .4:
         stars = [(r.uniform(40, W - 40), r.uniform(20, hz * .8)) for _ in range(int(26 * level))]
         for (x, y) in stars:
-            p.raw(f'<circle cx="{x:.0f}" cy="{y:.0f}" r="{r.uniform(1, 2.2):.1f}" fill="{NEON_C if dark else DEEP_C}" opacity="{op:.2f}" stroke="none"/>')
+            p.raw(f'<circle cx="{x:.0f}" cy="{y:.0f}" r="{r.uniform(1, 2.2):.1f}" fill="{'#FFF3E3' if dark else DEEP_C}" opacity="{op:.2f}" stroke="none"/>')
         for a, b in zip(stars[:8], stars[1:9]):
             if math.dist(a, b) < 260:
-                p.raw(f'<path d="M{a[0]:.0f} {a[1]:.0f}L{b[0]:.0f} {b[1]:.0f}" stroke="{NEON_C if dark else DEEP_C}" stroke-width=".7" opacity="{op * .5:.2f}"/>')
+                p.raw(f'<path d="M{a[0]:.0f} {a[1]:.0f}L{b[0]:.0f} {b[1]:.0f}" stroke="{'#FFF3E3' if dark else DEEP_C}" stroke-width=".7" opacity="{op * .5:.2f}"/>')
         for col in range(int(5 * level)):
             x = r.choice([r.uniform(60, 360), r.uniform(840, 1140)]); y0 = r.uniform(30, hz * .5)
             bits = ''.join(r.choice('01') for _ in range(10))
-            p.raw(f'<text x="{x:.0f}" y="{y0:.0f}" font-family="ui-monospace,Menlo,monospace" font-size="11" fill="{NEON_C if dark else DEEP_C}" opacity="{op * .7:.2f}" '
+            p.raw(f'<text x="{x:.0f}" y="{y0:.0f}" font-family="ui-monospace,Menlo,monospace" font-size="11" fill="{'#FFF3E3' if dark else DEEP_C}" opacity="{op * .7:.2f}" '
                   f'writing-mode="tb" letter-spacing="3" stroke="none">{bits}</text>')
     # the wireframe sun: latitude chords and longitude ellipses, cut by the horizon
     if sun:
         sx, sr = sun
         p.raw(f'<clipPath id="sunc"><rect x="0" y="0" width="{W}" height="{hz}"/></clipPath><g clip-path="url(#sunc)" stroke="url(#sunw)" opacity="{min(1, op + .1):.2f}">')
-        p.raw(f'<circle cx="{sx}" cy="{hz}" r="{sr}" stroke-width="2.2" fill="{NIGHT if dark else "none"}" fill-opacity=".5"/>')
+        p.raw(f'<circle cx="{sx}" cy="{hz}" r="{sr}" stroke-width="2.2" fill="{'#FFD9B8' if dark else "none"}" fill-opacity=".55"/>')
         for k in range(1, 9):
             y = hz - sr * k / 9; hw = math.sqrt(sr * sr - (hz - y) ** 2)
             p.raw(f'<path d="M{sx - hw:.0f} {y:.0f}H{sx + hw:.0f}" stroke-width="1"/>')
@@ -258,10 +261,10 @@ def digital(p, hz, yb, level, vp, sun=None, peaks=True):
             pts = []
             for i, x in enumerate(xs):
                 h_ = r.uniform(60, 170) * (1.1 if i in (1, 3) else .7) * (.6 + .5 * level)
-                if i in (0, len(xs) - 1): h_ *= .25
+                if i in (0, len(xs) - 1): h_ = 2   # ranges run down to the horizon at both ends
                 pts.append((x, hz - h_))
             base = [(x, hz) for x in xs]
-            fill = 'fill="#1E0F3D" fill-opacity=".95"' if dark else f'fill="#EFE7FB" fill-opacity="{.6 * level:.2f}"'
+            fill = 'fill="#7B69BC" fill-opacity=".92"' if dark else f'fill="#EFE7FB" fill-opacity="{.6 * level:.2f}"'
             ridge = ' '.join(f'{x:.0f},{y:.0f}' for x, y in pts)
             p.raw(f'<polygon points="{xs[0]},{hz} {ridge} {xs[-1]},{hz}" {fill} stroke="url(#neon)" stroke-width="1.6" opacity="{op:.2f}"/>')
             for (a, b) in zip(pts, pts[1:]):  # facets: each peak to the valley floor below the next
