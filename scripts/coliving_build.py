@@ -89,7 +89,7 @@ def page(slug, city, where):
         <div><span class="cta-k">Member messages each week</span><p><b class="cv-big">8x</b> about 60 to about 500, sent automatically</p></div>
       </div>
 
-      <p class="cta-lead">Chores, tenant texts, maintenance requests and fines sit in one place. 900+ tickets were tracked and handled in one place.</p>
+      <p class="cta-lead">Chores, tenant texts, maintenance requests and fines sit in one place. 900+ tickets were tracked and handled there.</p>
 
       <div class="cta-grid">
         <div><span class="cta-k">The offer</span><p>More Doors, Same Team: HouKee set up for your houses, so your team can run more doors.</p></div>

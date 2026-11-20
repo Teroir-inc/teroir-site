@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>A leak, handled — Teroir demo</title>
+<title>From a text to a work order — Teroir demo</title>
 <meta name="robots" content="noindex, nofollow">
 <meta name="description" content="A tenant's text becomes a ticket, then a work order that waits for your OK. Demo on sample data.">
 <meta name="theme-color" content="#F6F4EE">
@@ -74,14 +74,14 @@
 <section class="section rd" aria-labelledby="rd-h">
   <div class="wrap">
     <span class="demo-label">Sample data</span>
-    <h1 id="rd-h">A leak, <em>handled.</em></h1>
+    <h1 id="rd-h">From a text to <em>a work order.</em></h1>
 
     <div class="rd-stage st-3" id="rd" aria-live="polite">
       <div class="ph"><div class="scr">
         <div class="bar"><span>9:41</span><span>Maple House</span></div>
         <div class="bub s1"><small>Tenant · Room 3</small>My sink is leaking 😟<div class="pic" role="img" aria-label="Photo of a wet pipe under a sink"></div></div>
-        <div class="card s2"><span class="k">Ticket #1042</span><b>Kitchen sink leak</b><div class="tags"><span class="tag hot">Urgent</span><span class="tag">Plumbing</span><span class="tag">Room 3</span></div></div>
-        <div class="card s3"><span class="k">Work order</span><b>Plumber, today 2–4 pm</b><span class="wait">Waiting for your OK</span><div class="acts"><span class="ok">Approve</span><span>Edit</span></div></div>
+        <div class="card s2"><span class="k">Ticket #1042</span><b>Kitchen sink leak</b><div class="tags"><span class="tag">Kitchen</span><span class="tag">Room 3</span></div></div>
+        <div class="card s3"><span class="k">Work order</span><b>Repair request: 3 plumbers to ask</b><span class="wait">Waiting for your OK</span><div class="acts"><span class="ok">Approve</span><span>Edit</span></div></div>
       </div></div>
       <p class="cap" id="rd-cap">A work order waits for your OK.</p>
       <div class="dots" aria-hidden="true"><i></i><i></i><i></i></div>
@@ -93,10 +93,10 @@
         <div class="bub s1"><small>Tenant · Room 3</small>My sink is leaking 😟<div class="pic" role="img" aria-label="Photo of a wet pipe under a sink"></div></div></div></div>
         <figcaption class="cap">1. A tenant texts about a leak.</figcaption></figure>
       <figure><div class="ph"><div class="scr"><div class="bar"><span>9:41</span><span>Maple House</span></div>
-        <div class="card s2"><span class="k">Ticket #1042</span><b>Kitchen sink leak</b><div class="tags"><span class="tag hot">Urgent</span><span class="tag">Plumbing</span><span class="tag">Room 3</span></div></div></div></div>
-        <figcaption class="cap">2. It becomes a ticket, sorted for you.</figcaption></figure>
+        <div class="card s2"><span class="k">Ticket #1042</span><b>Kitchen sink leak</b><div class="tags"><span class="tag">Kitchen</span><span class="tag">Room 3</span></div></div></div></div>
+        <figcaption class="cap">2. It becomes a ticket, all in one place.</figcaption></figure>
       <figure><div class="ph"><div class="scr"><div class="bar"><span>9:41</span><span>Maple House</span></div>
-        <div class="card s3"><span class="k">Work order</span><b>Plumber, today 2–4 pm</b><span class="wait">Waiting for your OK</span><div class="acts"><span class="ok">Approve</span><span>Edit</span></div></div></div></div>
+        <div class="card s3"><span class="k">Work order</span><b>Repair request: 3 plumbers to ask</b><span class="wait">Waiting for your OK</span><div class="acts"><span class="ok">Approve</span><span>Edit</span></div></div></div></div>
         <figcaption class="cap">3. A work order waits for your OK.</figcaption></figure>
     </div>
 
@@ -113,7 +113,7 @@
 (() => {
   const el = document.getElementById('rd'), cap = document.getElementById('rd-cap');
   if (!el || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  const CAPS = ['A tenant texts about a leak.', 'It becomes a ticket, sorted for you.', 'A work order waits for your OK.'];
+  const CAPS = ['A tenant texts about a leak.', 'It becomes a ticket, all in one place.', 'A work order waits for your OK.'];
   let timers = [];
   const go = n => { el.className = 'rd-stage st-' + n; cap.textContent = CAPS[n - 1]; };
   function play() {

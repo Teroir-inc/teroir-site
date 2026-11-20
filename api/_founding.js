@@ -39,6 +39,10 @@ function movedEmail({ name, place, moved, status }) {
   };
 }
 
+// CAN-SPAM: every email to this list carries the postal address (FOOTER_POSTAL, set in Vercel, never committed: ops-61)
+// and a way to leave the list.
+const postal = () => String(process.env.FOOTER_POSTAL || '').trim();
+const listFooter = () => ['', '--', `Teroir · ${postal()}`, 'Reply "leave" to this email to leave the list.'];
 function updatesEmail({ name }) {
   return {
     subject: "You're on the HouKee list",
@@ -46,8 +50,14 @@ function updatesEmail({ name }) {
       "Thanks for asking to hear from us. I'll email you when there's news about HouKee.", '',
       "Want to talk sooner? Reply to this email and I'll send 2 or 3 times for a 15-minute call.", '',
       'Reply any time to leave the list.', '',
-      'Wyatt Horton', 'Founder, Teroir', 'https://teroir.com'].join('\n'),
+      'Wyatt Horton', 'Founder, Teroir', 'https://teroir.com', ...(postal() ? listFooter() : [])].join('\n'),
   };
+}
+// A future "keep me posted" update (news to the list). Marketing email: refuses to send without the postal address.
+async function sendUpdate({ to, subject, lines, idem }) {
+  if (!postal()) throw new Error('list update: FOOTER_POSTAL env var missing (CAN-SPAM footer required)');
+  return G.send({ from: G.FROM, to: [to], reply_to: 'wyatt@teroir.com', subject,
+    text: [...lines, '', 'Wyatt Horton', 'Founder, Teroir', 'https://teroir.com', ...listFooter()].join('\n') }, idem);
 }
 
 module.exports = async (req, res) => {
@@ -157,3 +167,4 @@ module.exports = async (req, res) => {
 module.exports.joinEmail = joinEmail;
 module.exports.movedEmail = movedEmail;
 module.exports.updatesEmail = updatesEmail;
+module.exports.sendUpdate = sendUpdate;
