@@ -232,3 +232,11 @@ a.pg-card:hover{border-color:rgba(226,112,63,.5);transform:translateY(-2px)}
   .eco .msg,.talk-dot{display:none}
 }
 .streaming .dot:not(.live){background:var(--line-2,#c9d1cb)}
+
+/* /founding: the founding list (form, then the person's place and invite link) */
+.fq-invited,.fq-total{position:relative;margin:0 0 18px;font-size:15px;color:var(--text)}
+.fq-you{position:relative;max-width:760px}
+.fq-you h2{margin:0 0 10px;max-width:none}
+.fq-copy{display:flex;gap:10px;align-items:center}
+.fq-copy input{flex:1;min-width:0;min-height:48px;padding:12px 14px;border-radius:12px;border:1px solid var(--line-2);background:rgba(246,244,238,.9);color:var(--text);font:inherit;font-size:15px}
+.fq-count{margin:14px 0 0;font-size:15px;color:var(--muted)}

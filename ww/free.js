@@ -12,6 +12,10 @@
   $('gd-src').value = src;
   document.querySelectorAll('.gd-src').forEach(i => { i.value = src; });
   $('gd-t').value = Date.now();
+  // a friend's share link: /free?r=<code>. Kept for this visit so a reload still credits them.
+  const ss = { get: k => { try { return sessionStorage.getItem(k); } catch { return null; } }, set: (k, v) => { try { sessionStorage.setItem(k, v); } catch {} } };
+  const ref = (qs.get('r') || ss.get('wr-ref') || '').toLowerCase().replace(/[^a-z2-9]/g, '').slice(0, 8);
+  if (ref.length === 8) { $('gd-ref').value = ref; ss.set('wr-ref', ref); if (!src) { src = 'share'; $('gd-src').value = src; } }
   const want = qs.get('guide') && TITLES[qs.get('guide')] ? qs.get('guide') : '';
   const pick = want && document.querySelector(`.gd-pick input[value="${want}"]`);
   if (pick) pick.checked = true;
@@ -21,6 +25,42 @@
   const show = (h, p) => { form.hidden = true; done.hidden = false; $('gd-done-h').textContent = h; $('gd-done-p').textContent = p; };
   const claimed = id => show('This email already has its day pass.',
     `${id && TITLES[id] ? `It got "${TITLES[id]}". ` : ''}Check your inbox for the link, or see the upgrades below.`);
+
+  // the share section: your link, how many friends count so far, and the bonus pick once 3 count. Numbers come from the server.
+  const sh = $('share');
+  async function loadShare(me) {
+    try {
+      const d = await (await fetch(`/api/claim?me=${encodeURIComponent(me)}`)).json();
+      if (!d.ok) return;
+      sh.hidden = false;
+      $('sh-link').value = d.link;
+      const f = d.friends;
+      $('sh-count').textContent = f >= 10 ? `${f} friends so far. You unlocked all ten guides. Check your inbox.`
+        : f >= 3 ? `${f} friends so far. You unlocked a bonus guide. ${10 - f} more for all ten guides.`
+        : `${f} of 3 friends so far.`;
+      if (d.bonus === 'open' && d.choices.length) {
+        const pick = $('sh-pick');
+        d.choices.forEach((c, i) => { const l = document.createElement('label'); l.innerHTML = `<input type="radio" name="guide"${i ? '' : ' checked'}><span><b></b></span>`;
+          l.querySelector('input').value = c.id; l.querySelector('b').textContent = c.title; pick.appendChild(l); });
+        const bf = $('sh-bonus'); bf.hidden = false;
+        bf.addEventListener('submit', async e => {
+          e.preventDefault();
+          const btn = bf.querySelector('button'); btn.disabled = true; $('sh-msg').textContent = 'Sending…';
+          try {
+            const r = await (await fetch('/api/claim', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ bonus: me, guide: new FormData(bf).get('guide') }) })).json();
+            if (r.ok) { bf.hidden = true; $('sh-msg').textContent = 'Your bonus guide is on its way. Check your inbox.'; }
+            else { $('sh-msg').textContent = r.error === 'sent' ? 'Your bonus guide was already sent. Check your inbox.' : 'Something went wrong. Please try again, or email wyatt@teroir.com.'; btn.disabled = false; }
+          } catch { $('sh-msg').textContent = 'Something went wrong. Please try again, or email wyatt@teroir.com.'; btn.disabled = false; }
+        });
+      } else if (d.bonus === 'sent') $('sh-msg').textContent = 'Your bonus guide was sent. Check your inbox.';
+    } catch {}
+  }
+  $('sh-copy').addEventListener('click', async () => {
+    const i = $('sh-link');
+    try { await navigator.clipboard.writeText(i.value); } catch { i.select(); document.execCommand && document.execCommand('copy'); }
+    $('sh-copy').textContent = 'copied'; setTimeout(() => { $('sh-copy').textContent = 'copy link'; }, 2000);
+  });
+  if (qs.get('me')) loadShare(qs.get('me'));
 
   if (qs.get('sent')) show('Check your inbox.', "Your day pass is on its way. If it's not there in a few minutes, look in spam or promotions.");
   if (qs.get('claimed')) claimed();
@@ -34,6 +74,7 @@
       const r = await fetch('/api/claim', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
       const j = await r.json().catch(() => ({}));
       if (j.ok) {
+        if (j.me) loadShare(j.me);
         show('Check your inbox.', `"${TITLES[data.guide]}" is on its way to ${data.email}. If it's not there in a few minutes, look in spam or promotions.`);
         document.querySelectorAll('.gd-card').forEach(c => { c.hidden = c.dataset.guide === data.guide; });
         $('gd-buy-email').value = data.email;
