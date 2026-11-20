@@ -1,5 +1,5 @@
-/* page layout for wyattworldwide.com, on tokens.css (look v5). Phone first, one tap per link, big targets.
-   Pale sunset sky behind, cream comic panels on top. Nothing moves unless motion is allowed. */
+/* page layout for wyattworldwide.com, on tokens.css (look v5, sketch worldscape). Phone first, one tap per link.
+   Paper and the pencil beach sketch behind, frosted paper panels on top. Nothing moves. */
 *,*::before,*::after{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;min-height:100svh;overflow-x:hidden}
@@ -11,7 +11,7 @@ body{margin:0;min-height:100svh;overflow-x:hidden}
 
 /* top bar: a cream strip with an ink rule. Wordmark left, three words right. */
 .hud{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;
-  background:rgba(255,243,227,.94);border-bottom:var(--edge) solid var(--ink);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px)}
+  background:var(--glass-strong);border-bottom:var(--edge) solid var(--ink);-webkit-backdrop-filter:var(--frost);backdrop-filter:var(--frost)}
 .hud .mark{font:800 1.15rem/1 var(--font-display);letter-spacing:-.02em;color:var(--ink);text-decoration:none;white-space:nowrap}
 .hud .mark b{font-weight:800;color:#B8325F}
 .hud nav{display:flex;gap:6px}
@@ -22,15 +22,32 @@ body{margin:0;min-height:100svh;overflow-x:hidden}
 .stage{width:100%;max-width:560px;margin:0 auto;padding:28px 16px 64px}
 .stage.wide{max-width:960px}
 
-/* hub hero: the drawn sunset scene, with the name in a cream comic panel over it */
-.hero{position:relative;margin:0 0 28px;padding:0}
-.hero .scene{display:block;width:100%;height:auto;border:var(--edge) solid var(--ink);border-radius:22px;box-shadow:var(--shadow);background:var(--sunset)}
-.hero .hero-panel{position:relative;margin:-56px 12px 0;padding:18px 18px 20px;background:var(--cream);border:var(--edge) solid var(--ink);border-radius:18px;box-shadow:var(--shadow)}
+/* hub hero: the shoreline of the sketch world, the name in a frosted panel standing in it */
+.hero{position:relative;isolation:isolate;margin:0 0 28px;padding:0;min-height:clamp(520px,78svh,860px);display:flex;flex-direction:column;justify-content:flex-end}
+.hero::before{content:"";position:absolute;z-index:-1;top:-28px;bottom:-28px;left:50%;width:100vw;margin-left:-50vw;pointer-events:none;
+  background:url(/ww/scene/shore.svg) 60% 30%/cover no-repeat}
+.hero .scene{display:none} /* the old coloured hero image, if a cached page still has it */
+.hero .hero-panel{position:relative;margin:0;padding:18px 18px 20px;background:var(--glass);-webkit-backdrop-filter:var(--frost);backdrop-filter:var(--frost);
+  border:var(--edge) solid var(--ink);border-radius:18px;box-shadow:var(--shadow)}
 .hero h1{margin:0 0 8px;font:800 var(--text-hero)/.95 var(--font-display);letter-spacing:-.03em;color:var(--ink)}
 .hero h1 span{display:inline}
 .hero h1 span+span{background:var(--word);-webkit-background-clip:text;background-clip:text;color:transparent}
 .hero p{margin:0;max-width:32em;color:var(--ink);font-size:1.05rem}
 .hero .horizon{display:block;height:6px;margin-top:14px;border-radius:3px;background:var(--grad)}
+
+/* the worldscape behind a section: realm.js sets data-scene when the section comes near the screen */
+.scene{position:relative;isolation:isolate}
+.scene::before{content:"";position:absolute;z-index:-1;top:-40px;bottom:-40px;left:50%;width:100vw;margin-left:-50vw;pointer-events:none;
+  background-repeat:no-repeat;background-position:center top;background-size:max(100%,1200px) auto}
+.scene[data-scene=hut]::before{background-image:url(/ww/scene/hut.svg)}
+.scene[data-scene=stall]::before{background-image:url(/ww/scene/stall.svg)}
+.scene[data-scene=tower]::before{background-image:url(/ww/scene/tower.svg)}
+.scene[data-scene=dunes]::before{background-image:url(/ww/scene/dunes.svg)}
+.scene[data-scene=shore]::before{background-image:url(/ww/scene/shore.svg)}
+/* the walk down the beach behind the hub's places: hut, stall, tower, dunes */
+.scene[data-scene=walk]::before{background-image:url(/ww/scene/hut.svg),url(/ww/scene/stall.svg),url(/ww/scene/tower.svg),url(/ww/scene/dunes.svg);
+  background-position:center 0,center 34%,center 68%,center 100%}
+@media (min-width:760px){.scene[data-scene=walk]::before{background-image:url(/ww/scene/hut.svg),url(/ww/scene/stall.svg);background-position:center 0,center 100%}}
 
 /* legacy hub pieces */
 .window{display:none}
@@ -39,8 +56,9 @@ body{margin:0;min-height:100svh;overflow-x:hidden}
 /* panels */
 .card{padding:22px 18px}
 .card + .card{margin-top:16px}
-.label{display:flex;align-items:center;gap:12px;margin:40px 0 14px}
-.label::after{content:"";flex:1;height:3px;border-radius:2px;background:var(--ink);opacity:.18}
+.label{display:flex;width:fit-content;align-items:center;gap:12px;margin:40px 0 14px;padding:6px 12px;border-radius:999px;
+  background:var(--glass-strong);-webkit-backdrop-filter:var(--frost);backdrop-filter:var(--frost);border:2px solid var(--ink)}
+.label::after{content:none}
 .stage > section:first-child > .label:first-child,.stage > .label:first-child{margin-top:4px}
 
 /* launcher rows */
@@ -79,7 +97,7 @@ input:focus{outline:none;box-shadow:0 0 0 4px var(--cyan)}
 .price s{color:var(--muted);font-size:1.1rem;margin-right:8px;font-weight:600}
 .price small{font:700 .72rem var(--font-body);color:var(--muted);letter-spacing:var(--track-label);text-transform:uppercase}
 .shop .btn,.shop .btn-ghost{margin-top:10px;display:flex;justify-content:center;width:100%;min-height:52px}
-.shop .all{background:linear-gradient(180deg,var(--cream) 0%,#FFE6D6 100%)}
+.shop .all{background:linear-gradient(180deg,var(--glass) 0%,rgba(255,230,214,.8) 100%)}
 .done-links{padding-left:1.2em}.done-links li{margin:8px 0}
 a.btn,a.btn-ghost{text-decoration:none}
 
@@ -109,7 +127,7 @@ a.btn,a.btn-ghost{text-decoration:none}
 
 /* footer: a cream strip, ink rule on top */
 .foot{position:relative;margin-top:24px;padding:28px 16px 40px;text-align:center;font:600 .92rem/1.8 var(--font-body);color:var(--ink);
-  background:rgba(255,243,227,.9);border-top:var(--edge) solid var(--ink)}
+  background:var(--glass-strong);-webkit-backdrop-filter:var(--frost);backdrop-filter:var(--frost);border-top:var(--edge) solid var(--ink)}
 .foot a{color:var(--ink);text-decoration:none;font-weight:700}.foot a:hover{text-decoration:underline;text-decoration-color:var(--neon)}
 .foot nav{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 20px;margin-bottom:8px}
 .foot p{margin:0}
@@ -128,7 +146,11 @@ a.gate{cursor:pointer}
 
 /* small phones: the top bar must fit 360 px */
 @media (max-width:400px){.hud{padding:10px 12px}.hud .mark{font-size:1rem}.hud nav{gap:2px}.hud nav a{padding:9px 8px;font-size:.85rem}}
-.card .label,.gate-body .label{margin:0 0 10px}
+.card .label,.gate-body .label{margin:0 0 10px;padding:0;border:0;border-radius:0;background:none;-webkit-backdrop-filter:none;backdrop-filter:none}
 .gate-body .label{margin:0}
 .card .label::after,.gate-body .label::after{content:none}
 .rows .btn-ghost > span{white-space:nowrap;flex:none}
+/* text that sits straight on the worldscape (outside a panel) gets a frosted paper backing, so it reads over the sketch */
+.stage > section > p.muted,.stage > section > p.note,.stage > section > .field,.stage > section > .msg:not(:empty),section.stage > p.muted{
+  background:var(--glass-strong);-webkit-backdrop-filter:var(--frost);backdrop-filter:var(--frost);padding:10px 14px;border-radius:14px;border:2px solid rgba(43,30,63,.3)}
+.stage > section > .field span{padding-left:2px}

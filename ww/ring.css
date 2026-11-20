@@ -4,7 +4,7 @@
 .ring-track{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr;gap:18px}
 .ring-item{list-style:none}
 .pnl{position:relative;display:flex;flex-direction:column;align-items:flex-start;gap:10px;height:100%;padding:20px 18px 22px;color:var(--ink);
-  background:var(--cream);border:var(--edge) solid var(--ink);border-radius:var(--radius-card);box-shadow:var(--shadow)}
+  background:var(--glass);-webkit-backdrop-filter:var(--frost);backdrop-filter:var(--frost);border:var(--edge) solid var(--ink);border-radius:var(--radius-card);box-shadow:var(--shadow)}
 .pnl::before,.pnl::after,.pnl .scan{content:none;display:none}
 .pnl .kicker{font:700 var(--text-label)/1.4 var(--font-body);letter-spacing:var(--track-label);text-transform:uppercase;color:var(--muted)}
 .pnl h2{margin:0;font:800 1.75rem/1.02 var(--font-display);letter-spacing:-.025em;color:var(--ink)}
@@ -12,7 +12,7 @@
 .pnl .status{font:700 var(--text-label)/1.4 var(--font-body);letter-spacing:var(--track-label);text-transform:uppercase;color:var(--muted)}
 .pnl .art{display:none}
 .pnl .emblem{display:none}
-.pnl.is-soon{border-style:dashed;box-shadow:none;background:rgba(255,243,227,.7)}
+.pnl.is-soon{border-style:dashed;box-shadow:none}
 .pnl.is-soon h2{color:var(--muted)}
 .pnl .go{margin-top:6px;text-decoration:none}
 .pnl .btn.go,.pnl .btn-ghost.go{align-self:stretch;justify-content:center}
@@ -22,7 +22,7 @@
 .pnl .socials a:hover{background:#FFE1EE}
 .pnl .socials span{font-size:.88rem;font-weight:500;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 /* the first place (the free day pass) leads: a sunset band across the top of its panel */
-.ring-item:first-child .pnl{padding-top:30px;background:linear-gradient(180deg,#FFE1EE 0,var(--cream) 46%)}
+.ring-item:first-child .pnl{padding-top:30px;background:linear-gradient(180deg,rgba(255,225,238,.82) 0,var(--glass) 46%)}
 .ring-item:first-child .pnl::before{content:"";display:block;position:absolute;left:0;right:0;top:0;height:10px;border-radius:15px 15px 0 0;background:var(--sunset)}
 .ring-item:first-child .pnl h2{font-size:2.1rem}
 .ring-ctl,.ring-dots{display:none!important}

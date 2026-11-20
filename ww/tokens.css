@@ -8,7 +8,11 @@
    CONTRAST (WCAG AA): text never sits on the mid-tone sunset colours. Page text sits on the pale sky tints below
    (ink 13:1+, muted 6:1+) or on cream panels (ink 14.6:1, muted 6.9:1). Buttons: ink on coral 6.8:1.
    The full-strength sunset lives in the drawn art (home hero, gates), never under body text.
-   RULES: no W emblem, no numbered frames, no glow on text. Motion is optional and off under reduced motion. */
+   RULES: no W emblem, no numbered frames, no glow on text. Motion is optional and off under reduced motion.
+
+   SKETCH WORLDSCAPE (Wyatt 11-20): the page is paper with a pencil + blueprint sketch of the beach world behind the
+   sections (ww/scene/*.svg, placed by realm.js). Panels are frosted paper (cream at 74% + blur) with the ink edge, so
+   the sketch reads through. AA is measured on the darkest blurred patch of every scene (scripts note in the PR). */
 
 :root {
   color-scheme: light;
@@ -34,6 +38,14 @@
   --sky-4: #FFE4DB;
   --sky-5: #FFEEDF;
   --page-sky: linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 28%, var(--sky-3) 56%, var(--sky-4) 80%, var(--sky-5) 100%);
+  /* the sketch worldscape: paper, a faint blueprint grid, a faint pastel wash */
+  --paper: #FBF8F2;
+  --grid: rgba(91, 125, 177, .07);
+  --page-paper: linear-gradient(180deg, rgba(201, 167, 235, .14), rgba(255, 158, 199, .08) 45%, rgba(255, 200, 162, .12)),
+    repeating-linear-gradient(0deg, var(--grid) 0 1px, transparent 1px 32px), repeating-linear-gradient(90deg, var(--grid) 0 1px, transparent 1px 32px);
+  --glass: rgba(255, 245, 232, .74);       /* frosted paper panel */
+  --glass-strong: rgba(255, 245, 232, .88);
+  --frost: blur(7px) saturate(1.05);
   --sunset: linear-gradient(180deg, var(--sky) 0%, var(--violet) 22%, var(--lavender) 42%, var(--pink) 62%, var(--coral) 78%, var(--peach) 100%);
   --word: linear-gradient(90deg, #C9372F, #C7307F 55%, #6A4FB3);   /* key words on cream: palette text_on_cream_gradient, deepened so every stop passes AA on cream (4.6:1+) */
   --grad: linear-gradient(90deg, var(--cyan) 0%, var(--neon) 100%); /* Horizon accent, kept */
@@ -42,7 +54,6 @@
   --night: var(--cream);
   --night-1: #FFE9D6;
   --surface: var(--cream);
-  --glass: var(--cream);
   --line: var(--ink);
   --line-dim: rgba(43, 30, 63, .22);
   --muted: #5A4A75;
@@ -76,8 +87,8 @@
   --t-boot: 700ms;
 }
 
-html { background: var(--sky-1); }
-body { background: var(--page-sky) fixed; background-color: var(--sky-3); color: var(--ink);
+html { background: var(--paper); }
+body { background: var(--page-paper); background-color: var(--paper); color: var(--ink);
   font: 400 var(--text-body)/1.6 var(--font-body); }
 a { color: var(--ink); text-decoration-color: var(--neon); text-decoration-thickness: 2px; text-underline-offset: 4px; }
 a:hover { text-decoration-color: var(--cyan); }
@@ -94,7 +105,9 @@ body::before { content: none; }
 .key { background: var(--word); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
 /* the comic panel (class name kept: .card) */
-.card { position: relative; background: var(--cream); border: var(--edge) solid var(--ink); border-radius: var(--radius-card); box-shadow: var(--shadow); }
+.card { position: relative; background: var(--glass); -webkit-backdrop-filter: var(--frost); backdrop-filter: var(--frost);
+  border: var(--edge) solid var(--ink); border-radius: var(--radius-card); box-shadow: var(--shadow); }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { :root { --glass: var(--glass-strong); } }
 .card::before, .card::after { content: none; }
 
 /* legacy hub pieces */
@@ -138,7 +151,7 @@ body::before { content: none; }
 .gate-status { font: 700 var(--text-label)/1.4 var(--font-body); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--muted); }
 .gate--open .door { background: var(--sunset); }
 .gate--open .door::after { content: ""; position: absolute; left: 50%; bottom: 10px; width: 26px; height: 26px; margin-left: -13px; border-radius: 50%; background: var(--peach); border: 2px solid var(--ink); }
-.gate--open .gate-status { color: #2E6B3A; }
+.gate--open .gate-status { color: #245A2F; }
 .gate--locked .door::after { content: ""; position: absolute; left: 8px; right: 8px; top: 50%; height: 6px; margin-top: -3px; border-radius: 3px; background: var(--ink); }
 .gate--soon { border-style: dashed; box-shadow: none; }
 .gate--soon .door { border-style: dashed; box-shadow: none; }
