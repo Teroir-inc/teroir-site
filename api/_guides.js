@@ -116,7 +116,7 @@ const passFor = (district, email, days = 730) => `${D.WW}/d/${district}?k=${sign
 // The buyer's email (html + text). Buttons only in the HTML; each URL on its own line in the text.
 const paidEmail = ({ pass, links }) => renderEmail({
   preheader: pass ? `Your pass to ${pass.name} and your guides are inside.` : 'Your download links are inside.',
-  kicker: pass ? '// pass unlocked' : '// order complete',
+  kicker: pass ? 'pass unlocked' : 'order complete',
   heading: pass ? `Your pass to ${pass.name}` : links.length > 1 ? 'Your guides' : 'Your guide',
   intro: [`Hey, it's Wyatt. Thanks for buying${pass ? ` a pass to ${pass.name}` : links.length > 1 ? ' the guides' : ''}.`],
   buttons: [

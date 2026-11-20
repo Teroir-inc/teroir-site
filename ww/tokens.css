@@ -1,125 +1,160 @@
-@import url("https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@500&display=swap");
-/* Horizon tokens v1 (11-19) for wyattworldwide.com. REPLACES the Realm HUD tokens (11-13).
-   Wyatt 11-19: "go minimalist, like Dune vibes, gradient cyan and neon pink."
+@import url("https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,800&family=Inter:wght@400;500;600;700&display=swap");
+/* Wyatt Worldwide look v5 (Wyatt 11-20) for wyattworldwide.com. REPLACES Horizon v1.
+   Spec: social-media BRAND_STRATEGY.md §7, art/brand/style_v5.html, palette.json.
+   "Sunset by day": a light pastel sky behind everything, cream comic panels with a thick ink edge and a hard ink shadow,
+   ink text. The Horizon cyan -> neon pink is kept only as an accent (key words, focus, the demo grid).
    Same class names as before, so the pages keep their markup; only the look changes.
 
-   RULES
-   - Minimal and calm: lots of negative space, few elements per screen, big quiet headlines.
-   - Scale comes from type and composition: wide-tracked display caps (Syncopate) and a soft horizon glow.
-     No grid floor, no sun, no brackets, no scan lines, no sand clip-art, no film IP.
-   - Colour: a deep dark base. The cyan → neon pink gradient (#00E5FF → #FF2BD6, the social palette) is the accent:
-     the horizon, the one primary button, hairline highlights. Body text is never gradient and never glows.
-   - Contrast: --ink 17.8:1 and --muted 8.1:1 on --night (WCAG AA and better). Gradient buttons carry dark text.
-   - Shape: square corners, 1 px hairlines, no drop shadows, no glass.
-   - Motion is slow and optional (a fade up); off under prefers-reduced-motion. */
+   CONTRAST (WCAG AA): text never sits on the mid-tone sunset colours. Page text sits on the pale sky tints below
+   (ink 13:1+, muted 6:1+) or on cream panels (ink 14.6:1, muted 6.9:1). Buttons: ink on coral 6.8:1.
+   The full-strength sunset lives in the drawn art (home hero, gates), never under body text.
+   RULES: no W emblem, no numbered frames, no glow on text. Motion is optional and off under reduced motion.
+
+   SKETCH WORLDSCAPE (Wyatt 11-20): the page is paper with a pencil + blueprint sketch of the beach world behind the
+   sections (ww/scene/*.svg, placed by realm.js). Panels are frosted paper (cream at 74% + blur) with the ink edge, so
+   the sketch reads through. AA is measured on the darkest blurred patch of every scene (scripts note in the PR). */
 
 :root {
-  color-scheme: dark;
+  color-scheme: light;
 
-  /* colour */
-  --night: #07060B;                     /* page background */
-  --night-1: #0E0C16;
-  --surface: #0B0A11;
-  --glass: rgba(255, 255, 255, .025);   /* panel fill: barely there */
-  --line: rgba(242, 240, 247, .14);     /* hairlines */
-  --line-dim: rgba(242, 240, 247, .08);
-  --ink: #F2F0F7;
-  --muted: #A7A2B6;
+  /* the v5 palette (palette.json) */
+  --sky: #6F5FB8;
+  --violet: #8E7CC3;
+  --lavender: #C9A7EB;
+  --pink: #FF9EC7;
+  --coral: #FF8A7A;
+  --peach: #FFC8A2;
+  --cream: #FFF3E3;
+  --ink: #2B1E3F;
+  --palm: #3A2A5C;
+  --palm-lit: #5B4386;
   --cyan: #00E5FF;
-  --magenta: #FF2BD6;
-  --pink: #FF2BD6;
-  --violet: #7B5CFF;
-  --gold: #F2F0F7;                      /* prices are plain ink now */
-  --grad: linear-gradient(90deg, #00E5FF 0%, #FF2BD6 100%);
-  --grad-soft: linear-gradient(90deg, rgba(0, 229, 255, .55), rgba(255, 43, 214, .55));
-  --grad-edge: linear-gradient(90deg, rgba(0, 229, 255, .5), rgba(255, 43, 214, .35) 60%, transparent);
+  --neon: #FF2BD6;
+
+  /* page sky: the same sunset, as pale tints so ink text keeps AA everywhere */
+  --sky-1: #E4DCF6;
+  --sky-2: #EEDDF8;
+  --sky-3: #FFE1EE;
+  --sky-4: #FFE4DB;
+  --sky-5: #FFEEDF;
+  --page-sky: linear-gradient(180deg, var(--sky-1) 0%, var(--sky-2) 28%, var(--sky-3) 56%, var(--sky-4) 80%, var(--sky-5) 100%);
+  /* the sketch worldscape: paper, a faint blueprint grid, a faint pastel wash */
+  --paper: #FBF8F2;
+  --grid: rgba(91, 125, 177, .07);
+  --page-paper: linear-gradient(180deg, rgba(201, 167, 235, .14), rgba(255, 158, 199, .08) 45%, rgba(255, 200, 162, .12)),
+    repeating-linear-gradient(0deg, var(--grid) 0 1px, transparent 1px 32px), repeating-linear-gradient(90deg, var(--grid) 0 1px, transparent 1px 32px);
+  --glass: rgba(255, 245, 232, .74);       /* frosted paper panel */
+  --glass-strong: rgba(255, 245, 232, .88);
+  --frost: blur(7px) saturate(1.05);
+  --sunset: linear-gradient(180deg, var(--sky) 0%, var(--violet) 22%, var(--lavender) 42%, var(--pink) 62%, var(--coral) 78%, var(--peach) 100%);
+  --word: linear-gradient(90deg, #C9372F, #C7307F 55%, #6A4FB3);   /* key words on cream: palette text_on_cream_gradient, deepened so every stop passes AA on cream (4.6:1+) */
+  --grad: linear-gradient(90deg, var(--cyan) 0%, var(--neon) 100%); /* Horizon accent, kept */
+
+  /* legacy names, mapped so older markup still resolves */
+  --night: var(--cream);
+  --night-1: #FFE9D6;
+  --surface: var(--cream);
+  --line: var(--ink);
+  --line-dim: rgba(43, 30, 63, .22);
+  --muted: #5A4A75;
+  --magenta: #C2187F;    /* text-safe pink (5.6:1 on cream) for small status text */
+  --gold: var(--ink);
+  --grad-soft: var(--sunset);
+  --grad-edge: var(--grad);
+  --glow-cyan: none; --glow-magenta: none; --glow-text: none; --shadow-card: none;
 
   /* type */
-  --font-display: "Syncopate", "Inter", system-ui, sans-serif;   /* caps only, wide */
+  --font-display: "Bricolage Grotesque", "Inter", system-ui, sans-serif;   /* headlines, 800 */
   --font-body: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, Menlo, Consolas, monospace;   /* code only */
-  --text-hero: clamp(1.5rem, 7.6vw, 5rem);
-  --text-h2: 1.15rem;
+  --font-mono: ui-monospace, Menlo, Consolas, monospace;                    /* code only */
+  --text-hero: clamp(2.6rem, 13vw, 5.4rem);
+  --text-h2: 1.6rem;
   --text-body: 1.0625rem;
-  --text-small: .875rem;
-  --text-label: .6875rem;
-  --track-wide: .32em;
-  --track-label: .26em;
+  --text-small: .9rem;
+  --text-label: .75rem;
+  --track-label: .08em;
 
-  /* legacy names, kept so older markup still resolves */
-  --glow-cyan: none;
-  --glow-magenta: none;
-  --glow-text: none;
-  --shadow-card: none;
-
-  /* shape, space, motion */
-  --radius-card: 0;
-  --radius-control: 0;
-  --radius-pill: 0;
+  /* the comic panel */
+  --edge: 3px;                     /* ink line (6 px at 1080 wide, scaled for a phone) */
+  --shadow: 5px 5px 0 var(--ink);  /* hard ink shadow, no blur */
+  --shadow-sm: 3px 3px 0 var(--ink);
+  --radius-card: 18px;
+  --radius-control: 14px;
+  --radius-pill: 999px;
   --space: 8px;
   --ease-snap: cubic-bezier(.2, .7, .1, 1);
-  --t-fast: 200ms;
-  --t-boot: 900ms;
+  --t-fast: 160ms;
+  --t-boot: 700ms;
 }
 
-body { background: var(--night); color: var(--ink); font: 400 var(--text-body)/1.65 var(--font-body); }
-a { color: var(--ink); text-decoration-color: rgba(0, 229, 255, .6); text-underline-offset: 4px; }
-a:hover { text-decoration-color: var(--magenta); }
-:focus-visible { outline: 1px solid var(--cyan); outline-offset: 4px; }
+html { background: var(--paper); }
+body { background: var(--page-paper); background-color: var(--paper); color: var(--ink);
+  font: 400 var(--text-body)/1.6 var(--font-body); }
+a { color: var(--ink); text-decoration-color: var(--neon); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+a:hover { text-decoration-color: var(--cyan); }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 3px; box-shadow: 0 0 0 6px var(--cyan); }
+body::before { content: none; }
 
-/* the sky: deep at the top, a soft cyan → pink horizon glow low on the screen. Fixed, behind everything. */
-body::before { content: none; }   /* a calm, flat night; the horizon glow lives in the hub hero */
+/* small labels: section names, meta. Plain, not shouty. */
+.label, .eyebrow { font: 700 var(--text-label)/1.4 var(--font-body); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--muted); }
 
-/* small tracked caps: section names, meta */
-.label, .eyebrow { font: 500 var(--text-label)/1.4 var(--font-body); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--muted); }
+/* headlines: Bricolage 800, ink, a hand-made feel */
+.neon, .chrome { font: 800 var(--text-h2)/1.05 var(--font-display); letter-spacing: -.02em; color: var(--ink); text-transform: none; background: none; text-shadow: none; }
+.chrome { font-size: var(--text-hero); }
+/* a key word: the sunset gradient on cream, the way the covers do it */
+.key { background: var(--word); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
-/* headings */
-.neon { font: 700 var(--text-h2)/1.35 var(--font-display); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); }
-.chrome { font: 700 var(--text-hero)/1.05 var(--font-display); letter-spacing: .18em; text-transform: uppercase; color: var(--ink); background: none; text-shadow: none; }
-
-/* panel (class name kept: .card): a quiet block with a hairline */
-.card { position: relative; background: var(--glass); border: 1px solid var(--line-dim); border-radius: 0; box-shadow: none; }
+/* the comic panel (class name kept: .card) */
+.card { position: relative; background: var(--glass); -webkit-backdrop-filter: var(--frost); backdrop-filter: var(--frost);
+  border: var(--edge) solid var(--ink); border-radius: var(--radius-card); box-shadow: var(--shadow); }
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) { :root { --glass: var(--glass-strong); } }
 .card::before, .card::after { content: none; }
 
-/* frame and readout (legacy hub pieces): reduced to a thin line */
+/* legacy hub pieces */
 .hud-frame { position: relative; background: none; border: 0; }
-.readout { display: flex; justify-content: space-between; gap: 12px; font: 500 var(--text-label)/1.4 var(--font-body);
+.readout { display: flex; justify-content: space-between; gap: 12px; font: 700 var(--text-label)/1.4 var(--font-body);
   letter-spacing: var(--track-label); text-transform: uppercase; color: var(--muted); }
-.readout b { font-weight: 500; background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.readout b { font-weight: 700; color: var(--ink); }
 
-/* buttons: the gradient is the one primary action; ghost is a hairline */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 12px;
-  font: 600 .8rem/1.2 var(--font-body); letter-spacing: .22em; text-transform: uppercase; padding: 18px 24px;
-  border-radius: 0; border: 0; background: var(--grad); color: #07060B; box-shadow: none; cursor: pointer; position: relative; }
-.btn:hover { filter: brightness(1.08); }
-.btn-ghost { display: inline-flex; align-items: center; gap: 12px; background: transparent; color: var(--ink); border: 1px solid var(--line);
-  border-radius: 0; box-shadow: none; font: 500 .8rem/1.2 var(--font-body); letter-spacing: .18em; text-transform: uppercase; padding: 16px 20px; cursor: pointer; }
-.btn-ghost:hover, .btn-ghost:focus-visible { border-color: rgba(242, 240, 247, .45); background: rgba(255, 255, 255, .03); box-shadow: none; }
-.btn-ghost .muted { font: 400 .8rem/1.2 var(--font-body); letter-spacing: .04em; text-transform: none; }
+/* buttons: coral is the one primary action; ghost is a cream panel. Both inked, both with the hard shadow. */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+  font: 700 1rem/1.2 var(--font-body); letter-spacing: 0; text-transform: none; padding: 16px 22px; min-height: 52px;
+  border-radius: var(--radius-control); border: var(--edge) solid var(--ink); background: var(--coral); color: var(--ink);
+  box-shadow: var(--shadow-sm); cursor: pointer; position: relative; }
+.btn:hover { background: #FF9C8E; }
+.btn:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+.btn[disabled] { opacity: .65; cursor: progress; }
+.btn-ghost { display: inline-flex; align-items: center; gap: 10px; background: var(--cream); color: var(--ink); border: var(--edge) solid var(--ink);
+  border-radius: var(--radius-control); box-shadow: var(--shadow-sm); font: 700 1rem/1.2 var(--font-body); letter-spacing: 0;
+  text-transform: none; padding: 14px 18px; min-height: 52px; cursor: pointer; }
+.btn-ghost:hover, .btn-ghost:focus-visible { background: #FFE6D2; }
+.btn-ghost:active { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+.btn-ghost .muted { font: 400 .95rem/1.2 var(--font-body); letter-spacing: 0; text-transform: none; }
 
 /* retired world pieces: hidden if any old markup still carries them */
-.sun, .grid-floor { display: none; }
+.sun, .grid-floor, .emblem { display: none; }
 .vhs::after { content: none; }
 
 @media (prefers-reduced-motion: no-preference) {
-  .btn, .btn-ghost, .card, .pnl { transition: filter var(--t-fast), border-color var(--t-fast), background var(--t-fast); }
-  @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
-  .boot { animation: rise var(--t-boot) var(--ease-snap) both; animation-delay: calc(var(--i, 0) * 90ms); }
+  .btn, .btn-ghost, .card, .pnl { transition: background var(--t-fast), transform var(--t-fast), box-shadow var(--t-fast); }
+  @keyframes rise { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+  .boot { animation: rise var(--t-boot) var(--ease-snap) both; animation-delay: calc(var(--i, 0) * 80ms); }
 }
 
 /* district gates: one component, three states (open, locked, soon). Same markup as before.
-   The door is a thin arch; an open door holds the horizon gradient. A locked gate names the pass that opens it. */
-.gate { display: grid; grid-template-columns: 52px 1fr; gap: 18px; align-items: center; padding: 20px; text-decoration: none; color: var(--ink); }
-.gate .door { position: relative; width: 52px; height: 70px; border: 1px solid var(--line); border-radius: 26px 26px 0 0; overflow: hidden; background: transparent; }
+   The door is a drawn arch: open shows the sunset through it; locked is cream with a bar; soon is dashed. */
+.gate { display: grid; grid-template-columns: 56px 1fr; gap: 16px; align-items: center; padding: 18px; text-decoration: none; color: var(--ink); }
+.gate .door { position: relative; width: 56px; height: 76px; border: var(--edge) solid var(--ink); border-radius: 28px 28px 4px 4px; overflow: hidden; background: var(--cream); box-shadow: var(--shadow-sm); }
 .gate-body { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
 .gate-body .label { color: var(--muted); }
-.gate-body b { font: 400 1.05rem/1.45 var(--font-body); }
-.gate-status { font: 500 var(--text-label)/1.4 var(--font-body); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--muted); }
-.gate--open .door { border-color: transparent; background: linear-gradient(180deg, rgba(0, 229, 255, .85), rgba(255, 43, 214, .85)); }
-.gate--open .gate-status { background: var(--grad); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.gate--locked .door::after { content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: var(--grad); }
-.gate--soon { border-style: dashed; }
-.gate--soon .door { border-style: dashed; }
+.gate-body b { font: 600 1.05rem/1.4 var(--font-body); }
+.gate-status { font: 700 var(--text-label)/1.4 var(--font-body); letter-spacing: var(--track-label); text-transform: uppercase; color: var(--muted); }
+.gate--open .door { background: var(--sunset); }
+.gate--open .door::after { content: ""; position: absolute; left: 50%; bottom: 10px; width: 26px; height: 26px; margin-left: -13px; border-radius: 50%; background: var(--peach); border: 2px solid var(--ink); }
+.gate--open .gate-status { color: #245A2F; }
+.gate--locked .door::after { content: ""; position: absolute; left: 8px; right: 8px; top: 50%; height: 6px; margin-top: -3px; border-radius: 3px; background: var(--ink); }
+.gate--soon { border-style: dashed; box-shadow: none; }
+.gate--soon .door { border-style: dashed; box-shadow: none; }
 .gate--soon b { color: var(--muted); }
-.gate-meter { height: 2px; background: var(--line-dim); margin-top: 6px; }
+.gate-meter { height: 8px; border: 2px solid var(--ink); border-radius: 6px; background: var(--cream); margin-top: 6px; overflow: hidden; }
 .gate-meter i { display: block; height: 100%; background: var(--grad); width: var(--pct, 0%); }   /* --pct = real progress, set inline */
