@@ -243,3 +243,16 @@ a.pg-card:hover{border-color:rgba(226,112,63,.5);transform:translateY(-2px)}
 
 /* /coliving/<city>: the result numbers lead, the raw counts sit small beside them (FACTS presentation rule) */
 .cv-big{display:block;font-size:34px;line-height:1.05;letter-spacing:-.02em;color:var(--text);margin-bottom:4px}
+
+/* /talk: who we help, three results, one action (Wyatt 11-20) */
+.tk .cta-lead{max-width:30ch;font-size:clamp(19px,2.4vw,22px);color:var(--text)}
+.tk-chips{position:relative;list-style:none;display:flex;flex-wrap:wrap;gap:10px;margin:0 0 28px;padding:0}
+.tk-chips li{padding:10px 14px;border:1px solid var(--line-2);border-radius:14px;background:rgba(255,254,250,.7);font-size:15px;color:var(--muted)}
+.tk-chips b{display:block;font-size:24px;letter-spacing:-.02em;color:var(--text)}
+.tk-go{position:relative}
+.tk-note{position:relative;margin:12px 0 0;font-size:15px;color:var(--muted)}
+.cv-act{position:relative;margin:4px 0 26px}
+.cv-keep{position:relative;max-width:560px;padding-top:20px;border-top:1px solid var(--line-2)}
+.cv-row{display:flex;gap:10px;align-items:center}
+.cv-row input{flex:1;min-width:0}
+.cv-act .btn,.tk-go{max-width:100%;white-space:normal;text-align:center}

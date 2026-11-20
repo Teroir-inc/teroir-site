@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """teroir.com/coliving/<city>: one landing page per sales-push market (orchestration/plans/sales-push-2026-11.md),
 for co-living and PadSplit operators. Each page: the More Doors, Same Team offer, the first project's result (FACTS),
-the founding-list signup (same form and founding.js as /founding, tagged with the city) and a book-a-call email link.
+a book-a-call email link and an optional "keep me posted" email field (the same list as before, tagged with the city;
+the /founding page is retired and founding is call-only now, Wyatt 11-20).
 No prices. The city is named only as who the page is for; the results always say Houston and DFW, where they happened.
 Pages stay noindex (meta here + X-Robots-Tag in vercel.json) until copy review passes.
 
@@ -59,7 +60,6 @@ def page(slug, city, where):
 <link rel="stylesheet" href="/pages.css">
 <script>document.documentElement.classList.add('js')</script>
 <script src="/main.js" defer></script>
-<script src="/founding.js" defer></script>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
@@ -68,7 +68,7 @@ def page(slug, city, where):
   <div class="wrap nav-in">
     <a class="brand" href="/" aria-label="Teroir — home"><img src="/brand/logo.svg" alt="Teroir" width="97" height="30">
     </a>
-    <nav class="links pg" aria-label="Pages"><a href="/property-management">Case study</a><a href="/founding">Founding list</a><a href="/talk">Talk to us</a></nav>
+    <nav class="links pg" aria-label="Pages"><a href="/property-management">Case study</a><a href="/talk">Talk to us</a></nav>
     <a class="btn btn-sm btn-ghost" href="/" >Home</a>
   </div>
 </header>
@@ -93,39 +93,32 @@ def page(slug, city, where):
 
       <div class="cta-grid">
         <div><span class="cta-k">The offer</span><p>More Doors, Same Team: HouKee set up for your houses, so your team can run more doors.</p></div>
-        <div><span class="cta-k">Founding Client Setup</span><p>We offer the 3 founding spots in list order to operators who are a fit: co-living or shared housing, 25+ rooms. Then we bring on the rest in order.</p></div>
-        <div><span class="cta-k">Talk first</span><p><a href="{e(mail)}">Email Wyatt to book a call</a>. You'll get 2 or 3 times back by email.</p></div>
       </div>
 
-      <p class="fq-invited" id="fq-invited" hidden>Another operator sent you this link. When you join and confirm your email, they move up the list.</p>
-      <p class="fq-total" id="fq-total" hidden></p>
+      <div class="cv-act">
+        <a class="btn btn-primary" href="{e(mail)}">Email Wyatt to book a 15-minute call <span aria-hidden="true">→</span></a>
+        <p class="tk-note">You'll get 2 or 3 times back by email.</p>
+      </div>
 
-      <form class="wl" id="fq-form" action="/api/waitlist?list=founding" method="post" data-src="{src}">
-        <div class="wl-grid">
-          <label class="wl-f"><span>Name</span><input name="name" required autocomplete="name" maxlength="120"></label>
-          <label class="wl-f"><span>Company</span><input name="company" required autocomplete="organization" maxlength="160"></label>
-          <label class="wl-f"><span>Email</span><input name="email" type="email" required autocomplete="email" maxlength="200"></label>
-          <label class="wl-f"><span>Number of doors <i>(rooms you rent)</i></span><input name="doors" required inputmode="numeric" pattern="[0-9,]{{1,7}}" maxlength="7" placeholder="e.g. 40"></label>
-        </div>
+      <form class="wl cv-keep" id="cv-keep" action="/api/waitlist?list=founding&amp;mode=updates" method="post">
+        <label class="wl-f"><span>Not ready to talk? Keep me posted. <i>(optional)</i></span>
+          <span class="cv-row"><input name="email" type="email" required autocomplete="email" maxlength="200" placeholder="you@example.com"><button class="btn btn-sm btn-ghost" type="submit">Keep me posted</button></span></label>
         <label class="wl-hp" aria-hidden="true">Leave this empty<input name="website" tabindex="-1" autocomplete="off"></label>
-        <input type="hidden" name="t" id="fq-t">
-        <input type="hidden" name="src" id="fq-src" value="{src}">
-        <input type="hidden" name="ref" id="fq-ref">
-        <div class="wl-act">
-          <button class="btn btn-primary" type="submit">Join the founding list <span aria-hidden="true">→</span></button>
-          <p class="wl-msg" id="fq-msg" role="status" aria-live="polite"></p>
-        </div>
-        <p class="rec-note">By joining, you agree that Teroir can email you about your place on the list and your setup. We never sell your email. Reply to any of our emails to leave the list.</p>
+        <input type="hidden" name="mode" value="updates"><input type="hidden" name="src" value="{src}"><input type="hidden" name="t" id="cv-t">
+        <p class="wl-msg" id="cv-msg" role="status" aria-live="polite"></p>
+        <p class="rec-note">We'll only email you about HouKee. Reply any time to leave the list.</p>
       </form>
-
-      <div class="fq-you" id="you" hidden>
-        <h2 id="fq-you-h">You're on the list.</h2>
-        <p class="cta-lead" id="fq-you-p">Check your inbox to confirm your email.</p>
-        <label class="wl-f fq-link"><span>Your invite link</span>
-          <span class="fq-copy"><input id="fq-invite" readonly><button class="btn btn-sm btn-ghost" type="button" id="fq-copy">Copy</button></span></label>
-        <p class="fq-count" id="fq-count"></p>
-        <p class="fq-count">When you share your link, say that it moves you up the list.</p>
-      </div>
+      <script>
+      (() => {{ const f = document.getElementById('cv-keep'), m = document.getElementById('cv-msg');
+        document.getElementById('cv-t').value = String(Date.now());
+        f.addEventListener('submit', async e => {{ e.preventDefault(); const b = f.querySelector('button'); b.disabled = true; m.textContent = 'Sending…';
+          try {{ const r = await fetch(f.action, {{ method: 'POST', headers: {{ 'Content-Type': 'application/json' }}, body: JSON.stringify(Object.fromEntries(new FormData(f))) }});
+            const j = await r.json().catch(() => ({{}}));
+            m.textContent = j.ok ? "Thanks. You're on the list." : j.error === 'email' || j.error === 'disposable' ? 'Please check your email address.' : 'Something went wrong. Please email wyatt@teroir.com.';
+            if (j.ok) f.querySelector('input[type=email]').value = '';
+          }} catch {{ m.textContent = 'Something went wrong. Please email wyatt@teroir.com.'; }}
+          b.disabled = false; }}); }})();
+      </script>
       <p class="rec-note">These numbers come from one team in Houston and DFW, May to October 2026. They are not typical results. Yours may differ. <a href="/property-management">See the case study</a>.</p>
     </div>
   </div>
@@ -138,7 +131,7 @@ def page(slug, city, where):
     <a class="brand" href="#top" aria-label="Back to top"><img src="/brand/logo.svg" alt="Teroir" width="84" height="26" loading="lazy">
     </a>
     <p>© 2026 Teroir · Palo Alto, CA</p>
-    <nav class="foot-links" aria-label="Pages"><a href="/">Home</a><a href="/property-management">Property management</a><a href="/founding">Founding list</a><a href="/talk">Talk to us</a></nav>
+    <nav class="foot-links" aria-label="Pages"><a href="/">Home</a><a href="/property-management">Property management</a><a href="/talk">Talk to us</a></nav>
     <p><a href="mailto:wyatt@teroir.com?subject=Teroir">wyatt@teroir.com</a></p>
   </div>
 </footer>

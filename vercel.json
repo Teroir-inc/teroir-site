@@ -44,6 +44,11 @@
  ],
  "redirects": [
   {
+   "source": "/founding",
+   "destination": "/talk",
+   "permanent": false
+  },
+  {
    "source": "/Apply",
    "destination": "/apply",
    "permanent": false

@@ -3,7 +3,8 @@
 //   POST                 join: { name, company, email, doors, ref, src, t, website } -> { ok, place, invite, me, total }
 //   GET  ?me=<token>     the person's own place and invite count (token from their email or the join reply)
 //   GET  ?confirm=<tok>  the link in the confirmation email: confirms the address, credits their inviter, then
-//                        sends them to /founding?me=…&confirmed=1
+//                        sends them to /talk?confirmed=1 (the /founding page is retired, Wyatt 11-20)
+//   POST mode=updates     "keep me posted": email only, same list, a short confirmation, no place or invite link
 const G = require('./_guides');
 const Q = require('./_queue');
 
@@ -38,6 +39,17 @@ function movedEmail({ name, place, moved, status }) {
   };
 }
 
+function updatesEmail({ name }) {
+  return {
+    subject: "You're on the HouKee list",
+    text: [`Hi ${name || 'there'},`, '',
+      "Thanks for asking to hear from us. I'll email you when there's news about HouKee.", '',
+      "Want to talk sooner? Reply to this email and I'll send 2 or 3 times for a 15-minute call.", '',
+      'Reply any time to leave the list.', '',
+      'Wyatt Horton', 'Founder, Teroir', 'https://teroir.com'].join('\n'),
+  };
+}
+
 module.exports = async (req, res) => {
   const q = req.query || {};
   const origin = G.originOf(req);
@@ -55,7 +67,7 @@ module.exports = async (req, res) => {
   if (req.method === 'GET' && q.confirm) {
     const code = readTok(q.confirm, 'fq-ok');
     const go = to => { res.setHeader('Location', to); return res.status(303).end(); };
-    if (!code) return go('/founding?bad=1');
+    if (!code) return go('/talk?bad=1');
     try {
       const c = await Q.foundingConfirm(code);
       if (c.credited && c.inviter?.email && c.inviter.place && c.inviter.moved > 0) {
@@ -63,8 +75,8 @@ module.exports = async (req, res) => {
         await G.send({ from: G.FROM, to: [c.inviter.email], reply_to: 'wyatt@teroir.com', ...movedEmail({ ...c.inviter, status }) }, `fq-moved-${code}`)
           .catch(e => console.error('founding moved email failed', e.message));
       }
-    } catch (e) { console.error('founding confirm failed', e.message); return go('/founding?error=1'); }
-    return go(`/founding?me=${meToken(code)}&confirmed=1`);
+    } catch (e) { console.error('founding confirm failed', e.message); return go('/talk?error=1'); }
+    return go('/talk?confirmed=1');
   }
 
   if (req.method === 'GET' && q.me) {
@@ -88,7 +100,7 @@ module.exports = async (req, res) => {
   const wantsJson = String(req.headers['content-type'] || '').includes('application/json');
   const reply = (status, body) => {
     if (wantsJson) return res.status(status).json(body);
-    const to = body.me ? `/founding?me=${body.me}&joined=1#you` : body.error === 'already' ? '/founding?already=1#you' : null;
+    const to = body.ok || body.error === 'already' ? '/talk?joined=1' : null;
     if (to) { res.setHeader('Location', to); return res.status(303).end(); }
     return res.status(status).send('Something went wrong. Please email wyatt@teroir.com.');
   };
@@ -98,11 +110,14 @@ module.exports = async (req, res) => {
   const email = G.clean(b.email, 200).toLowerCase();
   if (!G.EMAIL_RE.test(email) || !Q.norm(email)) return reply(400, { ok: false, error: 'email' });
   if (Q.isDisposable(email)) return reply(400, { ok: false, error: 'disposable' });
+  const updates = G.clean(b.mode || q.mode, 20) === 'updates';   // "keep me posted" (city pages): email only
   const name = G.clean(b.name, 120), company = G.clean(b.company, 160);
-  const doors = Math.floor(Number(String(b.doors || '').replace(/[,\s]/g, '')));
-  if (!name) return reply(400, { ok: false, error: 'name' });
-  if (!company) return reply(400, { ok: false, error: 'company' });
-  if (!Number.isFinite(doors) || doors < 1 || doors > DOORS_MAX) return reply(400, { ok: false, error: 'doors' });
+  const doors = updates && !b.doors ? 0 : Math.floor(Number(String(b.doors || '').replace(/[,\s]/g, '')));
+  if (!updates) {
+    if (!name) return reply(400, { ok: false, error: 'name' });
+    if (!company) return reply(400, { ok: false, error: 'company' });
+    if (!Number.isFinite(doors) || doors < 1 || doors > DOORS_MAX) return reply(400, { ok: false, error: 'doors' });
+  }
   const ref = G.clean(b.ref, 20).toLowerCase();
   const src = G.clean(b.src, 60).replace(/[^\w.\-]/g, '');
 
@@ -111,6 +126,16 @@ module.exports = async (req, res) => {
   catch (e) {
     if (e.code === 'limit') return reply(429, { ok: false, error: 'limit' });
     console.error('founding join failed', e.message); return reply(503, { ok: false, error: 'store' });
+  }
+  if (updates) {
+    // same list; nobody can learn anything about an address by typing it, so a repeat gets the same quiet "ok"
+    if (!j.dup) {
+      await G.send({ from: G.FROM, to: [email], reply_to: 'wyatt@teroir.com', ...updatesEmail({ name }) }, `fq-upd-${j.code}`)
+        .catch(e => console.error('updates email failed', e.message));
+      if (!Q.PV) await G.notify(`Keep me posted: ${email}${src ? ` · ${src}` : ''}`, [`Email: ${email}`, `Came from: ${src || '(direct)'}`, `When: ${new Date().toISOString()}`])
+        .catch(e => console.error('updates notify failed', e.message));
+    }
+    return reply(200, { ok: true });
   }
   const status = `${origin}/founding?me=${meToken(j.code)}`;
   const mail = joinEmail({ name, place: j.place, confirm: `${origin}/api/waitlist?list=founding&confirm=${G.sign('fq-ok', j.code, 30)}`, invite: inviteUrl(origin, j.code), status });
@@ -131,3 +156,4 @@ module.exports = async (req, res) => {
 };
 module.exports.joinEmail = joinEmail;
 module.exports.movedEmail = movedEmail;
+module.exports.updatesEmail = updatesEmail;
