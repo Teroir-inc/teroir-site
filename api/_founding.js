@@ -15,9 +15,9 @@ const readTok = (t, kind) => { const v = G.verify(t); return v && v.d === kind &
 // The confirmation email: plain text from Wyatt, like the other teroir.com confirmations.
 function joinEmail({ name, place, confirm, invite, status }) {
   return {
-    subject: `You're number ${place} on the Houkee founding list`,
+    subject: `You're number ${place} on the HouKee founding list`,
     text: [`Hi ${name || 'there'},`, '',
-      `Thanks for joining the founding list for Houkee. You're number ${place} right now.`, '',
+      `Thanks for joining the founding list for HouKee. You're number ${place} right now.`, '',
       'Please confirm your email:', confirm, '',
       'Your invite link:', invite, '',
       `Each operator who joins with your link and confirms their email moves you up to ${Q.INVITE_STEP} places.`, '',
@@ -29,7 +29,7 @@ function joinEmail({ name, place, confirm, invite, status }) {
 }
 function movedEmail({ name, place, moved, status }) {
   return {
-    subject: `You moved up to number ${place} on the Houkee founding list`,
+    subject: `You moved up to number ${place} on the HouKee founding list`,
     text: [`Hi ${name || 'there'},`, '',
       `An operator you invited just confirmed their email, so you moved up ${moved} ${moved === 1 ? 'place' : 'places'}. You're number ${place} now.`, '',
       'See your place any time:', status, '',
@@ -117,7 +117,7 @@ module.exports = async (req, res) => {
 
   if (j.dup) {
     // already on the list: the links go to the inbox only, so nobody can read someone else's place by typing their email
-    await G.send({ from: G.FROM, to: [email], reply_to: 'wyatt@teroir.com', ...mail, subject: 'Your place on the Houkee founding list' },
+    await G.send({ from: G.FROM, to: [email], reply_to: 'wyatt@teroir.com', ...mail, subject: 'Your place on the HouKee founding list' },
       `fq-again-${j.code}-${new Date().toISOString().slice(0, 13)}`).catch(e => console.error('founding resend failed', e.message)); // at most one an hour
     return reply(409, { ok: false, error: 'already' });
   }
