@@ -26,8 +26,8 @@ CITIES = [
 
 def page(slug, city, where):
     title = f'More doors, same team, for {city} co-living operators — Teroir'
-    desc = (f'For co-living and PadSplit hosts in {city}. HouKee, housekeeping for co-living houses, helped one team grow '
-            'from 11 to 29 properties with no new hires.')
+    desc = (f'For co-living and PadSplit hosts in {city}. One team grew from 11 to 29 properties with no new hires '
+            'while running on HouKee, housekeeping for co-living houses.')
     result = ('HouKee, housekeeping for co-living houses, ran their 218 rooms right here in Houston and DFW.' if where == 'home'
               else 'HouKee, housekeeping for co-living houses, ran their 218 rooms in Houston and DFW.')
     mail = 'mailto:wyatt@teroir.com?' + urllib.parse.urlencode({'subject': f'More Doors, Same Team: a call ({city})'}, quote_via=urllib.parse.quote)
@@ -89,7 +89,7 @@ def page(slug, city, where):
         <div><span class="cta-k">Member messages each week</span><p><b class="cv-big">8x</b> about 60 to about 500, sent automatically</p></div>
       </div>
 
-      <p class="cta-lead">Chores, tenant texts, maintenance requests and fines sit in one place. You see what needs your call.</p>
+      <p class="cta-lead">Chores, tenant texts, maintenance requests and fines sit in one place. 900+ tickets were tracked and handled in one place.</p>
 
       <div class="cta-grid">
         <div><span class="cta-k">The offer</span><p>More Doors, Same Team: HouKee set up for your houses, so your team can run more doors.</p></div>
@@ -126,7 +126,7 @@ def page(slug, city, where):
         <p class="fq-count" id="fq-count"></p>
         <p class="fq-count">When you share your link, say that it moves you up the list.</p>
       </div>
-      <p class="rec-note">These numbers come from one team. Its houses are in Houston and DFW. <a href="/property-management">See the case study</a>.</p>
+      <p class="rec-note">These numbers come from one team in Houston and DFW, May to October 2026. They are not typical results. Yours may differ. <a href="/property-management">See the case study</a>.</p>
     </div>
   </div>
 </section>
