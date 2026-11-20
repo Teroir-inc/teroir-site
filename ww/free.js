@@ -35,8 +35,8 @@
       sh.hidden = false;
       $('sh-link').value = d.link;
       const f = d.friends;
-      $('sh-count').textContent = f >= 10 ? `${f} friends so far. You unlocked the bonus guide and the live session invite.`
-        : f >= 3 ? `${f} friends so far. You unlocked the bonus guide. ${10 - f} more for the live session invite.`
+      $('sh-count').textContent = f >= 10 ? `${f} friends so far. You unlocked all ten guides. Check your inbox.`
+        : f >= 3 ? `${f} friends so far. You unlocked a bonus guide. ${10 - f} more for all ten guides.`
         : `${f} of 3 friends so far.`;
       if (d.bonus === 'open' && d.choices.length) {
         const pick = $('sh-pick');

@@ -22,7 +22,7 @@ function joinEmail({ name, place, confirm, invite, status }) {
       'Your invite link:', invite, '',
       `Each operator who joins with your link and confirms their email moves you up ${Q.INVITE_STEP} places.`, '',
       'See your place any time:', status, '',
-      "We offer the 3 Founding Client Setup spots in list order. I'll email you when your turn comes up.", '',
+      'We offer the 3 founding spots in list order to operators who are a fit (co-living or shared housing, 25+ rooms), then bring on the rest in order.', "I'll email you when your turn comes up.", '',
       'Reply to this email to tell me about your houses, or to leave the list.', '',
       'Wyatt Horton', 'Founder, Teroir', 'https://teroir.com'].join('\n'),
   };

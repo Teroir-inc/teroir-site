@@ -1,5 +1,6 @@
 // wyattworldwide.com/free share links: after claiming a guide, a personal link. When 3 friends claim a free guide with
-// it (and open it), you unlock a bonus guide; at 10, an invite to the monthly live session. Rewards are digital only.
+// it (and open it), you unlock a bonus guide (one of the longer paid guides, your pick); at 10, all ten guides.
+// Rewards are digital only.
 // Store and abuse rules: api/_queue.js (wr:*). Served through api/claim.js (GET ?me=…, POST { bonus, guide }) and
 // counted in api/guide.js when a referred claimer opens their guide. All 12 Hobby-plan functions are in use.
 const G = require('./_guides');
@@ -10,19 +11,19 @@ const shareUrl = code => `${E.WW}/free?r=${code}`;
 const meToken = code => G.sign('wr-me', code, 3650);
 const meUrl = code => `${E.WW}/free?me=${meToken(code)}#share`;
 const readMe = t => { const v = G.verify(t); return v && v.d === 'wr-me' && Date.now() <= v.x && Q.okCode(v.e) ? v.e : null; };
-// the bonus is one more of the free picks, not the one they already have
-const bonusChoices = claimed => G.GUIDES.filter(g => !g.paidOnly && g.id !== claimed).map(g => ({ id: g.id, title: g.title }));
+// the bonus is one of the longer paid guides, their pick
+const bonusChoices = () => G.GUIDES.filter(g => g.paidOnly).map(g => ({ id: g.id, title: g.title }));
 
-const unlockEmail = (kind, code) => kind === 'bonus' ? E.renderEmail({
+const unlockEmail = (kind, code, email) => kind === 'bonus' ? E.renderEmail({
   preheader: '3 friends claimed a guide with your link.', kicker: '// bonus unlocked', heading: 'You unlocked a bonus guide',
   intro: ["Hey, it's Wyatt. 3 friends claimed a free guide with your link. Thanks for sharing. Pick your bonus guide here."],
   buttons: [{ label: 'Pick your bonus guide', url: meUrl(code), primary: true }],
-  notes: ['At 10 friends, you get an invite to my monthly live session.'], signoff: ['Wyatt', G.SIGNOFF],
+  notes: ['At 10 friends, you get all ten guides.'], signoff: ['Wyatt', G.SIGNOFF],
 }) : E.renderEmail({
-  preheader: '10 friends claimed a guide with your link.', kicker: '// live session unlocked', heading: 'You unlocked the live session',
-  intro: ["Hey, it's Wyatt. 10 friends claimed a free guide with your link. You're on the invite list for my monthly live session. I'll email you the next date."],
-  buttons: [{ label: 'See your link', url: meUrl(code) }],
-  notes: ['Reply to this email if you have a question you want me to cover.'], signoff: ['Wyatt', G.SIGNOFF],
+  preheader: '10 friends claimed a guide with your link. All ten guides are inside.', kicker: '// all ten guides', heading: 'You unlocked all ten guides',
+  intro: ["Hey, it's Wyatt. 10 friends claimed a free guide with your link. Thanks for sharing. Here are all ten guides."],
+  buttons: G.GUIDES.map((g, i) => ({ label: `Download: ${g.title}`, url: G.linkFor(g.id, email, 730), primary: i === 0 })),
+  notes: ['These links work for two years. Save the PDFs somewhere you will see them again.'], signoff: ['Wyatt', G.SIGNOFF],
 });
 
 // guide.js calls this when a guide link is opened. Never throws: the PDF matters more than the count.
@@ -31,9 +32,9 @@ async function opened(email) {
     const r = await Q.shareOpened(email);
     if (!r || !r.unlocked.length) return r;
     for (const kind of r.unlocked) {
-      const subject = kind === 'bonus' ? 'You unlocked a bonus guide' : 'You unlocked my monthly live session';
-      await G.send({ from: G.FROM, to: [r.inviter.email], reply_to: 'wyatt@teroir.com', subject, ...unlockEmail(kind, r.inviter.code) }, `wr-${kind}-${r.inviter.code}`);
-      if (!Q.PV) await G.notify(`Share reward: ${kind} · ${r.inviter.email}`, [`Reward: ${kind === 'bonus' ? 'bonus guide (3 friends)' : 'monthly live session invite (10 friends)'}`,
+      const subject = kind === 'bonus' ? 'You unlocked a bonus guide' : 'You unlocked all ten guides';
+      await G.send({ from: G.FROM, to: [r.inviter.email], reply_to: 'wyatt@teroir.com', subject, ...unlockEmail(kind, r.inviter.code, r.inviter.email) }, `wr-${kind}-${r.inviter.code}`);
+      if (!Q.PV) await G.notify(`Share reward: ${kind} · ${r.inviter.email}`, [`Reward: ${kind === 'bonus' ? 'bonus guide (3 friends)' : 'all ten guides, sent (10 friends)'}`,
         `Email: ${r.inviter.email}`, `Friends counted: ${r.friends}`, `When: ${new Date().toISOString()}`], `wr-n-${kind}-${r.inviter.code}`);
     }
     return r;
@@ -48,8 +49,8 @@ async function status(req, res) {
   try {
     const s = await Q.shareStatus(code);
     if (!s) return res.status(404).json({ ok: false, error: 'link' });
-    return res.status(200).json({ ok: true, link: shareUrl(code), friends: s.friends, next: s.next, live: s.live,
-      bonus: s.bonus === 'open' ? 'open' : s.bonus === 'locked' ? 'locked' : 'sent', choices: s.bonus === 'open' ? bonusChoices(s.guide) : [] });
+    return res.status(200).json({ ok: true, link: shareUrl(code), friends: s.friends, next: s.next, all: s.all,
+      bonus: s.bonus === 'open' ? 'open' : s.bonus === 'locked' ? 'locked' : 'sent', choices: s.bonus === 'open' ? bonusChoices() : [] });
   } catch (e) { console.error('share status failed', e.message); return res.status(503).json({ ok: false, error: 'store' }); }
 }
 
@@ -62,14 +63,14 @@ async function bonus(req, res, b) {
     if (!s) return res.status(404).json({ ok: false, error: 'link' });
     if (s.bonus === 'locked') return res.status(403).json({ ok: false, error: 'locked' });
     if (s.bonus !== 'open') return res.status(409).json({ ok: false, error: 'sent' });
-    const guide = bonusChoices(s.guide).find(g => g.id === G.clean(b.guide, 40));
+    const guide = bonusChoices().find(g => g.id === G.clean(b.guide, 40));
     if (!guide) return res.status(400).json({ ok: false, error: 'guide' });
     if (!(await Q.takeBonus(code, guide.id))) return res.status(409).json({ ok: false, error: 'sent' });
     await G.send({ from: G.FROM, to: [s.email], reply_to: 'wyatt@teroir.com', subject: `Your bonus guide: ${guide.title}`, ...E.renderEmail({
       preheader: `Your bonus guide: ${guide.title}`, kicker: '// bonus guide', heading: 'Your bonus guide',
       intro: [`Hey, it's Wyatt. Thanks for sharing. Here's your bonus guide, "${guide.title}".`],
-      buttons: [{ label: 'Download the guide', url: G.linkFor(guide.id, s.email, 30), note: guide.title, primary: true }],
-      notes: ['The download link works for 30 days.'], signoff: ['Wyatt', G.SIGNOFF],
+      buttons: [{ label: 'Download the guide', url: G.linkFor(guide.id, s.email, 730), note: guide.title, primary: true }],
+      notes: ['The download link works for two years.'], signoff: ['Wyatt', G.SIGNOFF],
     }) }, `wr-bonus-send-${code}`).catch(async e => { await Q.pipe([['HDEL', `${Q.PV}wr:u:${code}`, 'bonusGuide']]).catch(() => {}); throw e; }); // not sent: they can pick again
     return res.status(200).json({ ok: true, guide: guide.id });
   } catch (e) { console.error('share bonus failed', e.message); return res.status(502).json({ ok: false, error: 'send' }); }

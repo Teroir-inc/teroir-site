@@ -2,7 +2,7 @@
 //  - fq: teroir.com/founding, the Founding Client Setup queue. A real place in line; each invited operator who confirms
 //        their email moves the inviter up INVITE_STEP places.
 //  - wr: wyattworldwide.com/free share links. A count of friends who claimed a guide (and opened it) with your link;
-//        3 unlocks a bonus guide, 10 an invite to the monthly live session. Rewards are digital only.
+//        3 unlocks a bonus guide (a longer paid guide, their pick), 10 all ten guides. Rewards are digital only.
 // Every number shown comes from these keys; nothing is seeded or rounded up.
 // Preview deployments share the production store, so their keys get a pv: prefix and never touch the real lists.
 // Abuse rules (both lists): one entry per mailbox (gmail dots and +tags folded), disposable domains never count,
@@ -14,7 +14,7 @@ const INVITE_STEP = 3;          // places an inviter moves up per confirmed invi
 const SHOW_TOTAL_FROM = 10;     // the founding page shows "N operators on the list" only from this many real entries
 const DAILY_CREDITS = 10;       // per inviter per day, either list
 const JOINS_PER_IP_DAY = 5;     // founding signups from one network per day
-const REWARDS = [{ at: 3, id: 'bonus' }, { at: 10, id: 'live' }];
+const REWARDS = [{ at: 3, id: 'bonus' }, { at: 10, id: 'all' }];
 
 // ---- Upstash REST
 function kv() {
@@ -186,7 +186,7 @@ async function shareStatus(code) {
   const u = await wUser(code);
   if (!u.email) return null;
   const friends = Number(u.friends || 0);
-  return { friends, next: REWARDS.find(r => friends < r.at) || null, bonus: friends >= 3 ? (u.bonusGuide || 'open') : 'locked', live: friends >= 10, email: u.email, guide: u.guide || '' };
+  return { friends, next: REWARDS.find(r => friends < r.at) || null, bonus: friends >= 3 ? (u.bonusGuide || 'open') : 'locked', all: friends >= 10, email: u.email, guide: u.guide || '' };
 }
 // Marks the bonus guide as taken (once). Returns true if this call took it.
 const takeBonus = (code, guideId) => one(['HSETNX', `${W}:u:${code}`, 'bonusGuide', guideId]).then(Boolean);
