@@ -339,25 +339,10 @@ def boundary(p, hz, yb, level):
             p.curve((x, y), (x + 4, y - 6), (x + 10, y - 5), (x + 12, y), n=4, w=.8, op=.6, double=False)
 
 
-def waves(p, y0, y1, n=4):
-    """breaking waves in pencil: crests with curls, hatched faces"""
-    r = p.r
-    for k in range(n):
-        y = y0 + (y1 - y0) * k / n
-        x = r.uniform(-60, 40)
-        while x < W:
-            L = r.uniform(120, 220)
-            crest = [(x + L * t, y - 10 * math.sin(math.pi * t) * (1 + .3 * k)) for t in [i / 8 for i in range(9)]]
-            p.stroke(crest, w=1.3, op=.75, amp=.8, double=False)
-            cx, cy = crest[3]
-            p.curve((cx, cy), (cx + 10, cy - 12), (cx + 22, cy - 4), (cx + 14, cy + 4), n=6, w=1.0, op=.7, double=False)  # the curl
-            p.hatch([crest[0], crest[4], crest[8], (crest[8][0], y + 10), (crest[0][0], y + 10)], angle=70, gap=4, op=.3)
-            x += L + r.uniform(20, 70)
-
-
 def sand(p, y0, y1=1000, dens=.5):
     """dry sand: stipple, ripple marks"""
-    p.raw(f'<rect x="0" y="{y0}" width="{W}" height="{y1 - y0}" fill="url(#stip)" opacity="{dens:.2f}" stroke="none"/>')
+    p.raw(f'<rect x="0" y="{y0}" width="{W}" height="240" fill="url(#stip)" opacity="{dens:.2f}" stroke="none"/>'
+          f'<rect x="0" y="{y0 + 240}" width="{W}" height="{max(0, y1 - y0 - 240)}" fill="url(#stip)" opacity="{dens * .45:.2f}" stroke="none"/>')
     r = p.r
     for _ in range(int(60 * dens)):
         x = r.uniform(20, W - 60); y = r.uniform(y0 + 10, y1 - 10)
@@ -401,12 +386,12 @@ def cliff(p, x0, x1, top, base, side='left'):
         fx -= r.uniform(0, 10); face_pts.append((fx, min(fy + r.uniform(4, 10), base)))
     outline = edge + face_pts + [(face_pts[-1][0] + 30, base), (x0, base)]
     p.poly(outline, w=1.9)
-    for k in range(1, 8):  # strata, following the top
-        t = k / 8
+    for k in range(1, 6):  # strata, following the top
+        t = k / 6
         row = [(ex * (1 - t * .05), ey + (base - ey) * t + r.uniform(-4, 4)) for ex, ey in edge]
         p.stroke(row, w=.9, op=.5, amp=1.5, double=False)
-    p.hatch(outline, angle=84, gap=5, op=.32)
-    p.hatch(face_pts + [(x0 + (x1 - x0) * .6, base), (x0 + (x1 - x0) * .6, top + 60)], angle=-35, gap=6, op=.3)   # shade near the face
+    p.hatch(outline, angle=84, gap=7, op=.32)
+    p.hatch(face_pts + [(x0 + (x1 - x0) * .6, base), (x0 + (x1 - x0) * .6, top + 60)], angle=-35, gap=8, op=.3)   # shade near the face
     for _ in range(12):  # cracks
         cx = r.uniform(x0 + 10, x1 - 30); cy = r.uniform(top + 40, base - 30)
         p.line((cx, cy), (cx + r.uniform(-8, 8), cy + r.uniform(16, 40)), n=3, w=.8, op=.6, double=False)
@@ -428,6 +413,228 @@ def dim(p, a, b, label, off=24, col=BLUE):
     if deg > 90 or deg < -90: deg += 180
     p.raw(f'<text x="{mx:.0f}" y="{my - 4:.0f}" font-family="ui-monospace,Menlo,monospace" font-size="12" fill="{col}" opacity=".85" text-anchor="middle" '
           f'transform="rotate({deg:.0f} {mx:.0f} {my:.0f})" stroke="none">{label}</text>')
+
+
+# ---- the real world, in detail (Wyatt 11-20: "pencil sketch beach needs way more detail") -------------------------
+# Line weights: 2.2 main outlines, 1.4 secondary, .9 detail, .6 texture. Density is highest at the shoreline and thins
+# toward the bottom of each tile, so the frosted panels that sit lower down stay readable.
+def waves(p, y0, y1, n=4):
+    """rows of breaking waves: a gentle back, a steep face, a lip curling over a hatched barrel, whitewater, foam lace
+    and spray. Far rows are small and finely hatched; near rows big and bolder."""
+    r = p.r
+    for k in range(n):
+        sc = .4 + .6 * k / max(1, n - 1)
+        y = y0 + (y1 - y0) * (k / max(1, n - 1)) ** 1.25
+        x = r.uniform(-120, 0)
+        while x < W:
+            L = r.uniform(150, 260) * sc; hgt = r.uniform(18, 30) * sc
+            pk = (x + .58 * L, y - hgt)                                    # the peak
+            lip = (x + .8 * L, y - hgt * .62)                              # where the lip lands
+            back = p._bez((x, y), (x + .25 * L, y - hgt * .1), (x + .45 * L, y - hgt * .95), pk, 8)
+            p.stroke(back, w=1.5 if sc > .7 else 1.0, op=.85, amp=.5, double=sc > .7)
+            p.curve(pk, (pk[0] + .14 * L, pk[1] - hgt * .12), (lip[0] + .06 * L, lip[1] - hgt * .25), lip, n=7, w=1.4 if sc > .7 else .9, op=.85, double=False)
+            p.curve(lip, (lip[0] - .03 * L, lip[1] + hgt * .12), (lip[0] - .07 * L, lip[1] + hgt * .02), (lip[0] - .05 * L, lip[1] - hgt * .1), n=5, w=.8, op=.7, double=False)  # the curl
+            face = p._bez(pk, (pk[0] + .02 * L, y - hgt * .5), (pk[0] + .06 * L, y - hgt * .1), (x + .66 * L, y), 7)
+            p.stroke(face, w=.9, op=.7, amp=.4, double=False)
+            barrel = face + [lip, (lip[0] + .02 * L, lip[1] - hgt * .2), (pk[0] + .1 * L, pk[1] - hgt * .05)]
+            p.hatch(barrel, angle=78, gap=1.8 + 2 * sc, op=.55)
+            p.hatch(barrel, angle=-10, gap=3 + 3 * sc, op=.3)
+            p.hatch(back + [(x + .55 * L, y), (x, y)], angle=60, gap=4 + 5 * sc, op=.18)   # light shade on the back
+            # whitewater: scribbled loops where the lip lands, running on to the next wave
+            wx = lip[0]
+            while wx < x + L:
+                rr = r.uniform(1.2, 3.2) * sc + .5
+                p.raw(f'<circle cx="{wx:.0f}" cy="{y - r.uniform(0, hgt * .45):.0f}" r="{rr:.1f}" stroke="#3E3B46" stroke-width=".6" opacity=".55"/>')
+                wx += r.uniform(2, 7) * sc + 1
+            # foam lace along the base: irregular loops and dots with gaps
+            fx = x
+            while fx < x + L:
+                if r.random() < .6:
+                    rr = r.uniform(.8, 2.4) * sc + .4
+                    p.raw(f'<ellipse cx="{fx:.0f}" cy="{y + 3 * sc + r.uniform(-1.5, 1.5):.0f}" rx="{rr * 1.4:.1f}" ry="{rr:.1f}" stroke="#3E3B46" stroke-width=".5" opacity=".5"/>')
+                else:
+                    p.raw(f'<circle cx="{fx:.0f}" cy="{y + 4 * sc:.0f}" r=".7" fill="#3E3B46" opacity=".5" stroke="none"/>')
+                fx += r.uniform(3, 10) * sc + 1
+            for _ in range(int(8 * sc) + 3):  # spray off the lip
+                p.raw(f'<circle cx="{lip[0] + r.uniform(-6, 18) * sc:.0f}" cy="{lip[1] - r.uniform(4, 16) * sc:.0f}" r="{r.uniform(.4, 1):.1f}" fill="#3E3B46" opacity=".5" stroke="none"/>')
+            x += L + r.uniform(-20, 40) * sc
+
+
+def tide(p, yb, y0, y1):
+    """tide lines, wet-sand reflections and seaweed strands just above the dry sand"""
+    r = p.r
+    for k in range(3):
+        y = y0 + (y1 - y0) * k / 3
+        x = r.uniform(-20, 40)
+        while x < W:
+            L = r.uniform(80, 220)
+            pts = [(x + L * t, y + 4 * math.sin((x + L * t) / 40 + k)) for t in [i / 6 for i in range(7)]]
+            p.stroke(pts, w=.8, col=SOFT, op=.5 - k * .1, amp=.6, double=False)
+            x += L + r.uniform(20, 80)
+    for _ in range(90):  # wet sand: short horizontal glints
+        x = r.uniform(0, W); y = r.uniform(y0 - 14, y0 + 10)
+        p.raw(f'<path d="M{x:.0f} {y:.0f}h{r.uniform(8, 30):.0f}" stroke="#6B6773" stroke-width=".7" opacity=".35"/>')
+    for _ in range(9):  # seaweed along the tide line
+        x = r.uniform(30, W - 30); y = y0 + r.uniform(-6, 18)
+        for s in range(r.randint(3, 6)):
+            L = r.uniform(14, 34); a = r.uniform(-.4, .4)
+            p.curve((x, y), (x + L * .3, y - 6 + a * 10), (x + L * .6, y + 6), (x + L, y + a * 12), n=6, w=.8, op=.6, double=False)
+        p.raw(f'<circle cx="{x + 6:.0f}" cy="{y - 2:.0f}" r="2" fill="#3E3B46" opacity=".35" stroke="none"/>')
+
+
+def dens_y(y, yb):
+    """how much detail at this height: most near the shore, less toward the bottom"""
+    return max(.12, 1 - (y - yb) / 620)
+
+
+def scatter(p, yb, n, fn, avoid=(), y0=None, y1=985, x0=20, x1=W - 20):
+    r = p.r
+    y0 = y0 if y0 is not None else yb + 60
+    for _ in range(n):
+        y = y0 + (y1 - y0) * r.random() ** 1.7
+        x = r.uniform(x0, x1)
+        if r.random() > dens_y(y, yb): continue
+        if any(ax0 <= x <= ax1 and ay0 <= y <= ay1 for ax0, ay0, ax1, ay1 in avoid): continue
+        fn(x, y, .55 + .55 * (y / 1000))
+
+
+def shell(p, x, y, s):
+    r = p.r
+    if r.random() < .55:  # a scallop: a fan of ribs under an arc
+        R = 7 * s
+        pts = [(x + R * math.cos(math.radians(a)), y - R * math.sin(math.radians(a)) * .8) for a in range(200, 341, 28)]
+        for (px, py) in pts: p.line((x, y + 2 * s), (px, py - 2 * s), n=2, w=.6, op=.6, double=False)
+        p.stroke([(x + R * math.cos(math.radians(a)), y - R * math.sin(math.radians(a)) * .8 - 2 * s) for a in range(200, 341, 14)], w=.8, op=.7, amp=.3, double=False)
+    else:  # a spiral shell
+        pts = [(x + (1 + t * 1.4) * s * math.cos(t), y + (1 + t * 1.4) * s * math.sin(t) * .7) for t in [i * .45 for i in range(16)]]
+        p.stroke(pts, w=.8, op=.7, amp=.2, double=False)
+
+
+def pebble(p, x, y, s):
+    rx = p.r.uniform(3, 8) * s
+    p.raw(f'<ellipse cx="{x:.0f}" cy="{y:.0f}" rx="{rx:.1f}" ry="{rx * .55:.1f}" stroke="#3E3B46" stroke-width=".8" opacity=".6"/>'
+          f'<path d="M{x - rx * .6:.0f} {y + rx * .35:.0f}q{rx * .6:.1f} {rx * .3:.1f} {rx * 1.2:.1f} 0" stroke="#3E3B46" stroke-width=".7" opacity=".45"/>')
+
+
+def grass(p, x, y, s):
+    r = p.r
+    for b in range(r.randint(7, 12)):
+        lean = r.uniform(-1, 1); L = r.uniform(22, 56) * s
+        p.curve((x + r.uniform(-4, 4) * s, y), (x + lean * L * .2, y - L * .5), (x + lean * L * .55, y - L * .8), (x + lean * L * .9, y - L), n=5, w=.75, op=.65, double=False)
+    p.raw(f'<path d="M{x - 10 * s:.0f} {y + 1:.0f}h{20 * s:.0f}" stroke="#3E3B46" stroke-width=".7" opacity=".4"/>')
+
+
+def driftwood(p, x, y, s):
+    r = p.r
+    L = r.uniform(90, 150) * s; ang = r.uniform(-.15, .15)
+    ex, ey = x + L * math.cos(ang), y + L * math.sin(ang)
+    for off in (-4 * s, 4 * s):
+        p.line((x, y + off), (ex, ey + off * .7), w=1.3, op=.75, amp=1.4, double=False)
+    for k in range(4):  # grain
+        t0 = r.uniform(.05, .6); t1 = t0 + r.uniform(.2, .35)
+        p.line((x + (ex - x) * t0, y + (ey - y) * t0 + r.uniform(-2, 2) * s), (x + (ex - x) * t1, y + (ey - y) * t1 + r.uniform(-2, 2) * s), n=3, w=.6, op=.5, double=False)
+    p.circle(x + (ex - x) * .45, y + (ey - y) * .45, 2.5 * s, n=10, w=.7, op=.6, double=False)
+    p.line((x + (ex - x) * .7, y + (ey - y) * .7 - 3 * s), (x + (ex - x) * .78, y + (ey - y) * .7 - 18 * s), n=2, w=.9, op=.65, double=False)  # a broken branch
+    p.hatch([(x, y + 4 * s), (ex, ey + 3 * s), (ex + 10 * s, ey + 9 * s), (x + 10 * s, y + 10 * s)], angle=0, gap=2.5, op=.3)
+
+
+def gull(p, x, y, s):
+    p.raw(f'<path d="M{x - 14 * s:.0f} {y:.0f}q{7 * s:.1f} {-8 * s:.1f} {14 * s:.1f} 0q{7 * s:.1f} {-8 * s:.1f} {14 * s:.1f} 0" stroke="#3E3B46" stroke-width="1" opacity=".7"/>')
+
+
+def rope_fence(p, posts):
+    """posts with a sagging rope between them, knots at each post"""
+    for (x, y, h) in posts:
+        p.line((x, y), (x + 1, y - h), w=1.4, op=.8)
+        p.hatch([(x, y), (x + 4, y), (x + 5, y - h), (x + 1, y - h)], angle=90, gap=1.6, op=.5)
+        for kh in (.75, .4):
+            p.circle(x + 1, y - h * kh, 2.2, n=8, w=.8, op=.7, double=False)
+    for (a, b) in zip(posts, posts[1:]):
+        for kh in (.75, .4):
+            A = (a[0] + 1, a[1] - a[2] * kh); B = (b[0] + 1, b[1] - b[2] * kh)
+            mid = ((A[0] + B[0]) / 2, (A[1] + B[1]) / 2 + abs(B[0] - A[0]) * .12)
+            p.curve(A, mid, mid, B, n=8, w=.9, op=.7, double=False)
+
+
+def umbrella(p, x, y, s, col_i=1):
+    """a beach umbrella: striped canopy (the pastel accent), pole, cast shadow"""
+    top = (x, y - 120 * s); R = 70 * s
+    p.line((x, y), top, w=1.5, op=.85)
+    pts = [(x + R * math.cos(math.radians(a)), y - 120 * s + 30 * s - R * .45 * math.sin(math.radians(a))) for a in range(180, -1, -30)]
+    for i, (a_, b_) in enumerate(zip(pts, pts[1:])):
+        if i % 2 == 0:
+            p.raw(f'<polygon points="{top[0]:.0f},{top[1]:.0f} {a_[0]:.0f},{a_[1]:.0f} {b_[0]:.0f},{b_[1]:.0f}" fill="{WASH[col_i]}" fill-opacity=".4" stroke="none"/>')
+        p.line(top, a_, w=.9, op=.7, double=False)
+        p.curve(a_, (a_[0] + (b_[0] - a_[0]) * .3, a_[1] + 6 * s), (a_[0] + (b_[0] - a_[0]) * .7, b_[1] + 6 * s), b_, n=5, w=1.2, op=.8, double=False)
+    p.line(top, pts[-1], w=.9, op=.7, double=False)
+    p.hatch([(x - R * .3, y + 4), (x + R * 1.3, y - 4), (x + R * 1.5, y + 14 * s), (x - R * .1, y + 20 * s)], angle=5, gap=3, op=.32)
+
+
+def chair(p, x, y, s):
+    """a deck chair: wooden frame and a striped sling"""
+    A, B, C, D = (x, y), (x + 50 * s, y - 70 * s), (x + 70 * s, y), (x + 20 * s, y - 34 * s)
+    p.line(A, B, w=1.4); p.line(C, D, w=1.4); p.line((x + 8 * s, y - 12 * s), (x + 62 * s, y - 12 * s), w=1.0)
+    sling = [(x + 42 * s, y - 60 * s), (x + 62 * s, y - 58 * s), (x + 30 * s, y - 20 * s), (x + 16 * s, y - 24 * s)]
+    p.raw(f'<polygon points="{" ".join(f"{a:.0f},{b:.0f}" for a, b in sling)}" fill="{WASH[3]}" fill-opacity=".45" stroke="#3E3B46" stroke-width="1"/>')
+    p.hatch(sling, angle=-50, gap=5, op=.3)
+    p.hatch([(x, y + 2), (x + 70 * s, y + 2), (x + 100 * s, y + 14 * s), (x + 20 * s, y + 14 * s)], angle=0, gap=3, op=.3)
+
+
+def bucket(p, x, y, s):
+    p.poly([(x - 10 * s, y - 22 * s), (x + 10 * s, y - 22 * s), (x + 7 * s, y), (x - 7 * s, y)], w=1.1)
+    p.raw(f'<ellipse cx="{x:.0f}" cy="{y - 22 * s:.0f}" rx="{10 * s:.1f}" ry="{3 * s:.1f}" stroke="#3E3B46" stroke-width=".9" opacity=".8"/>'
+          f'<path d="M{x - 10 * s:.0f} {y - 22 * s:.0f}q{10 * s:.1f} {-16 * s:.1f} {20 * s:.1f} 0" stroke="#3E3B46" stroke-width=".8" opacity=".7"/>')
+    p.raw(f'<polygon points="{x - 10 * s:.0f},{y - 22 * s:.0f} {x + 10 * s:.0f},{y - 22 * s:.0f} {x + 7 * s:.0f},{y:.0f} {x - 7 * s:.0f},{y:.0f}" fill="{WASH[0]}" fill-opacity=".35" stroke="none"/>')
+    p.hatch([(x + 2 * s, y - 22 * s), (x + 10 * s, y - 22 * s), (x + 7 * s, y), (x + 2 * s, y)], angle=80, gap=2, op=.4)
+    p.line((x + 14 * s, y), (x + 26 * s, y - 30 * s), n=2, w=1.0, double=False)  # spade
+    p.raw(f'<ellipse cx="{x + 13 * s:.0f}" cy="{y - 2 * s:.0f}" rx="{4 * s:.1f}" ry="{7 * s:.1f}" transform="rotate(20 {x + 13 * s:.0f} {y - 2 * s:.0f})" stroke="#3E3B46" stroke-width=".9" opacity=".8"/>')
+
+
+def grain(p, a, b, n=3):
+    """wood grain and nail heads along a plank from a to b"""
+    r = p.r
+    for _ in range(n):
+        t0 = r.uniform(0, .6); t1 = min(1, t0 + r.uniform(.15, .4)); off = r.uniform(-3, 3)
+        p.line((a[0] + (b[0] - a[0]) * t0, a[1] + (b[1] - a[1]) * t0 + off), (a[0] + (b[0] - a[0]) * t1, a[1] + (b[1] - a[1]) * t1 + off), n=3, w=.55, op=.45, double=False)
+    for t in (.04, .96):
+        p.raw(f'<circle cx="{a[0] + (b[0] - a[0]) * t:.0f}" cy="{a[1] + (b[1] - a[1]) * t:.0f}" r="1.3" fill="#3E3B46" opacity=".7" stroke="none"/>')
+
+
+def ghosts(p, n=8):
+    """erased construction: faint lines a hand drew and rubbed out"""
+    r = p.r
+    for _ in range(n):
+        a = (r.uniform(0, W), r.uniform(380, 980)); ang = r.uniform(-.4, .4); L = r.uniform(120, 420)
+        p.line(a, (a[0] + L * math.cos(ang), a[1] + L * math.sin(ang)), w=1.1, col=SOFT, op=.12, amp=.8, double=False)
+
+
+def dune_layers(p, yb, y0, y1, k=3):
+    """layered dune ridges with contour hatching that follows each ridge"""
+    r = p.r
+    for i in range(k):
+        y = y0 + (y1 - y0) * i / max(1, k - 1)
+        ph = r.uniform(0, 6); fr = r.uniform(140, 220)
+        ridge = [(x, y + 26 * math.sin(x / fr + ph) + r.uniform(-2, 2)) for x in range(0, W + 1, 40)]
+        p.stroke(ridge, w=1.2 + .3 * i, op=.55 + .1 * i, amp=.8)
+        for c in range(1, 5):  # contours below the ridge, fading
+            row = [(x, yy + c * (6 + 2 * i)) for x, yy in ridge]
+            seg = r.randint(0, len(row) - 8)
+            p.stroke(row[seg:seg + r.randint(5, 12)], w=.6, col=SOFT, op=.45 - c * .08, amp=.5, double=False)
+        shade = ridge + [(W, y + 50), (0, y + 50)]
+        p.hatch(shade, angle=-62 + i * 8, gap=5 + i * 1.5, op=(.22 - .04 * i) * dens_y(y, yb) + .06)
+
+
+def beach(p, yb, wave_end, avoid=(), props=True, gulls=3):
+    """the shared real-world layer below the boundary"""
+    tide(p, yb, wave_end + 4, wave_end + 40)
+    dune_layers(p, yb, wave_end + 90, 900, k=3)
+    scatter(p, yb, 70, lambda x, y, s: shell(p, x, y, s), avoid)
+    scatter(p, yb, 90, lambda x, y, s: pebble(p, x, y, s), avoid)
+    scatter(p, yb, 14, lambda x, y, s: grass(p, x, y, s), avoid, y0=wave_end + 70)
+    scatter(p, yb, 3, lambda x, y, s: driftwood(p, x, y, s), avoid, y0=wave_end + 30, y1=wave_end + 200)
+    for _ in range(gulls):
+        gull(p, p.r.uniform(100, W - 100), yb + p.r.uniform(30, 90), p.r.uniform(.6, 1.1))
+    ghosts(p)
 
 
 def frame2(name, level, hz, yb, parts):
@@ -455,8 +662,10 @@ def shore():
     L = 1.0; p = Pencil(1); hz, yb = 330, 470; vp = (600, hz)
     digital(p, hz, yb, L, vp, sun=(600, 150))
     boundary(p, hz, yb, L)
-    waves(p, yb + 48, yb + 100, n=2)
-    sand(p, yb + 110, dens=.55)
+    waves(p, yb + 34, yb + 112, n=4)
+    sand(p, yb + 124, dens=.55)
+    beach(p, yb, yb + 112, avoid=[(440, yb, 770, 1000), (680, 700, 840, 970), (200, 780, 420, 960)], gulls=2)
+    umbrella(p, 300, 910, .75, col_i=1); bucket(p, 360, 950, .9)
     # the road: pencil on the shore, a neon line where it runs on into the grid
     def road():
         p.line((470, 1000), vp, w=2.0); p.line((730, 1000), vp, w=2.0)
@@ -503,8 +712,10 @@ def hut():
     L = .7; p = Pencil(2); hz, yb = 250, 370; vl, vr = (-500, hz), (1700, hz)
     digital(p, hz, yb, L, (600, hz), sun=None)
     boundary(p, hz, yb, L)
-    waves(p, yb + 46, yb + 80, n=2)
-    sand(p, yb + 90, dens=.5)
+    waves(p, yb + 30, yb + 96, n=3)
+    sand(p, yb + 104, dens=.5)
+    beach(p, yb, yb + 96, avoid=[(360, 380, 840, 900), (120, 760, 360, 990)], gulls=3)
+    rope_fence(p, [(70, 985, 70), (150, 930, 62), (225, 880, 54), (292, 838, 47)])
     fx, gy, ey = 560, 770, 530
     tw = lambda pt, vp, t: (pt[0] + (vp[0] - pt[0]) * t, pt[1] + (vp[1] - pt[1]) * t)
     gl, el = tw((fx, gy), vl, .17), tw((fx, ey), vl, .17)
@@ -524,8 +735,9 @@ def hut():
         b = (ridge_b[0] + ((er[0] + 14) - ridge_b[0]) * t, ridge_b[1] + ((er[1] + 8) - ridge_b[1]) * t)
         p.line(a, b, w=.8, op=.55, double=False)
     p.hatch([(fx - 12, ey + 8), ridge_f, (el[0] - 10, el[1] + 6)], angle=40, gap=8, op=.2)  # gable
-    for k in range(1, 10):  # planks, right face
+    for k in range(1, 10):  # planks, right face, with grain and nail heads
         t = k / 10; a = (fx, gy - (gy - ey) * t); p.line(a, tw(a, vr, .16), w=.8, op=.55, double=False)
+        a2 = (fx, gy - (gy - ey) * (t - .05)); grain(p, a2, tw(a2, vr, .16), n=2)
     for k in range(1, 8):  # planks, left face (shaded): vertical boards
         t = k / 8; a = tw((fx, gy), vl, .17 * t); b = tw((fx, ey), vl, .17 * t); p.line(a, b, w=.7, op=.5, double=False)
     p.hatch([(fx, gy), gl, el, (fx, ey)], angle=75, gap=4, op=.4)
@@ -537,8 +749,14 @@ def hut():
     p.poly([w1, w2, (w2[0], w2[1] + 58), (w1[0], w1[1] + 60)], w=1.3)
     p.line(((w1[0] + w2[0]) / 2, (w1[1] + w2[1]) / 2), ((w1[0] + w2[0]) / 2, (w1[1] + w2[1]) / 2 + 59), n=2, w=.9, double=False)
     p.raw(f'<polygon points="{w1[0]:.0f},{w1[1]:.0f} {w2[0]:.0f},{w2[1]:.0f} {w2[0]:.0f},{w2[1] + 58:.0f} {w1[0]:.0f},{w1[1] + 60:.0f}" fill="{WASH[1]}" fill-opacity=".28" stroke="none"/>')
-    for k in range(3):  # steps
+    for k in range(3):  # steps, with risers and a hand rail
         p.line((fx - 60 + k * 6, gy + 12 + k * 14), (fx + 70 - k * 4, gy + 8 + k * 14), w=1.3)
+        p.hatch([(fx - 60 + k * 6, gy + 12 + k * 14), (fx + 70 - k * 4, gy + 8 + k * 14), (fx + 70 - k * 4, gy + 14 + k * 14), (fx - 60 + k * 6, gy + 18 + k * 14)], angle=0, gap=2, op=.35)
+    p.line((fx - 66, gy + 52), (fx - 66, gy - 20), w=1.2); p.line((fx - 66, gy - 20), (fx - 6, gy - 30), w=1.2)
+    bucket(p, fx - 110, gy + 60, .9)
+    p.line((fx + 230, gy + 30), (fx + 232, gy - 70), w=1.4)   # a sign on a post (blank board)
+    p.poly([(fx + 200, gy - 70), (fx + 266, gy - 74), (fx + 268, gy - 40), (fx + 202, gy - 36)], w=1.2)
+    p.hatch([(fx + 200, gy - 70), (fx + 266, gy - 74), (fx + 268, gy - 40), (fx + 202, gy - 36)], angle=-30, gap=5, op=.25)
     p.hatch([(fx, gy), gr, (gr[0] + 120, gr[1] + 40), (fx + 120, gy + 40)], angle=0, gap=4, op=.3)
     # a surfboard leaning on the hut: the pastel accent
     sb = [(fx + 150, gy + 2), (fx + 132, gy - 170), (fx + 146, gy - 200), (fx + 162, gy - 170)]
@@ -558,7 +776,10 @@ def stall():
     L = .5; p = Pencil(3); hz, yb = 230, 330; vp = (760, hz)
     digital(p, hz, yb, L, vp)
     boundary(p, hz, yb, L)
-    sand(p, yb + 60, dens=.45)
+    waves(p, yb + 26, yb + 64, n=2)
+    sand(p, yb + 72, dens=.45)
+    beach(p, yb, yb + 64, avoid=[(90, 470, 600, 900), (560, 300, 1200, 1000)], gulls=3)
+    chair(p, 60, 930, .9)
     def walk():
         p.line((560, 1000), vp, w=2.0); p.line((1140, 1000), vp, w=2.0)
         y = hz + 6
@@ -567,6 +788,10 @@ def stall():
             xl = vp[0] + (560 - vp[0]) * t; xr = vp[0] + (1140 - vp[0]) * t
             p.line((xl, y), (xr, y), n=4, w=.7 + 1.0 * t, op=.65, double=False)
             p.line((xl, y + 3 + 6 * t), (xr, y + 3 + 6 * t), n=4, w=.5, op=.3, double=False)
+            if t > .45:   # near planks: grain and nail heads
+                for q in range(3):
+                    u0 = q / 3; u1 = (q + 1) / 3
+                    grain(p, (xl + (xr - xl) * u0 + 6, y + 2 + 3 * t), (xl + (xr - xl) * u1 - 6, y + 2 + 3 * t), n=1)
             y += 4 + 40 * t
         for t in (.2, .35, .55, .8, 1.0):
             for edge in (560, 1140):
@@ -610,6 +835,12 @@ def stall():
         p.raw(f'<circle cx="{x:.0f}" cy="{y:.0f}" r="3" fill="#FFD23F" fill-opacity=".5" stroke="#3E3B46" stroke-width=".8"/>')
     for k in range(3):
         p.raw(f'<rect x="{x0 + 30 + k * 76}" y="{yc - 18 - (k % 2) * 6}" width="56" height="16" rx="2" fill="{WASH[k % 3 + 1]}" fill-opacity=".38" stroke="#3E3B46" stroke-width="1.1" opacity=".85"/>')
+    p.line((x0 - 60, ybs + 40), (x0 - 58, ybs - 110), w=1.4)   # a blank menu board on a post
+    p.poly([(x0 - 96, ybs - 110), (x0 - 20, ybs - 114), (x0 - 18, ybs - 50), (x0 - 94, ybs - 46)], w=1.3)
+    p.hatch([(x0 - 96, ybs - 110), (x0 - 20, ybs - 114), (x0 - 18, ybs - 50), (x0 - 94, ybs - 46)], angle=-35, gap=5, op=.25)
+    for k in range(1, 4):
+        p.line((x0 - 88, ybs - 110 + 16 * k), (x0 - 28, ybs - 112 + 16 * k), n=2, w=.6, op=.45, double=False)
+    bucket(p, x1 + 150, ybs + 30, .9)
     for k, (cx, cy) in enumerate([(x1 + 40, ybs - 10), (x1 + 80, ybs + 10)]):  # crates
         p.poly([(cx, cy), (cx + 50, cy), (cx + 50, cy - 44), (cx, cy - 44)], w=1.3)
         p.line((cx, cy), (cx + 50, cy - 44), w=.8, op=.6, double=False); p.line((cx + 50, cy), (cx, cy - 44), w=.8, op=.6, double=False)
@@ -629,8 +860,10 @@ def tower():
     L = .35; p = Pencil(4); hz, yb = 270, 360
     digital(p, hz, yb, L, (600, hz), sun=(980, 70))
     boundary(p, hz, yb, L)
-    waves(p, yb + 44, yb + 120, n=3)
-    sand(p, yb + 130, dens=.5)
+    waves(p, yb + 36, yb + 128, n=3)
+    sand(p, yb + 136, dens=.5)
+    beach(p, yb, yb + 128, avoid=[(440, 260, 820, 960), (0, 260, 340, 820)], gulls=3)
+    umbrella(p, 880, 940, .7, col_i=3); chair(p, 930, 960, .7)
     both(p, yb, L, lambda: cliff(p, 0, 250, 300, 760, side='left'))
     cx, base, top = 600, 900, 580
     legs = [(cx - 110, base), (cx + 110, base - 10), (cx - 70, base - 60), (cx + 70, base - 66)]
@@ -643,8 +876,14 @@ def tower():
     p.line((cx - 80, base - 230), (cx + 60, top + 14), w=.8, op=.5); p.line((cx + 80, base - 238), (cx - 60, top + 14), w=.8, op=.5)
     cab = [(cx - 110, top), (cx + 110, top - 6), (cx + 110, top - 120), (cx - 110, top - 114)]
     p.poly(cab, w=2.0)
-    for k in range(1, 6):
+    for k in range(1, 6):   # cabin boards with grain and nails
         p.line((cx - 110, top - 114 + 22 * k), (cx + 110, top - 120 + 22 * k), w=.7, op=.45, double=False)
+        grain(p, (cx - 108, top - 125 + 22 * k), (cx + 108, top - 131 + 22 * k), n=2)
+    # a buoy hanging from the rail, and the stair's hand rail
+    p.line((cx + 150, top - 30), (cx + 150, top + 30), n=2, w=.8, op=.7, double=False)
+    p.raw(f'<ellipse cx="{cx + 150}" cy="{top + 44}" rx="11" ry="15" fill="{WASH[2]}" fill-opacity=".45" stroke="#3E3B46" stroke-width="1.2"/>'
+          f'<path d="M{cx + 139} {top + 44}h22" stroke="#3E3B46" stroke-width="1"/>')
+    p.line((cx - 70, base + 10), (cx - 100, top + 6), w=1.0, op=.7)
     p.poly([(cx + 110, top - 6), (cx + 150, top - 30), (cx + 150, top - 140), (cx + 110, top - 120)], w=1.4)
     p.hatch([(cx + 110, top - 6), (cx + 150, top - 30), (cx + 150, top - 140), (cx + 110, top - 120)], angle=80, gap=3, op=.5)
     p.raw(f'<polygon points="{cx - 80},{top - 95} {cx + 80},{top - 99} {cx + 80},{top - 45} {cx - 80},{top - 41}" fill="{WASH[0]}" fill-opacity=".3" stroke="#3E3B46" stroke-width="1.3" opacity=".8"/>')
@@ -675,6 +914,13 @@ def dunes():
     digital(p, hz, yb, L, vp, peaks=False)
     boundary(p, hz, yb, L)
     sand(p, yb + 40, dens=.55)
+    tide(p, yb, yb + 26, yb + 56)
+    scatter(p, yb, 60, lambda x, y, s: shell(p, x, y, s), avoid=[(440, 760, 720, 890)])
+    scatter(p, yb, 80, lambda x, y, s: pebble(p, x, y, s), avoid=[(440, 760, 720, 890)])
+    scatter(p, yb, 3, lambda x, y, s: driftwood(p, x, y, s), y0=yb + 60, y1=yb + 220)
+    for _ in range(4): gull(p, p.r.uniform(100, W - 100), yb + p.r.uniform(30, 120), p.r.uniform(.6, 1.1))
+    ghosts(p)
+    bucket(p, 720, 880, .9)
     for k, y in enumerate([420, 560, 720]):
         pts = [(x, y + 40 * math.sin(x / (160 + k * 40) + k) + p.r.uniform(-3, 3)) for x in range(0, W + 1, 50)]
         p.stroke(pts, w=1.3 + k * .3, op=.6 + k * .1)
