@@ -6,8 +6,8 @@ Mood only from his reference sketch: nothing traced or copied.
 
     python3 scripts/ww_scenes.py            # writes ww/scene/*.svg
 
-Every tile is 1200 x 1000 with its subject in the middle third (phones show about that much), fades to paper at the
-top and bottom so stacked tiles read as one world, and has no text. Output is deterministic (seeded wobble).
+Every tile is 1200 x 1000 with its subject in the middle third (phones show about that much), fades to paper at all
+four edges so stacked tiles read as one world, and has no text. Output is deterministic (seeded wobble).
 """
 from pathlib import Path
 import math
@@ -117,12 +117,16 @@ def frame(name, body_parts, horizon=None, wash_to=None):
             '<linearGradient id="fade" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#fff" stop-opacity="0"/>'
             '<stop offset=".1" stop-color="#fff" stop-opacity="1"/><stop offset=".9" stop-color="#fff" stop-opacity="1"/>'
             '<stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>'
-            f'<mask id="m" maskUnits="userSpaceOnUse" x="0" y="0" width="{W}" height="{H}"><rect width="{W}" height="{H}" fill="url(#fade)"/></mask>')
+            f'<mask id="m" maskUnits="userSpaceOnUse" x="0" y="0" width="{W}" height="{H}"><rect width="{W}" height="{H}" fill="url(#fade)"/></mask>'
+            '<linearGradient id="fadeh" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity="0"/>'
+            '<stop offset=".09" stop-color="#fff" stop-opacity="1"/><stop offset=".91" stop-color="#fff" stop-opacity="1"/>'
+            '<stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>'
+            f'<mask id="mh" maskUnits="userSpaceOnUse" x="0" y="0" width="{W}" height="{H}"><rect width="{W}" height="{H}" fill="url(#fadeh)"/></mask>')
     return (f'<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 {W} {H}" width="{W}" height="{H}" aria-hidden="true">'
             f'<!-- WyattWorldWide worldscape: {name}. Drawn by scripts/ww_scenes.py (pencil + blueprint sketch, look v5 wash). -->'
-            f'<defs>{wash}</defs><g mask="url(#m)">'
+            f'<defs>{wash}</defs><g mask="url(#m)"><g mask="url(#mh)">'
             f'<rect width="{W}" height="{hz}" fill="url(#sky)"/><rect y="{hz}" width="{W}" height="{H - hz}" fill="url(#sand)"/>'
-            f'<g fill="none" stroke-linecap="round" stroke-linejoin="round">{"".join(body_parts)}</g></g></svg>')
+            f'<g fill="none" stroke-linecap="round" stroke-linejoin="round">{"".join(body_parts)}</g></g></g></svg>')
 
 
 # ---- shared drawings ------------------------------------------------------------------------------------------------
@@ -146,13 +150,20 @@ def palm(p, x, y, h, lean=0.0, scale=1.0, col=GRAPHITE, hatch=True):
         p.line((cx - ww, cy + 2), (cx + ww, cy - 1), n=2, w=.9 * scale, col=col, op=.6, double=False)
     if hatch:
         p.hatch([(x + off, y), (top[0] + off * .3, top[1]), (top[0], top[1]), (x, y)], angle=70, gap=6 * scale, op=.3)
-    fronds = [(176, 1.0), (150, .85), (124, .72), (98, .6), (72, .66), (46, .84), (20, 1.0), (-6, .8), (202, .74)]
-    for ang, ln in fronds:
-        L = h * .5 * ln * p.r.uniform(.9, 1.1)
+    # 7-9 fronds of different lengths and angles: a couple rising, most drooping, tips curling down unevenly
+    nf = p.r.randint(7, 9)
+    fronds = [(p.r.uniform(70, 110), p.r.uniform(.45, .6), -.15)]                       # rising
+    fronds.append((p.r.uniform(40, 65) if lean <= 0 else p.r.uniform(115, 140), p.r.uniform(.55, .7), .05))  # half-rising
+    for k in range(nf - 2):                                                                # drooping, both sides, uneven
+        side_left = k % 2 == 0
+        base_ang = p.r.uniform(150, 215) if side_left else p.r.uniform(-35, 30)
+        fronds.append((base_ang, p.r.uniform(.7, 1.15), p.r.uniform(.25, .6)))
+    for ang, ln, droop in fronds:
+        L = h * .5 * ln
         a = math.radians(ang)
         side = math.cos(a)
-        end = (top[0] + side * L, top[1] + L * (.12 + .3 * (1 - abs(math.sin(a)))) - math.sin(a) * L * .35)
-        mid = (top[0] + side * L * .5, top[1] - L * (.2 + .25 * max(math.sin(a), 0)))
+        mid = (top[0] + side * L * .5, top[1] - L * (.18 + .3 * max(math.sin(a), 0)) + L * droop * .15)
+        end = (top[0] + side * L * p.r.uniform(.85, 1.0), top[1] - math.sin(a) * L * .45 + L * droop)
         # the leaf: a spine plus two outline edges that swell in the middle and meet at the tip
         spine, up, dn, ticks = [], [], [], []
         n = 10
@@ -173,6 +184,11 @@ def palm(p, x, y, h, lean=0.0, scale=1.0, col=GRAPHITE, hatch=True):
         for k, (s0, s1) in enumerate(ticks):
             if k % 2 == 0:
                 p.line(s0, s1, n=2, w=.7 * scale, col=col, op=.45, double=False)
+
+
+    for dx, dy, rr in [(-6, 8, 7), (5, 10, 6.5), (0, 16, 6)]:  # a small coconut cluster under the crown
+        p.circle(top[0] + dx * scale, top[1] + dy * scale, rr * scale, n=14, w=1.1 * scale, col=col, op=.8, double=False)
+    p.hatch([(top[0] - 12 * scale, top[1] + 4 * scale), (top[0] + 12 * scale, top[1] + 4 * scale), (top[0] + 10 * scale, top[1] + 22 * scale), (top[0] - 10 * scale, top[1] + 22 * scale)], angle=45, gap=3 * scale, op=.35)
 
 
 def sun(p, cx, hz, r):
@@ -224,28 +240,32 @@ def shore():
     shoreline(p, 525)
     perspective_fan(p, vp, 1000, op=.16)
     # road: two edges to the VP, perspective dashes
-    p.line((360, 1000), vp, w=2.0); p.line((840, 1000), vp, w=2.0)
-    p.hatch([(360, 1000), (600, hz + 2), (440, 1000)], angle=-60, gap=11, op=.22)
+    p.line((470, 1000), vp, w=2.0); p.line((730, 1000), vp, w=2.0)
+    p.hatch([(470, 1000), (600, hz + 2), (520, 1000)], angle=-60, gap=11, op=.22)
     y = hz + 12
     while y < 990:
         t = (y - hz) / (1000 - hz); L = 6 + 46 * t; wd = 2 + 9 * t
         p.raw(f'<path d="M{600 - wd:.1f} {y:.1f}h{2 * wd:.1f}l{wd * .4:.1f} {L:.1f}h{-2.8 * wd:.1f}z" stroke="{GRAPHITE}" stroke-width="1" opacity=".55"/>')
         y += L * 2.1
     sand_marks(p, 560, 980, 50)
-    palm(p, 190, 900, 520, lean=.12, scale=1.25)
-    palm(p, 300, 560, 170, lean=-.1, scale=.6, col=SOFT, hatch=False)
-    palm(p, 1010, 860, 430, lean=-.15, scale=1.05)
-    palm(p, 880, 545, 140, lean=.08, scale=.5, col=SOFT, hatch=False)
+    palm(p, 390, 940, 500, lean=-.18, scale=1.15)      # trunks inside the phone-width crop (about x 330-870)
+    palm(p, 250, 560, 170, lean=.1, scale=.6, col=SOFT, hatch=False)
+    palm(p, 850, 900, 420, lean=.16, scale=1.0)
+    palm(p, 940, 548, 140, lean=-.08, scale=.5, col=SOFT, hatch=False)
     # the phone: a box in perspective, front face + right side, screen with cards
-    fx, fy, fw, fh = 760, 690, 120, 230
+    fx, fy, fw, fh = 700, 730, 96, 180
     p.line((fx, fy), (fx + fw, fy - 8), w=1.8); p.line((fx + fw, fy - 8), (fx + fw + 6, fy + fh - 10), w=1.8)
     p.line((fx + fw + 6, fy + fh - 10), (fx + 6, fy + fh), w=1.8); p.line((fx + 6, fy + fh), (fx, fy), w=1.8)
     p.line((fx + fw, fy - 8), (fx + fw + 18, fy + 4), w=1.2); p.line((fx + fw + 18, fy + 4), (fx + fw + 24, fy + fh), w=1.2)
     p.line((fx + fw + 24, fy + fh), (fx + fw + 6, fy + fh - 10), w=1.2)
-    p.hatch([(fx + fw, fy - 8), (fx + fw + 18, fy + 4), (fx + fw + 24, fy + fh), (fx + fw + 6, fy + fh - 10)], angle=80, gap=4, op=.45)
-    for i, (yy, ww, col) in enumerate([(30, 70, WASH[2]), (80, 80, WASH[1]), (125, 55, WASH[3])]):
+    p.hatch([(fx + fw, fy - 8), (fx + fw + 18, fy + 4), (fx + fw + 24, fy + fh), (fx + fw + 6, fy + fh - 10)], angle=80, gap=3, op=.6)
+    p.hatch([(fx + fw, fy - 8), (fx + fw + 18, fy + 4), (fx + fw + 24, fy + fh), (fx + fw + 6, fy + fh - 10)], angle=-10, gap=5, op=.35)
+    shadow = [(fx + 6, fy + fh), (fx + fw + 24, fy + fh), (fx + fw + 90, fy + fh + 34), (fx + 50, fy + fh + 40)]  # cast shadow on the sand
+    p.hatch(shadow, angle=15, gap=5, op=.4)
+    p.line((fx + 6, fy + fh), (fx + 50, fy + fh + 40), w=.9, op=.5, double=False); p.line((fx + 50, fy + fh + 40), (fx + fw + 90, fy + fh + 34), w=.9, op=.5, double=False)
+    for i, (yy, ww, col) in enumerate([(24, 58, WASH[2]), (66, 64, WASH[1]), (106, 46, WASH[3])]):
         x0 = fx + 18 + i * 3; y0 = fy + yy
-        p.raw(f'<rect x="{x0}" y="{y0}" width="{ww}" height="30" rx="7" fill="{col}" fill-opacity=".35" stroke="{GRAPHITE}" stroke-width="1.1" opacity=".8"/>')
+        p.raw(f'<rect x="{x0}" y="{y0}" width="{ww}" height="26" rx="6" fill="{col}" fill-opacity=".35" stroke="{GRAPHITE}" stroke-width="1.1" opacity=".8"/>')
     p.construction((fx, fy), vp, op=.25); p.construction((fx + 6, fy + fh), vp, op=.25)
     return frame('shore', p.parts, horizon=hz)
 
@@ -312,26 +332,44 @@ def stall():
         for edge in (560, 1140):
             x = vp[0] + (edge - vp[0]) * t; yb = hz + (1000 - hz) * t
             p.line((x, yb), (x, yb - 90 * t), w=1.0 + t, op=.7)
-    # the stall: counter box + awning, left side of the walk
-    sx, sy = 170, 660
-    for a, b in [((sx, sy), (sx + 260, sy - 40)), ((sx, sy), (sx, sy + 160)), ((sx + 260, sy - 40), (sx + 260, sy + 110)), ((sx, sy + 160), (sx + 260, sy + 110))]:
-        p.line(a, b, w=1.9)
-    p.line((sx, sy - 210), (sx, sy), w=1.6); p.line((sx + 260, sy - 250), (sx + 260, sy - 40), w=1.6)
-    aw = [(sx - 30, sy - 210), (sx + 290, sy - 260), (sx + 280, sy - 200), (sx - 20, sy - 150)]
-    p.poly(aw, w=1.8)
-    for k in range(6):  # awning stripes, every other one washed coral
-        t0, t1 = k / 6, (k + 1) / 6
-        top0 = (aw[0][0] + (aw[1][0] - aw[0][0]) * t0, aw[0][1] + (aw[1][1] - aw[0][1]) * t0)
-        top1 = (aw[0][0] + (aw[1][0] - aw[0][0]) * t1, aw[0][1] + (aw[1][1] - aw[0][1]) * t1)
-        bot0 = (aw[3][0] + (aw[2][0] - aw[3][0]) * t0, aw[3][1] + (aw[2][1] - aw[3][1]) * t0)
-        bot1 = (aw[3][0] + (aw[2][0] - aw[3][0]) * t1, aw[3][1] + (aw[2][1] - aw[3][1]) * t1)
+    # the stall: a box in the boardwalk's own one-point perspective (front face square to us, side face to the VP)
+    def tvp(pt, t):
+        return (pt[0] + (vp[0] - pt[0]) * t, pt[1] + (vp[1] - pt[1]) * t)
+    x0, x1, yb, yc, yr = 150, 420, 820, 680, 520   # front face: left, right, base, counter top, roof posts top
+    D = .16                                         # depth of the stall toward the VP
+    fb_l, fb_r, fc_l, fc_r = (x0, yb), (x1, yb), (x0, yc), (x1, yc)
+    sb_r, sc_r = tvp(fb_r, D), tvp(fc_r, D)
+    for a_, b_ in [(fb_l, fb_r), (fb_l, fc_l), (fb_r, fc_r), (fc_l, fc_r), (fb_r, sb_r), (fc_r, sc_r), (sb_r, sc_r)]:
+        p.line(a_, b_, w=1.9)
+    p.hatch([fb_r, sb_r, sc_r, fc_r], angle=80, gap=4, op=.5)          # shade side
+    p.hatch([fb_l, fb_r, fc_r, fc_l], angle=-45, gap=11, op=.18)       # front, light
+    for pt in (fb_r, fc_r, (x0, yb), (x0, yc)):
+        p.construction(pt, vp, op=.2)
+    # posts up to the awning, front and back
+    pr_l, pr_r = (x0, yr), (x1, yr)
+    p.line(fc_l, pr_l, w=1.5); p.line(fc_r, pr_r, w=1.5); p.line(sc_r, tvp(pr_r, D), w=1.1, op=.7)
+    # awning: a sloped roof in the same perspective, striped
+    a_fl, a_fr = (x0 - 24, yr + 26), (x1 + 24, yr + 26)                 # front lip (lower)
+    a_bl, a_br = tvp((x0 - 24, yr - 40), D), tvp((x1 + 24, yr - 40), D) # back (higher, toward the VP)
+    p.poly([a_fl, a_fr, a_br, a_bl], w=1.8)
+    for k in range(7):
+        t0, t1 = k / 7, (k + 1) / 7
+        f0 = (a_fl[0] + (a_fr[0] - a_fl[0]) * t0, a_fl[1]); f1 = (a_fl[0] + (a_fr[0] - a_fl[0]) * t1, a_fl[1])
+        b0 = (a_bl[0] + (a_br[0] - a_bl[0]) * t0, a_bl[1] + (a_br[1] - a_bl[1]) * t0); b1 = (a_bl[0] + (a_br[0] - a_bl[0]) * t1, a_bl[1] + (a_br[1] - a_bl[1]) * t1)
         if k % 2 == 0:
-            p.raw(f'<polygon points="{top0[0]:.0f},{top0[1]:.0f} {top1[0]:.0f},{top1[1]:.0f} {bot1[0]:.0f},{bot1[1]:.0f} {bot0[0]:.0f},{bot0[1]:.0f}" fill="{WASH[2]}" fill-opacity=".3" stroke="none"/>')
-        p.line(top1, bot1, w=1.0, op=.7, double=False)
-    p.hatch([(sx, sy), (sx + 260, sy - 40), (sx + 260, sy + 110), (sx, sy + 160)], angle=-50, gap=10, op=.25)
-    for k in range(3):  # little stacked guides on the counter
-        p.raw(f'<rect x="{sx + 40 + k * 70}" y="{sy - 34 - k * 8}" width="50" height="16" rx="2" fill="{WASH[k % 3 + 1]}" fill-opacity=".35" stroke="{GRAPHITE}" stroke-width="1.1" opacity=".8" transform="rotate(-8 {sx + 65 + k * 70} {sy - 26 - k * 8})"/>')
-    palm(p, 470, 640, 300, lean=.08, scale=.8)
+            p.raw(f'<polygon points="{f0[0]:.0f},{f0[1]:.0f} {f1[0]:.0f},{f1[1]:.0f} {b1[0]:.0f},{b1[1]:.0f} {b0[0]:.0f},{b0[1]:.0f}" fill="{WASH[2]}" fill-opacity=".32" stroke="none"/>')
+        p.line(f1, b1, w=.9, op=.6, double=False)
+    p.construction(a_fl, vp, op=.18); p.construction(a_fr, vp, op=.18)
+    # scalloped valance along the front lip
+    for k in range(7):
+        xa = a_fl[0] + (a_fr[0] - a_fl[0]) * k / 7; xb = a_fl[0] + (a_fr[0] - a_fl[0]) * (k + 1) / 7
+        p.curve((xa, a_fl[1]), (xa + 4, a_fl[1] + 18), (xb - 4, a_fl[1] + 18), (xb, a_fl[1]), n=6, w=1.1, op=.7, double=False)
+    # little stacked guides on the counter, square to the front face
+    for k in range(3):
+        p.raw(f'<rect x="{x0 + 30 + k * 76}" y="{yc - 18 - (k % 2) * 6}" width="56" height="16" rx="2" fill="{WASH[k % 3 + 1]}" fill-opacity=".38" stroke="{GRAPHITE}" stroke-width="1.1" opacity=".85"/>')
+    # cast shadow on the sand, away from the sun
+    p.hatch([fb_l, fb_r, (x1 - 20, yb + 50), (x0 - 70, yb + 46)], angle=10, gap=5, op=.32)
+    palm(p, 500, 700, 330, lean=.1, scale=.85)
     palm(p, 1120, 560, 220, lean=-.1, scale=.6, col=SOFT, hatch=False)
     return frame('boardwalk stall', p.parts, horizon=hz)
 
@@ -391,6 +429,18 @@ def dunes():
         x = p.r.uniform(40, W - 40); y = p.r.uniform(430, 960)
         for b in range(4):
             p.line((x, y), (x + p.r.uniform(-14, 14), y - p.r.uniform(18, 34)), n=2, w=.9, op=.55, double=False)
+    # one pastel accent: a striped beach towel lying in perspective, and a little sign post beside it
+    tw = [(470, 790), (650, 770), (690, 840), (480, 868)]
+    p.poly(tw, w=1.5)
+    for k in range(5):
+        t0, t1 = k / 5, (k + 1) / 5
+        q = lambda a_, b_, t: (a_[0] + (b_[0] - a_[0]) * t, a_[1] + (b_[1] - a_[1]) * t)
+        a0, a1, b0, b1 = q(tw[0], tw[1], t0), q(tw[0], tw[1], t1), q(tw[3], tw[2], t0), q(tw[3], tw[2], t1)
+        if k % 2 == 0:
+            p.raw(f'<polygon points="{a0[0]:.0f},{a0[1]:.0f} {a1[0]:.0f},{a1[1]:.0f} {b1[0]:.0f},{b1[1]:.0f} {b0[0]:.0f},{b0[1]:.0f}" fill="{WASH[1]}" fill-opacity=".38" stroke="none"/>')
+        p.line(a1, b1, w=.9, op=.6, double=False)
+    p.line((760, 860), (764, 700), w=1.6); p.poly([(738, 700), (830, 692), (834, 730), (742, 738)], w=1.4)
+    p.hatch([(764, 860), (800, 880), (806, 872), (768, 856)], angle=0, gap=3, op=.35)
     palm(p, 700, 640, 260, lean=.1, scale=.7)
     sand_marks(p, 600, 980, 40)
     return frame('dunes', p.parts, horizon=hz)

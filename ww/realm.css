@@ -24,8 +24,8 @@ body{margin:0;min-height:100svh;overflow-x:hidden}
 
 /* hub hero: the shoreline of the sketch world, the name in a frosted panel standing in it */
 .hero{position:relative;isolation:isolate;margin:0 0 28px;padding:0;min-height:clamp(520px,78svh,860px);display:flex;flex-direction:column;justify-content:flex-end}
-.hero::before{content:"";position:absolute;z-index:-1;top:-28px;bottom:-28px;left:50%;width:100vw;margin-left:-50vw;pointer-events:none;
-  background:url(/ww/scene/shore.svg) 60% 30%/cover no-repeat}
+.hero::before{content:"";position:absolute;z-index:-1;top:-28px;bottom:150px;left:50%;width:100vw;margin-left:-50vw;pointer-events:none;
+  background:url(/ww/scene/shore.svg) 58% 100%/cover no-repeat} /* ends just under the panel's top: the whole shoreline shows above it */
 .hero .scene{display:none} /* the old coloured hero image, if a cached page still has it */
 .hero .hero-panel{position:relative;margin:0;padding:18px 18px 20px;background:var(--glass);-webkit-backdrop-filter:var(--frost);backdrop-filter:var(--frost);
   border:var(--edge) solid var(--ink);border-radius:18px;box-shadow:var(--shadow)}
@@ -154,3 +154,8 @@ a.gate{cursor:pointer}
 .stage > section > p.muted,.stage > section > p.note,.stage > section > .field,.stage > section > .msg:not(:empty),section.stage > p.muted{
   background:var(--glass-strong);-webkit-backdrop-filter:var(--frost);backdrop-filter:var(--frost);padding:10px 14px;border-radius:14px;border:2px solid rgba(43,30,63,.3)}
 .stage > section > .field span{padding-left:2px}
+/* wide screens: the hero is centred and the whole shoreline fits its height */
+@media (min-width:760px){
+  .stage:has(.ring) .hero{margin-left:auto;margin-right:auto}
+  .hero::before{background-size:auto 100%;background-position:50% 100%}  /* the scene's own edges fade to paper */
+}
