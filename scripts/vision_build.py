@@ -31,12 +31,12 @@ LINES = [
 DATA_CARD = "You own your data. We don't sell it. Patterns across clients are anonymous and only with your consent."
 # hotspots: (key, label, world x, y, card text ≤40 words)
 HOTS = [
-    ('agents', 'Agents', V.TER[0], V.TER[1] + 50, "Agents do the routine work: answer and follow up. Soon, bring the agent you already use. Soon, every agent will work inside your rules."),
+    ('agents', 'Agents', V.TER[0], V.TER[1] + 50, "Agents do the routine work: answer and follow up. Soon, bring the agent you already use, and every agent will work inside your rules."),
     ('inbox', 'Inbox', V.INBOX[0], V.INBOX[1] + 40, "Member texts land in one inbox as tickets. Soon, other businesses' AI agents will too."),
     ('rules', 'Rules', V.RULES[0], V.RULES[1] + 40, "Your rules say what an agent may do on its own and what needs you."),
     ('handoff', 'Hand-off', V.HANDOFF[0], V.HANDOFF[1] + 40, "When it matters, the agent hands off to you. One tap to approve, change or say no."),
     ('jobs', 'Jobs', V.VAN[0] + 40, V.VAN[1] + 40, "A request becomes a job: the member's ask, then your OK. Next: the vendor's job card and closing the loop."),
-    ('records', 'Records', V.RECORDS[0] - 60, V.RECORDS[1] + 100, "Every step leaves a record: who asked and who approved. Next: what got done. With your OK, records give a before and after number."),
+    ('records', 'Records', V.RECORDS[0] - 60, V.RECORDS[1] + 100, "Every step leaves a record: who asked and who approved. Next: what got done. With your OK, records will give a before and after number."),
     ('data', 'Data', V.RECORDS[0] + 130, V.RECORDS[1] + 100, DATA_CARD),
 ]
 
