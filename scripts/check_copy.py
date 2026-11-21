@@ -97,8 +97,8 @@ FORBIDDEN = {
     # FACTS 2026-11-20 / DECISIONS 2026-11-21: PM.BOS is the internal codename; public copy says HouKee or .BOS
     'internal codename PM.BOS': r'\bPM\.BOS\b',
 }
-# one served file may still carry it until its replacement ships (vision.html -> PR #82); remove the entry then
-CODENAME_WAIVER = {'vision.html'}
+# a served file that may still carry it until its replacement ships (empty: the new /vision, #82, has none)
+CODENAME_WAIVER = set()
 # PadSplit as a listing channel or host role (DECISIONS 2026-11-04) is fine; these exact spots are the only ones.
 MARKET_OPTIONS = ['Co-living or PadSplit host', 'value="PadSplit"', '<span>PadSplit</span>', 'PadSplit inbox']
 
@@ -189,8 +189,9 @@ def self_test():
             + ''.join(f'<p>{s}</p>' for s in STACK) + '</body></html>')
     drifted = home.replace(f'<p>{ONE_LINER}</p>', f'<p>{ONE_LINER.replace("safely", "securely")}</p>')
     REQUIRED['control.html'] = [ONE_LINER, *STACK]; BODY_ONLY.add('control.html')   # test-only: the mechanism still works
+    CODENAME_WAIVER.add('control.html')   # the old stack line quotes PM.BOS on purpose
     ok = not scan_text('control.html', home) and scan_text('control.html', drifted)
-    del REQUIRED['control.html']; BODY_ONLY.discard('control.html')
+    del REQUIRED['control.html']; BODY_ONLY.discard('control.html'); CODENAME_WAIVER.discard('control.html')
     assert ok, 'body-text control failed'
     return len(FORBIDDEN), sum(map(len, CONTROL.values()))
 

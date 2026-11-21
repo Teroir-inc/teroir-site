@@ -112,3 +112,10 @@
 .vw-fixed .vw-sink .drip{display:none}
 .vw-card em{font-family:inherit;font-size:12px}
 .vw-recorded .vw-req[data-state=card] .vw-card{opacity:0}
+/* the end headline's key words: the brand sheet's coral → violet text gradient on cream (one world with the reel) */
+.vw-key{background:linear-gradient(90deg,#C9372F,#C7307F 55%,#6A4FB3);-webkit-background-clip:text;background-clip:text;color:transparent}
+/* wide screens: the world is a centred column (it's drawn 800 wide; up to 1.25x), framed on paper */
+@media (min-width:700px){
+  .vw-sticky{display:flex;justify-content:center;padding:0 16px}
+  .vw-view{width:min(100%,1000px);border-left:2px solid #13261E;border-right:2px solid #13261E}
+}

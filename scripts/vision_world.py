@@ -211,7 +211,22 @@ def real(p):
     p.line((tx + 90, ty + 2), (tx + 140, ty - 30), n=2, w=1.8, double=False)        # a wrench
     p.circle(tx + 144, ty - 33, 6, n=10, w=1.4, double=False)
     records(p, *RECORDS)
-    S.ghosts(p, n=10)
+    # more pencil life (the same procedural pieces as the wyattworldwide.com beach, here on the street and the lot)
+    S.footprints(p, [(80, 1260), (160, 1420), (300, 1560)], s=1.0)
+    S.footprints(p, [(700, 2180), (640, 2260), (520, 2330)], s=.9)
+    for (gx, gy) in [(60, 1480), (740, 1560), (330, 2120), (720, 2300), (80, 2520), (480, 2540)]:
+        S.grass(p, gx, gy, 1.0)
+    for (rx, ry, rs) in [(700, 1450, .8), (40, 1880, .7), (640, 2470, .9)]:
+        S.rock(p, rx, ry, rs)
+    p.stroke([(0, 2140), (300, 2128), (520, 2150), (800, 2136)], w=1.2, op=.55)          # the lot's edge, a low fence
+    for k in range(16):
+        x = 20 + k * 50; y = 2140 + 6 * math.sin(k)
+        p.line((x, y), (x + 1, y - 34), w=1.1, op=.7, double=False)
+    p.line((0, 2120), (800, 2116), w=.9, op=.5, double=False); p.line((0, 2132), (800, 2128), w=.9, op=.5, double=False)
+    S.dim(p, (HOUSE[0], HOUSE[1] + 70), (HOUSE[0] + 160, HOUSE[1] + 30), '9.60 m', off=0, col='#5B7DB1')
+    S.dim(p, (HOUSE[0] + 200, HOUSE[1] - 20), (HOUSE[0] + 200, HOUSE[1] - 300), '6.20 m', off=0, col='#5B7DB1')
+    S.dim(p, (VAN[0] - 120, VAN[1] + 40), (VAN[0] + 170, VAN[1] + 40), '5.40 m', off=0, col='#5B7DB1')
+    S.ghosts(p, n=14)
 
 
 # the request's path. Stops (vision_build.py): CUST, INBOX, RULES, PHONE, VAN, HOUSE, RECORDS, then back up to CUST.
