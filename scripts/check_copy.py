@@ -34,7 +34,9 @@ STACK = [  # DECISIONS 2026-11-07, split at the layer names as the checked deck 
 ]
 # On /vision the lines must be in the page's visible text, not only in its meta tags. The 2026-11-11 redesign
 # (Wyatt: the home page stays plain, for non-technical readers) moved them from / to /vision.
-REQUIRED = {'vision.html': [ONE_LINER, *STACK]}
+# DECISIONS 2026-11-21 (teroir-hq PR #40): Wyatt's 11-20 north star supersedes the word-for-word one-liner and stack
+# rules (11-06, 11-07, /vision part of 11-12). Nothing is required word for word on /vision any more.
+REQUIRED = {}
 BODY_ONLY = {'vision.html'}
 
 FORBIDDEN = {
@@ -95,8 +97,8 @@ FORBIDDEN = {
     # FACTS 2026-11-20 / DECISIONS 2026-11-21: PM.BOS is the internal codename; public copy says HouKee or .BOS
     'internal codename PM.BOS': r'\bPM\.BOS\b',
 }
-# one served file may still carry it until its replacement ships (vision.html -> PR #82); remove the entry then
-CODENAME_WAIVER = {'vision.html'}
+# a served file that may still carry it until its replacement ships (empty: the new /vision, #82, has none)
+CODENAME_WAIVER = set()
 # PadSplit as a listing channel or host role (DECISIONS 2026-11-04) is fine; these exact spots are the only ones.
 MARKET_OPTIONS = ['Co-living or PadSplit host', 'value="PadSplit"', '<span>PadSplit</span>', 'PadSplit inbox']
 
@@ -154,8 +156,8 @@ CLEAN = (
     'PM.BOS has run a real portfolio since May 2026. The first pack has run a real business. Your identity, record and '
     'rating will stay yours when you switch. Both sides will sign each deal and keep the receipt. Every act will be '
     "checked against its owner's rules. The owner pays the way they already do. The network will hold no money. "
-    'Ready to run as it is. Soon, connect the agent you already use with one sign-in. Three examples cycle: one runs, '
-    'one waits for a person. Before it runs your week. Who runs the week? How you work today. Hours a week on operations. '
+    'Ready to run as it is. Soon, connect the agent you already use with one sign-in. Agents will close most routine '
+    "requests. You'll approve the risky ones. Before it runs your week. Who runs the week? How you work today. Hours a week on operations. "
     "Wyatt Horton, Founder & CEO. Play demo · 1:01. Receipt signed by both. Ticket from a member's text. Teroir's "
     'own agent will get no head start. The owner will pay as usual; the network will hold no money. Follow a repair '
     'from posting to receipt: who sees what, who signs, and what each side keeps. PM.BOS, our first pack, has been '
@@ -186,7 +188,11 @@ def self_test():
     home = (f'<html><head><meta name="description" content="{ONE_LINER}"></head><body><h1>Hi</h1><p>{ONE_LINER}</p>'
             + ''.join(f'<p>{s}</p>' for s in STACK) + '</body></html>')
     drifted = home.replace(f'<p>{ONE_LINER}</p>', f'<p>{ONE_LINER.replace("safely", "securely")}</p>')
-    assert not scan_text('vision.html', home) and scan_text('vision.html', drifted), 'body-text control failed'
+    REQUIRED['control.html'] = [ONE_LINER, *STACK]; BODY_ONLY.add('control.html')   # test-only: the mechanism still works
+    CODENAME_WAIVER.add('control.html')   # the old stack line quotes PM.BOS on purpose
+    ok = not scan_text('control.html', home) and scan_text('control.html', drifted)
+    del REQUIRED['control.html']; BODY_ONLY.discard('control.html'); CODENAME_WAIVER.discard('control.html')
+    assert ok, 'body-text control failed'
     return len(FORBIDDEN), sum(map(len, CONTROL.values()))
 
 
