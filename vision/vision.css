@@ -119,3 +119,4 @@
   .vw-sticky{display:flex;justify-content:center;padding:0 16px}
   .vw-view{width:min(100%,1000px);border-left:2px solid #13261E;border-right:2px solid #13261E}
 }
+.vw-intro .vw-where{margin-top:6px;font-size:15px}

@@ -18,24 +18,28 @@ e = html.escape
 
 # the stops: one short line each (≤8 words)
 LINES = [
-    "A member's AI asks: fix my leaking sink.",
+    "Soon, a member's AI asks: fix my leaking sink.",
     "It lands in your .BOS inbox.",
     "Your rules check what the AI may do.",
     "You approve it in one tap.",
-    "A plumber gets the job card.",
+    "A plumber will get the job card.",
     "The sink gets fixed.",
-    "Every step leaves a record you own.",
-    "Fixed. The member's AI hears back.",
+    "Every step leaves a record.",
+    "Fixed. The member's AI will hear back.",
 ]
+# Data card: the fallback ships until FACTS carries the full line (orchestrator-81 11-21); then set DATA_FULL = True
+DATA_FULL = False
+DATA_CARD = ("You own your data. We never sell it. Patterns across clients are anonymous and only with your consent." if DATA_FULL
+             else "We never sell your data.")
 # hotspots: (key, label, world x, y, card text ≤40 words)
 HOTS = [
-    ('agents', 'Agents', V.TER[0], V.TER[1] + 50, "Agents do the routine work: answer, book and follow up. Use ours, or bring your own. Every agent works inside your rules."),
-    ('inbox', 'Inbox', V.INBOX[0], V.INBOX[1] + 40, "Every request lands in one inbox: texts, emails, forms, and other businesses' AI agents. You never have to log in to anything."),
+    ('agents', 'Agents', V.TER[0], V.TER[1] + 50, "Agents do the routine work: answer and follow up. Soon, bring the agent you already use. Every agent works inside your rules."),
+    ('inbox', 'Inbox', V.INBOX[0], V.INBOX[1] + 40, "Member texts land in one inbox as tickets. Soon, other businesses' AI agents will too."),
     ('rules', 'Rules', V.RULES[0], V.RULES[1] + 40, "Your rules say what an agent may do on its own and what needs you. Risky steps always wait for a person."),
     ('handoff', 'Hand-off', V.HANDOFF[0], V.HANDOFF[1] + 40, "When it matters, the agent hands off to you. One tap to approve, change or say no."),
-    ('jobs', 'Jobs', V.VAN[0] + 40, V.VAN[1] + 40, "A request becomes a job: the member's ask, your OK, the plumber's job card, then the loop closed with the member."),
-    ('records', 'Records', V.RECORDS[0] - 60, V.RECORDS[1] + 100, "Every step leaves a record: who asked, who approved, what got done. Records give each client a before and after number."),
-    ('data', 'Data', V.RECORDS[0] + 130, V.RECORDS[1] + 100, "You own your data. We use it to prove and improve your results. Patterns across clients only with consent, made anonymous. Never sold."),
+    ('jobs', 'Jobs', V.VAN[0] + 40, V.VAN[1] + 40, "A request becomes a job: the member's ask, then your OK. Next: the vendor's job card and closing the loop."),
+    ('records', 'Records', V.RECORDS[0] - 60, V.RECORDS[1] + 100, "Every step leaves a record: who asked, who approved, what got done. With your OK, records give a before and after number."),
+    ('data', 'Data', V.RECORDS[0] + 130, V.RECORDS[1] + 100, DATA_CARD),
 ]
 
 
