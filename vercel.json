@@ -104,11 +104,6 @@
    "permanent": false
   },
   {
-   "source": "/invest",
-   "destination": "/vision",
-   "permanent": false
-  },
-  {
    "source": "/pm",
    "destination": "/property-management",
    "permanent": false
