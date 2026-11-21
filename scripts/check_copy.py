@@ -156,8 +156,8 @@ CLEAN = (
     'PM.BOS has run a real portfolio since May 2026. The first pack has run a real business. Your identity, record and '
     'rating will stay yours when you switch. Both sides will sign each deal and keep the receipt. Every act will be '
     "checked against its owner's rules. The owner pays the way they already do. The network will hold no money. "
-    'Ready to run as it is. Soon, connect the agent you already use with one sign-in. Three examples cycle: one runs, '
-    'one waits for a person. Before it runs your week. Who runs the week? How you work today. Hours a week on operations. '
+    'Ready to run as it is. Soon, connect the agent you already use with one sign-in. Agents will close most routine '
+    "requests. You'll approve the risky ones. Before it runs your week. Who runs the week? How you work today. Hours a week on operations. '
     "Wyatt Horton, Founder & CEO. Play demo · 1:01. Receipt signed by both. Ticket from a member's text. Teroir's "
     'own agent will get no head start. The owner will pay as usual; the network will hold no money. Follow a repair '
     'from posting to receipt: who sees what, who signs, and what each side keeps. PM.BOS, our first pack, has been '
