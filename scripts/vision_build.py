@@ -27,10 +27,8 @@ LINES = [
     "Every step leaves a record.",
     "Fixed. The member's AI will hear back.",
 ]
-# Data card: the fallback ships until FACTS carries the full line (orchestrator-81 11-21); then set DATA_FULL = True
-DATA_FULL = False
-DATA_CARD = ("You own your data. We never sell it. Patterns across clients are anonymous and only with your consent." if DATA_FULL
-             else "We never sell your data.")
+# Data card: FACTS (teroir-hq #41) wording, present tense, no "never" (AGENTS §6)
+DATA_CARD = "You own your data. We don't sell it. Patterns across clients are anonymous and only with your consent."
 # hotspots: (key, label, world x, y, card text ≤40 words)
 HOTS = [
     ('agents', 'Agents', V.TER[0], V.TER[1] + 50, "Agents do the routine work: answer and follow up. Soon, bring the agent you already use. Every agent works inside your rules."),
