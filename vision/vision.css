@@ -120,3 +120,13 @@
   .vw-view{width:min(100%,1000px);border-left:2px solid #13261E;border-right:2px solid #13261E}
 }
 .vw-intro .vw-where{margin-top:6px;font-size:15px}
+/* the request breathes while it waits at a stop: it reads as alive, and it keeps every frame painted
+   (a screen that stops changing sends no frames, which stalled frame-driven recorders of the tour) */
+@media (prefers-reduced-motion:no-preference){
+  .vw-req>span{animation:vwbreathe 2.4s ease-in-out infinite}
+  @keyframes vwbreathe{0%,100%{scale:1}50%{scale:1.07}}
+}
+.vw-tour .vw-req>span{animation:vwbreathe 2.4s ease-in-out infinite}
+/* at the records stop the job card has merged into the stack: the newest record breathes instead */
+@media (prefers-reduced-motion:no-preference){.vw-recorded .vw-recs span:last-child{animation:vwbreathe 2.4s ease-in-out infinite;transform-origin:left center}}
+.vw-tour .vw-recorded .vw-recs span:last-child{animation:vwbreathe 2.4s ease-in-out infinite;transform-origin:left center}
