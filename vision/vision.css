@@ -1,0 +1,89 @@
+/* teroir.com/vision: the Teroir world. Page chrome is teroir.com; the world is the boundary sketch (brand sheet
+   "sketch_variant"): night wireframe above, .BOS at the boundary, pencil on parchment below. Phone first. */
+.vw-page{background:#F6F4EE}
+.vw-intro{padding:40px 20px 18px;max-width:720px;margin:0 auto}
+.vw-k{font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.vw-intro h1{margin:10px 0 8px;font-size:clamp(34px,8vw,60px);line-height:1.02;letter-spacing:-.03em}
+.vw-intro h1 em{color:#C2410C}
+.vw-intro p{margin:0;color:var(--muted);font-size:18px}
+
+/* the journey: a tall track, a sticky view, the world moved by the camera */
+.vw-track{position:relative}
+.vw-sticky{position:sticky;top:0;height:100svh}
+.vw-view{position:relative;height:100%;overflow:hidden;background:#140A2E;--s:1}
+.vw-world{position:absolute;left:0;top:0;transform-origin:0 0;will-change:transform}
+.vw-world img{display:block;width:100%;height:auto}
+@media (prefers-reduced-motion:no-preference){.vw-world{transition:transform .25s linear}}
+.vw-bos{position:absolute;transform:translate(-50%,-160%);font:600 13px/1 var(--sans,Geist,Inter,sans-serif);letter-spacing:.32em;color:#E8FCFF;
+  padding:6px 10px 6px 14px;border:1px solid rgba(0,229,255,.7);border-radius:999px;background:rgba(20,10,46,.6);text-shadow:0 0 8px #00E5FF}
+
+/* the request: one object, three states */
+.vw-req{position:absolute;left:0;top:0;width:0;height:0;z-index:3;transition:transform .25s linear}
+.vw-req>span{position:absolute;transform:translate(-50%,-50%);opacity:0;transition:opacity .35s ease}
+.vw-req[data-state=packet] .vw-packet,.vw-req[data-state=card] .vw-card,.vw-req[data-state=check] .vw-check{opacity:1}
+.vw-packet{width:26px;height:26px;transform:translate(-50%,-50%) rotate(45deg)!important;border:2px solid #00E5FF;background:rgba(255,43,214,.35);
+  box-shadow:0 0 14px #00E5FF,0 0 28px #FF2BD6}
+.vw-card{display:grid;gap:4px;min-width:96px;padding:8px 10px;border-radius:8px;background:#FFF8EC;border:1.5px solid #3E3B46;box-shadow:3px 3px 0 #3E3B46;
+  font:500 12px/1.2 var(--sans,Geist,Inter,sans-serif);color:#3E3B46}
+.vw-card b{font-family:var(--mono);font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:#B4341C}
+.vw-card i{display:block;height:3px;border-radius:2px;background:#FF8A7A;opacity:.6}
+.vw-check{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font:700 20px/1 sans-serif;color:#140A2E;background:#00E5FF;
+  box-shadow:0 0 16px #00E5FF,0 0 30px #FF2BD6}
+
+/* hotspots: small chips on the drawing; each opens a card */
+.vw-hot{position:absolute;z-index:2;transform:translate(-50%,0);border:0;padding:0;background:none;cursor:pointer}
+.vw-hot span{display:inline-block;padding:6px 10px;border-radius:999px;font:600 12px/1 var(--sans,Geist,Inter,sans-serif);letter-spacing:.02em;
+  color:#13261E;background:#FFF8EC;border:1.5px solid #13261E;box-shadow:2px 2px 0 #13261E}
+.vw-hot span::before{content:"+ ";color:#B4341C}
+.vw-hot:focus-visible span{outline:3px solid #00E5FF;outline-offset:2px}
+
+/* caption and controls sit in the middle band of the screen (the reel's safe area is the middle 60%) */
+.vw-cap{position:absolute;left:50%;bottom:22%;transform:translateX(-50%);z-index:4;margin:0;width:min(92%,460px);text-align:center;
+  padding:12px 16px;border-radius:14px;background:rgba(255,248,236,.94);border:2px solid #13261E;box-shadow:4px 4px 0 #13261E;
+  font:600 clamp(17px,4.6vw,21px)/1.25 var(--sans,Geist,Inter,sans-serif);color:#13261E;letter-spacing:-.01em}
+.vw-cap.in{animation:vwin .4s ease both}
+@keyframes vwin{from{opacity:0;transform:translate(-50%,6px)}to{opacity:1;transform:translateX(-50%)}}
+.vw-ctl{position:absolute;left:50%;bottom:calc(22% - 64px);transform:translateX(-50%);z-index:4;display:flex;gap:12px;align-items:center}
+.vw-btn{min-height:44px;padding:0 16px;border-radius:999px;border:1.5px solid #13261E;background:#FFF8EC;color:#13261E;font:600 15px var(--sans,Geist,Inter,sans-serif);cursor:pointer}
+.vw-dots{display:flex;gap:6px}.vw-dots i{width:7px;height:7px;border-radius:50%;background:rgba(255,248,236,.45)}.vw-dots i.on{background:#00E5FF}
+.vw-route{position:absolute;width:0;height:0;visibility:hidden}
+
+/* the card behind a hotspot: a bottom sheet */
+.vw-sheet{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:20;width:min(92vw,440px);padding:18px 18px 16px;border-radius:18px;
+  background:#FFF8EC;border:2px solid #13261E;box-shadow:5px 5px 0 #13261E;color:#13261E}
+.vw-sheet h3{margin:0 0 6px;font-size:20px}
+.vw-sheet p{margin:0 0 12px;font-size:16px;line-height:1.5}
+
+/* reduced motion: no camera; the stops as stills */
+.vw-stills{display:none}
+@media (prefers-reduced-motion:reduce){
+  .vw-track{display:none}
+  .vw-stills{display:grid;gap:18px;padding:10px 16px 30px;max-width:900px;margin:0 auto;grid-template-columns:repeat(auto-fit,minmax(300px,1fr))}
+  .vw-still{margin:0;display:grid;gap:8px}
+  .vw-still-img{height:420px;border-radius:16px;border:2px solid #13261E;background:#140A2E url(/vision/world.svg) no-repeat;background-size:800px 2600px}
+  .vw-still figcaption{font-weight:600;font-size:17px}
+}
+
+/* tour mode (?tour=1, for the reel): nothing but the journey, no scrollbar, no controls */
+.vw-tour body,.vw-tour{overflow:hidden;scrollbar-width:none}
+.vw-tour ::-webkit-scrollbar{display:none}
+.vw-tour .vw-nav,.vw-tour .vw-intro,.vw-tour .vw-ctl,.vw-tour .vw-hot,.vw-tour .skip{display:none}
+.vw-tour .vw-track{height:100svh!important}
+.vw-tour-end .vw-track{display:none}
+
+/* the end: thesis, north star, measures, proof, offers, network, ask */
+.vw-end{padding:56px 0 64px}
+.vw-panel{padding:22px 20px;border-radius:20px;background:#FFF8EC;border:3px solid #13261E;box-shadow:6px 6px 0 #13261E;margin-bottom:40px}
+.vw-panel h2{margin:0 0 10px;font-size:clamp(30px,6.6vw,48px);line-height:1.05;letter-spacing:-.03em}
+.vw-panel h2 em{color:#C2410C}
+.vw-panel p{margin:0;font-size:18px;color:var(--text)}
+.vw-sub{margin:36px 0 12px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:500}
+.vw-big{margin:0;font-size:clamp(19px,2.6vw,23px);line-height:1.45;max-width:46ch}
+.vw-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.vw-grid>div{padding:16px;border-radius:16px;border:1px solid var(--line-2);background:rgba(255,254,250,.8)}
+.vw-grid b{display:block;font-size:18px;margin-bottom:4px}
+.vw-grid p{margin:0;color:var(--muted);font-size:15.5px;line-height:1.5}
+.vw-chips{margin-bottom:8px}
+.vw-stack{margin:14px 0 0;padding-left:20px;color:var(--muted);max-width:60ch;font-size:15.5px;line-height:1.55}
+.vw-stack li{margin:6px 0}
+.vw-raise{margin:40px 0 16px;font-size:18px;font-weight:600}
