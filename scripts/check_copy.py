@@ -92,7 +92,11 @@ FORBIDDEN = {
     'ads (unapproved wording)': r"\b(?:ads|advertis\w*|sponsored)\b(?!.{0,40}never change ranking, ratings or the gate's decisions)",
     'fees (unapproved wording)': r'\b(?:fees?|commissions?)\b(?!.{0,40}never taken from funds in transit)',
     'every fine from photo proof': r'every fine (?:from|by|via|with) (?:the )?photo',
+    # FACTS 2026-11-20 / DECISIONS 2026-11-21: PM.BOS is the internal codename; public copy says HouKee or .BOS
+    'internal codename PM.BOS': r'\bPM\.BOS\b',
 }
+# one served file may still carry it until its replacement ships (vision.html -> PR #82); remove the entry then
+CODENAME_WAIVER = {'vision.html'}
 # PadSplit as a listing channel or host role (DECISIONS 2026-11-04) is fine; these exact spots are the only ones.
 MARKET_OPTIONS = ['Co-living or PadSplit host', 'value="PadSplit"', '<span>PadSplit</span>', 'PadSplit inbox']
 
@@ -142,7 +146,9 @@ CONTROL = {
     'ads (unapproved wording)': ['Ads boost your ranking.', 'Advertising on the network.', 'Sponsored listings.'],
     'fees (unapproved wording)': ['A small fee on each payment.', 'Fees come out of the payment.'],
     'every fine from photo proof': ['Every fine from photo proof.'],
+    'internal codename PM.BOS': ['Building PM.BOS.', 'Your week in PM.BOS', 'Request PM.BOS early access'],
 }
+CLEAN_PUBLIC = 'Building HouKee. HouKee, housekeeping for co-living houses. .BOS, set up for each kind of business. Your .BOS inbox.'
 CLEAN = (
     f'{ONE_LINER} {" ".join(STACK)} The network — Teroir ¶ A network where agents meet. Your agent, meet theirs. '
     'PM.BOS has run a real portfolio since May 2026. The first pack has run a real business. Your identity, record and '
@@ -170,7 +176,8 @@ def self_test():
     for label, pat in FORBIDDEN.items():
         for probe in CONTROL[label]:
             assert re.search(pat, probe, re.I), f'control failed for {label}: {probe!r}'
-        assert not re.search(pat, CLEAN, re.I), f'false positive for {label}: {re.search(pat, CLEAN, re.I).group(0)!r}'
+        clean = CLEAN_PUBLIC if label == 'internal codename PM.BOS' else CLEAN   # CLEAN quotes the old PM.BOS lines on purpose
+        assert not re.search(pat, clean, re.I), f'false positive for {label}: {re.search(pat, clean, re.I).group(0)!r}'
     # The whole scan on a page with one bad line must fail, and on the same page without it must pass.
     good = f'<html><head><meta name="description" content="x"></head><body><p>{ONE_LINER}</p></body></html>'
     bad = good.replace('</body>', '<p>Both sides sign every deal.</p></body>')
@@ -204,6 +211,8 @@ def scan_text(name, text):
     seen = visible(name, raw)
     hits = []
     for label, pat in FORBIDDEN.items():
+        if label == 'internal codename PM.BOS' and name in CODENAME_WAIVER:
+            continue
         # PadSplit is checked in the source too, so a link or file name cannot carry it either.
         for where in ([seen, raw] if label == 'works with PadSplit' else [seen]):
             m = re.search(pat, where, re.I)

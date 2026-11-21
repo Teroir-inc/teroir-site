@@ -44,18 +44,23 @@
  ],
  "redirects": [
   {
+   "source": "/apply",
+   "destination": "/talk",
+   "permanent": false
+  },
+  {
    "source": "/founding",
    "destination": "/talk",
    "permanent": false
   },
   {
    "source": "/Apply",
-   "destination": "/apply",
+   "destination": "/talk",
    "permanent": false
   },
   {
    "source": "/APPLY",
-   "destination": "/apply",
+   "destination": "/talk",
    "permanent": false
   },
   {
