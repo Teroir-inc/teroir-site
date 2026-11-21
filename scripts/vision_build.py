@@ -34,9 +34,17 @@ HOTS = [
     ('rules', 'Rules', V.RULES[0], V.RULES[1] + 40, "Your rules say what an agent may do on its own and what needs you. Risky steps always wait for a person."),
     ('handoff', 'Hand-off', V.HANDOFF[0], V.HANDOFF[1] + 40, "When it matters, the agent hands off to you. One tap to approve, change or say no."),
     ('jobs', 'Jobs', V.VAN[0] + 40, V.VAN[1] + 40, "A request becomes a job: the member's ask, your OK, the plumber's job card, then the loop closed with the member."),
-    ('records', 'Records', V.RECORDS[0] - 10, V.RECORDS[1] + 34, "Every step leaves a record: who asked, who approved, what got done. Records give each client a before and after number."),
-    ('data', 'Data', V.RECORDS[0] + 250, V.RECORDS[1] + 34, "You own your data. We use it to prove and improve your results. Patterns across clients only with consent, made anonymous. Never sold."),
+    ('records', 'Records', V.RECORDS[0] - 60, V.RECORDS[1] + 100, "Every step leaves a record: who asked, who approved, what got done. Records give each client a before and after number."),
+    ('data', 'Data', V.RECORDS[0] + 130, V.RECORDS[1] + 100, "You own your data. We use it to prove and improve your results. Patterns across clients only with consent, made anonymous. Never sold."),
 ]
+
+
+# what the camera centres on at each stop, so the stop's subject sits fully in frame at 390 px
+FOCUS = [V.CUST, (210, 960), (300, 980), (V.PHONE[0] - 20, V.PHONE[1] + 40), (V.VAN[0] + 30, V.VAN[1] - 40),
+         (V.HOUSE[0] - 150, V.HOUSE[1] - 60), (V.RECORDS[0] + 40, V.RECORDS[1] - 20), V.CUST]
+# overlays on the drawing that change with the story: the sink (leaking, then fixed) and the record cards
+SINK = (V.HOUSE[0] - 230, V.HOUSE[1] - 230)
+CARDS = (V.RECORDS[0] - 110, V.RECORDS[1] - 108)
 
 
 def fractions():
@@ -49,16 +57,17 @@ def fractions():
 
 def main():
     fr = fractions()
-    stops = [{'at': round(f, 4), 'line': l} for f, l in zip(fr, LINES)]
+    stops = [{'at': round(f, 4), 'line': l, 'fx': fx, 'fy': fy} for f, l, (fx, fy) in zip(fr, LINES, FOCUS)]
     route_d = 'M' + ' L'.join(f'{x} {y}' for x, y in V.ROUTE)
     hots = '\n'.join(f'      <button class="vw-hot" type="button" style="left:calc({x}px * var(--s));top:calc({y}px * var(--s))" '
                      f'data-title="{e(lbl)}" data-text="{e(txt)}"><span>{e(lbl)}</span></button>' for k, lbl, x, y, txt in HOTS)
-    stills = '\n'.join(f'    <figure class="vw-still"><div class="vw-still-img" style="background-position:{-(V.ROUTE[i][0] - 195)}px {-(V.ROUTE[i][1] - 230)}px"></div>'
-                       f'<figcaption>{n + 1}. {e(l)}</figcaption></figure>' for n, (i, l) in enumerate(zip(V.STOP_IDX, LINES)))
+    stills = '\n'.join(f'    <figure class="vw-still"><div class="vw-still-img" style="background-position:{-(fx - 195)}px {-(fy - 210)}px"></div>'
+                       f'<figcaption>{n + 1}. {e(l)}</figcaption></figure>' for n, (l, (fx, fy)) in enumerate(zip(LINES, FOCUS)))
     dots = ''.join('<i></i>' for _ in LINES)
     page = (ROOT / 'scripts' / 'vision_template.html').read_text()
     page = (page.replace('{{STOPS}}', json.dumps(stops)).replace('{{ROUTE}}', route_d).replace('{{HOTS}}', hots)
-                .replace('{{STILLS}}', stills).replace('{{DOTS}}', dots).replace('{{FIRST_LINE}}', e(LINES[0])))
+                .replace('{{STILLS}}', stills).replace('{{SINK_X}}', str(SINK[0])).replace('{{SINK_Y}}', str(SINK[1]))
+                .replace('{{CARDS_X}}', str(CARDS[0])).replace('{{CARDS_Y}}', str(CARDS[1])).replace('{{DOTS}}', dots).replace('{{FIRST_LINE}}', e(LINES[0])))
     (ROOT / 'vision.html').write_text(page)
     print('wrote vision.html;', ', '.join(f"{s['at']:.2f}" for s in stops))
 

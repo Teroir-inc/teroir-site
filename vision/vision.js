@@ -6,6 +6,7 @@
 (() => {
   const qs = new URLSearchParams(location.search);
   const TOUR = qs.get('tour') === '1';
+  if (qs.get('lines') === '0') document.documentElement.classList.add('vw-nolines');   // for a voice-over recording
   const still = matchMedia('(prefers-reduced-motion: reduce)').matches && !TOUR;
   const $ = s => document.querySelector(s);
 
@@ -17,7 +18,7 @@
   addEventListener('keydown', e => { if (e.key === 'Escape') sheet.hidden = true; });
   if (still) return;
 
-  const world = $('#vw-world'), view = $('#vw-view'), req = $('#vw-req'), cap = $('#vw-cap'), track = $('#vw-track');
+  const world = $('#vw-world'), view = $('#vw-view'), req = $('#vw-req'), cap = $('#vw-cap'), track = $('#vw-track'), bos = $('#vw-bos');
   const route = document.getElementById('vw-route');
   const L = route.getTotalLength();
   const WW = 800, WH = 2600;
@@ -38,10 +39,21 @@
     const vw = view.clientWidth, vh = view.clientHeight;
     req.style.transform = `translate(${pt.x * scale}px, ${pt.y * scale}px)`;
     req.dataset.state = stateAt(f);
-    // the camera keeps the request in the middle 60% of the screen (the reel's safe area)
-    const tx = Math.min(0, Math.max(vw - WW * scale, vw / 2 - pt.x * scale));
-    const ty = Math.min(0, Math.max(vh - WH * scale, vh * .5 - pt.y * scale));
+    // the camera: between stops it eases from one stop's subject to the next, so each subject sits fully in frame;
+    // it stays in the middle band of the screen (the reel's safe area is the middle 60%)
+    let k = 0; while (k < STOPS.length - 2 && f > STOPS[k + 1].at) k++;
+    const a = STOPS[k], b = STOPS[k + 1], u = Math.max(0, Math.min(1, (f - a.at) / ((b.at - a.at) || 1)));
+    const sm = u * u * (3 - 2 * u);
+    const cx = a.fx + (b.fx - a.fx) * sm, cy = a.fy + (b.fy - a.fy) * sm;
+    const tx = Math.min(0, Math.max(vw - WW * scale, vw / 2 - cx * scale));
+    const ty = Math.min(0, Math.max(vh - WH * scale, vh * .42 - cy * scale));
     world.style.transform = `translate(${tx}px, ${ty}px)`;
+    // .BOS stays readable: the chip rides the boundary line but is pinned inside the screen
+    const by = ty + 1000 * scale;
+    bos.style.transform = `translate(16px, ${Math.max(10, by - 40)}px)`; bos.style.opacity = by > 30 && by < vh - 30 ? 1 : 0;
+    // the story's states: fixed at the house, the record cards once the job reaches the records
+    view.classList.toggle('vw-fixed', f >= STOPS[5].at - .005);
+    view.classList.toggle('vw-recorded', f >= STOPS[6].at - .02);
     // the caption: the nearest stop
     let near = STOPS[0];   // the caption: the stop nearest the request
     for (const s of STOPS) if (Math.abs(f - s.at) < Math.abs(f - near.at)) near = s;

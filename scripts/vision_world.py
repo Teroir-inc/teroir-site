@@ -141,8 +141,6 @@ def house(p, x, y):
     for k in range(3):
         p.line((d1[0] + 12 - k * 4, g[1] + 10 + k * 12), (d2[0] - 20 - k * 4, d2[1] + 10 + k * 12), w=1.2)
     p.hatch([g, gr, (gr[0] + 140, gr[1] + 40), (x + 140, g[1] + 46)], angle=0, gap=4, op=.3)   # cast shadow
-    # a leak under the kitchen window, being fixed: a little pastel drop
-    p.raw(f'<path d="M{x + 60} {g[1] - 44}q6 10 0 16q-6-6 0-16z" fill="#7FB8E0" stroke="{INK}" stroke-width=".8"/>')
 
 
 def van(p, x, y):
@@ -178,21 +176,15 @@ def phone(p, x, y):
 
 
 def records(p, x, y):
-    """the records: a filing drawer and a rising chart, the before/after number"""
-    p.poly([(x - 90, y), (x + 60, y), (x + 60, y - 170), (x - 90, y - 170)], w=2)
-    p.poly([(x + 60, y), (x + 90, y - 20), (x + 90, y - 190), (x + 60, y - 170)], w=1.4)
-    p.line((x - 90, y - 170), (x - 60, y - 190), w=1.4); p.line((x - 60, y - 190), (x + 90, y - 190), w=1.4)
-    p.hatch([(x + 60, y), (x + 90, y - 20), (x + 90, y - 190), (x + 60, y - 170)], angle=80, gap=3, op=.5)
-    for k in range(3):
-        yy = y - 160 + k * 55
-        p.poly([(x - 80, yy), (x + 50, yy), (x + 50, yy + 46), (x - 80, yy + 46)], w=1.2)
-        p.line((x - 30, yy + 22), (x, yy + 22), n=2, w=1.6, double=False)
-    cx, cy = x + 150, y            # the chart: before and after
-    p.line((cx, cy), (cx + 190, cy), w=1.4); p.line((cx, cy), (cx, cy - 170), w=1.4)
-    p.raw(f'<rect x="{cx + 30}" y="{cy - 50}" width="44" height="50" fill="none" stroke="{INK}" stroke-width="1.4"/>'
-          f'<rect x="{cx + 110}" y="{cy - 140}" width="44" height="140" fill="{EMBER}" fill-opacity=".35" stroke="{INK}" stroke-width="1.4"/>')
-    p.hatch([(cx + 30, cy - 50), (cx + 74, cy - 50), (cx + 74, cy), (cx + 30, cy)], angle=45, gap=4, op=.4)
-    S.dim(p, (cx + 30, cy + 26), (cx + 154, cy + 26), 'before / after', off=0, col='#5B7DB1')
+    """the records: a pencil desk the record cards land on (the cards themselves are on the page, so they stay readable)"""
+    top = [(x - 150, y - 20), (x + 170, y - 20), (x + 210, y + 30), (x - 110, y + 30)]
+    p.poly(top, w=2)
+    p.line((x - 110, y + 30), (x - 110, y + 150), w=1.8); p.line((x + 210, y + 30), (x + 210, y + 150), w=1.8)
+    p.line((x - 150, y - 20), (x - 150, y + 100), w=1.2, op=.6); p.line((x + 170, y - 20), (x + 170, y + 100), w=1.2, op=.6)
+    p.hatch([(x - 110, y + 30), (x + 210, y + 30), (x + 210, y + 44), (x - 110, y + 44)], angle=0, gap=2.5, op=.5)
+    p.hatch([(x - 120, y + 150), (x + 230, y + 150), (x + 270, y + 170), (x - 80, y + 170)], angle=0, gap=3, op=.3)
+    p.raw(f'<path d="M{x + 120} {y - 6}c10-14 30-14 40 0" stroke="{INK}" stroke-width="1.4"/>')   # a mug ring, a pen
+    p.line((x - 120, y + 6), (x - 60, y - 6), n=2, w=1.6, double=False)
 
 
 def real(p):

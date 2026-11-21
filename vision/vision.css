@@ -87,3 +87,28 @@
 .vw-stack{margin:14px 0 0;padding-left:20px;color:var(--muted);max-width:60ch;font-size:15.5px;line-height:1.55}
 .vw-stack li{margin:6px 0}
 .vw-raise{margin:40px 0 16px;font-size:18px;font-weight:600}
+
+/* .BOS: pinned on screen, riding the boundary line */
+.vw-bos{position:absolute;left:0;top:0;z-index:3;transform:none;transition:opacity .3s}
+/* the sink: leaking until the house stop, then fixed */
+.vw-sink{position:absolute;z-index:2;width:calc(160px * var(--s));transform-origin:0 0}
+.vw-sink svg{width:100%;height:auto;display:block;filter:drop-shadow(3px 3px 0 #3E3B46)}
+.vw-sink .fixed{opacity:0;transition:opacity .4s}.vw-fixed .vw-sink .fixed{opacity:1}.vw-fixed .vw-sink .drip{opacity:0}
+@media (prefers-reduced-motion:no-preference){.vw-sink .drip{animation:vwdrip 1.4s ease-in infinite}}
+@keyframes vwdrip{0%{transform:translateY(-4px);opacity:0}30%{opacity:1}100%{transform:translateY(6px);opacity:0}}
+/* the job card: a leak until it's fixed */
+.vw-card em{font-style:normal}.vw-card .done{display:none;color:#0E6B5C;font-weight:600}
+.vw-fixed .vw-card .leak{display:none}.vw-fixed .vw-card .done{display:block}
+/* the records: three cards, asked → approved → fixed */
+.vw-recs{position:absolute;z-index:2;display:grid;gap:6px;width:calc(250px * var(--s));opacity:.25;transition:opacity .5s}
+.vw-recorded .vw-recs{opacity:1}
+.vw-recs span{display:block;padding:7px 10px;border-radius:8px;background:#FFF8EC;border:1.5px solid #3E3B46;box-shadow:2px 2px 0 #3E3B46;
+  font:500 calc(12.5px * var(--s))/1.25 var(--sans,Geist,Inter,sans-serif);color:#3E3B46}
+.vw-recs span:nth-child(2){margin-left:8px}.vw-recs span:nth-child(3){margin-left:16px}
+.vw-recs b{font-family:var(--mono);font-size:.82em;letter-spacing:.06em;text-transform:uppercase;color:#B4341C;margin-right:6px}
+/* captions off for a voice-over recording (?lines=0) */
+.vw-nolines .vw-cap{display:none}
+/* fixes from the frame check: the drip stops for good once fixed; the job card merges into the record stack */
+.vw-fixed .vw-sink .drip{display:none}
+.vw-card em{font-family:inherit;font-size:12px}
+.vw-recorded .vw-req[data-state=card] .vw-card{opacity:0}

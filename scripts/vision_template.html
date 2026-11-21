@@ -50,14 +50,24 @@
     <div class="vw-view" id="vw-view">
       <div class="vw-world" id="vw-world">
         <img src="/vision/world.svg" width="800" height="2600" alt="A drawing in two halves. Above: a night-time wireframe world of AI agents. A glowing line marked .BOS runs across the middle. Below, in pencil: an owner's phone, a plumber's van, a shared house with a leak, and the records.">
-        <span class="vw-bos" style="left:calc(400px * var(--s));top:calc(1000px * var(--s))">.BOS</span>
+        <div class="vw-sink" style="left:calc({{SINK_X}}px * var(--s));top:calc({{SINK_Y}}px * var(--s))" aria-hidden="true">
+          <svg viewBox="0 0 160 120" width="160" height="120"><rect x="1" y="1" width="158" height="118" rx="14" fill="#FFF8EC" stroke="#3E3B46" stroke-width="2"/>
+            <path d="M20 46h120v10H20z" fill="#FFC8A2" stroke="#3E3B46" stroke-width="1.6"/><path d="M34 56h92l-8 22H42z" fill="none" stroke="#3E3B46" stroke-width="1.6"/>
+            <path d="M80 78v14h-10v16" fill="none" stroke="#3E3B46" stroke-width="3"/><path d="M96 46V30h-16" fill="none" stroke="#3E3B46" stroke-width="2.4"/>
+            <g class="drip"><path d="M70 100q6 10 0 15q-6-5 0-15z" fill="#5BA8E0"/><path d="M62 110q4 6 0 9q-4-3 0-9z" fill="#5BA8E0"/></g>
+            <g class="fixed"><circle cx="128" cy="96" r="14" fill="#00E5FF"/><path d="M121 96l5 5 9-10" fill="none" stroke="#140A2E" stroke-width="3"/></g></svg>
+        </div>
+        <div class="vw-recs" style="left:calc({{CARDS_X}}px * var(--s));top:calc({{CARDS_Y}}px * var(--s))" aria-hidden="true">
+          <span><b>Asked</b> 9:02 am · member's AI</span><span><b>Approved</b> 9:05 am · owner</span><span><b>Fixed</b> 2:40 pm · plumber</span>
+        </div>
         <div class="vw-req" id="vw-req" data-state="packet" aria-hidden="true">
           <span class="vw-packet"></span>
-          <span class="vw-card"><b>Job</b> Sink leak<i></i><i></i></span>
+          <span class="vw-card"><b>Job</b><em class="leak">💧 Sink leak</em><em class="done">Fixed ✓</em><i></i><i></i></span>
           <span class="vw-check">✓</span>
         </div>
 {{HOTS}}
       </div>
+      <span class="vw-bos" id="vw-bos">.BOS</span>
       <p class="vw-cap in" id="vw-cap" aria-live="polite">{{FIRST_LINE}}</p>
       <div class="vw-ctl"><button type="button" class="vw-btn" id="vw-back" aria-label="Back">←</button><div class="vw-dots" aria-hidden="true">{{DOTS}}</div><button type="button" class="vw-btn" id="vw-next">Next →</button></div>
       <svg class="vw-route" viewBox="0 0 800 2600" aria-hidden="true"><path id="vw-route" d="{{ROUTE}}"/></svg>
@@ -81,7 +91,7 @@
 
     <h3 class="vw-sub">How we measure it</h3>
     <div class="vw-grid">
-      <div><b>Ready</b><p>Your requests, rules and records are in .BOS within 3 weeks.</p></div>
+      <div><b>Ready</b><p>Our goal: your requests, rules and records are in .BOS within 3 weeks.</p></div>
       <div><b>Handled</b><p>Agents close most routine requests. A person approves the risky ones.</p></div>
       <div><b>Proven</b><p>Each client gets a before and after number.</p></div>
       <div><b>Open</b><p>Your agents and your customers' agents plug in through the same rules.</p></div>
@@ -104,13 +114,8 @@
       <div><b>Bring your own agent</b><p>Already use an AI agent? It works inside your rules in .BOS.</p></div>
     </div>
 
-    <h3 class="vw-sub">How the network works</h3>
-    <p class="vw-big">Built for small businesses: a network where your AI agents can do business with anyone else's, safely, on the record, with no middleman.</p>
-    <ul class="vw-stack">
-      <li>Teroir builds an open network where businesses' AI agents do business with each other (post jobs, place orders, agree prices, pay) with no middleman.</li>
-      <li>.BOS is the open framework a business builds its own operating system on. It keeps every agent inside the rules its owner signed and leaves proof the other side can check.</li>
-      <li>XX.BOS packs, like PM.BOS for property management, add one industry's tools: its job types, proof rules and privacy levels.</li>
-    </ul>
+    <h3 class="vw-sub">How it works</h3>
+    <p class="vw-big">.BOS, set up for each kind of business, like HouKee for co-living.</p>
 
     <p class="vw-raise">We're raising a $1.25M pre-seed (post-money SAFE).</p>
     <a class="btn btn-primary" href="mailto:wyatt@teroir.com?subject=Teroir%20vision">Talk to Wyatt <span aria-hidden="true">→</span></a>

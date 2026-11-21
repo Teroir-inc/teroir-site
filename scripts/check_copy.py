@@ -34,7 +34,9 @@ STACK = [  # DECISIONS 2026-11-07, split at the layer names as the checked deck 
 ]
 # On /vision the lines must be in the page's visible text, not only in its meta tags. The 2026-11-11 redesign
 # (Wyatt: the home page stays plain, for non-technical readers) moved them from / to /vision.
-REQUIRED = {'vision.html': [ONE_LINER, *STACK]}
+# DECISIONS 2026-11-21 (teroir-hq PR #40): Wyatt's 11-20 north star supersedes the word-for-word one-liner and stack
+# rules (11-06, 11-07, /vision part of 11-12). Nothing is required word for word on /vision any more.
+REQUIRED = {}
 BODY_ONLY = {'vision.html'}
 
 FORBIDDEN = {
@@ -179,7 +181,10 @@ def self_test():
     home = (f'<html><head><meta name="description" content="{ONE_LINER}"></head><body><h1>Hi</h1><p>{ONE_LINER}</p>'
             + ''.join(f'<p>{s}</p>' for s in STACK) + '</body></html>')
     drifted = home.replace(f'<p>{ONE_LINER}</p>', f'<p>{ONE_LINER.replace("safely", "securely")}</p>')
-    assert not scan_text('vision.html', home) and scan_text('vision.html', drifted), 'body-text control failed'
+    REQUIRED['control.html'] = [ONE_LINER, *STACK]; BODY_ONLY.add('control.html')   # test-only: the mechanism still works
+    ok = not scan_text('control.html', home) and scan_text('control.html', drifted)
+    del REQUIRED['control.html']; BODY_ONLY.discard('control.html')
+    assert ok, 'body-text control failed'
     return len(FORBIDDEN), sum(map(len, CONTROL.values()))
 
 
