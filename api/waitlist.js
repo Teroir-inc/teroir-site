@@ -22,7 +22,7 @@ module.exports = async (req, res) => {
   const wantsJson = String(req.headers['content-type'] || '').includes('application/json');
   const reply = (status, body) => {
     if (wantsJson) return res.status(status).json(body);
-    if (body.ok) { res.setHeader('Location', b.interest ? '/talk?joined=1#form' : '/apply'); return res.status(303).end(); }
+    if (body.ok) { res.setHeader('Location', '/talk?joined=1#form'); return res.status(303).end(); }
     return res.status(status).send('Something went wrong. Please email wyatt@teroir.com.');
   };
   if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return res.status(405).json({ ok: false, error: 'method' }); }
@@ -60,7 +60,7 @@ module.exports = async (req, res) => {
   }
   try {
     const CONFIRM = {
-      beta: ["You're on the Teroir waitlist", "You're on the waitlist for early access to PM.BOS. We bring on a small cohort of operators at a time so every house is set up properly, and we'll reach out when a spot opens.",
+      beta: ["You're on the Teroir waitlist", "You're on the waitlist for early access to HouKee. We bring on a small cohort of operators at a time so every house is set up properly, and we'll reach out when a spot opens.",
         'In the meantime, reply to this email if you want to tell us about your portfolio.'],
       business: ['Your discovery call with Teroir', "Thanks for reaching out about your business. If you haven't picked a time yet, book a one-on-one call here: https://calendly.com/wyatt-teroir/30min",
         'If it helps, reply with a little about your business and where your week goes. Calls may be recorded so you get the most out of the call and I can deliver the best result.'],
