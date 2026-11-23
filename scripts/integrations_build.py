@@ -140,7 +140,7 @@ page = f'''<!doctype html>
   <div class="wrap foot-in">
     <a class="brand" href="#top" aria-label="Back to top"><img src="brand/logo.svg" alt="Teroir" width="84" height="26" loading="lazy">
     </a>
-    <p>© 2026 Teroir · Palo Alto, CA</p>
+    <p>© 2026 Teroir</p>
     <nav class="foot-links" aria-label="Pages"><a href="/">Home</a><a href="/property-management">Property management</a><a href="/vision">Vision</a><a href="/talk">Talk to us</a></nav>
     <p><a href="mailto:wyatt@teroir.com?subject=Teroir">wyatt@teroir.com</a></p>
   </div>
