@@ -94,6 +94,7 @@ FORBIDDEN = {
     'every fine from photo proof': r'every fine (?:from|by|via|with) (?:the )?photo',
     # FACTS 2026-11-20 / DECISIONS 2026-11-21: PM.BOS is the internal codename; public copy says HouKee or .BOS
     'internal codename PM.BOS': r'\bPM\.BOS\b',
+    'unfilled placeholder': r'__[A-Z][A-Z0-9_]*__',
 }
 # one served file may still carry it until its replacement ships (vision.html -> PR #82); remove the entry then
 CODENAME_WAIVER = {'vision.html'}
@@ -147,6 +148,7 @@ CONTROL = {
     'fees (unapproved wording)': ['A small fee on each payment.', 'Fees come out of the payment.'],
     'every fine from photo proof': ['Every fine from photo proof.'],
     'internal codename PM.BOS': ['Building PM.BOS.', 'Your week in PM.BOS', 'Request PM.BOS early access'],
+    'unfilled placeholder': ['<a href="__BOOKING_URL__?x=1">', 'Call __PHONE__'],
 }
 CLEAN_PUBLIC = 'Building HouKee. HouKee, housekeeping for co-living houses. .BOS, set up for each kind of business. Your .BOS inbox.'
 CLEAN = (
@@ -213,8 +215,10 @@ def scan_text(name, text):
     for label, pat in FORBIDDEN.items():
         if label == 'internal codename PM.BOS' and name in CODENAME_WAIVER:
             continue
-        # PadSplit is checked in the source too, so a link or file name cannot carry it either.
-        for where in ([seen, raw] if label == 'works with PadSplit' else [seen]):
+        # PadSplit is checked in the source too, so a link or file name cannot carry it either; so is an unfilled
+        # placeholder in a page (a dead __BOOKING_URL__ link would pass a visible-text check).
+        in_source = label == 'works with PadSplit' or (label == 'unfilled placeholder' and name.endswith('.html'))
+        for where in ([seen, raw] if in_source else [seen]):
             m = re.search(pat, where, re.I)
             if m:
                 hits.append(f'{label}: "{where[max(0, m.start() - 40):m.end() + 40].strip()}"')
