@@ -403,7 +403,8 @@
   {
    "source": "/yard",
    "destination": "/api/yard"
-  }
+  },
+    { "source": "/api/booking", "destination": "/api/stripe-webhook?src=cal" }
  ],
  "crons": [
   {

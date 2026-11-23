@@ -26,6 +26,7 @@ function verified(sig, body, secret, now = Date.now()) {
 }
 
 module.exports = async (req, res) => {
+  if ((req.query || {}).src === 'cal') return require('./_booking')(req, res); // /api/booking (vercel.json rewrite): Cal.com call bookings
   if (req.method !== 'POST') { res.setHeader('Allow', 'POST'); return res.status(405).end(); }
   const secret = process.env.STRIPE_WEBHOOK_SECRET;
   const body = await raw(req);
