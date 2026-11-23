@@ -49,8 +49,9 @@ function designPrompt(picked, notes, style) {
   const budget = pickIn(picked, 'budget').map(w => PHRASE.budget[w])[0];
   const n = tidy(notes, 400);
   return [
-    `Redesign the backyard in this photo as a ${PHRASE.look[look]} style backyard.`,
-    want.length ? `Include ${want.join('; ')}.` : '',
+    `Edit this photo. Change only the yard itself (the ground, lawn, planting beds and new garden features) into a ${PHRASE.look[look]} style backyard;`
+      + ' everything above and behind the yard stays exactly as photographed.',
+    want.length ? `Add only these: ${want.join('; ')}.` : 'Do not add structures such as kitchens, pools or pergolas.',
     budget ? `Make it ${budget}.` : '',
     n ? `The homeowner said: "${n.replace(/"/g, "'")}".` : '',
     ENDING,
