@@ -6,7 +6,12 @@ const G = require('./_guides');
 
 const CAP = { day: 20, month: 115, session: 15 }; // sized to Gemini prepaid credit ($5 on 11-19, ~4c an image); raise when more is added
 const MODELS = () => [process.env.YARD_MODEL || 'gemini-3.1-flash-lite-image', 'gemini-2.5-flash-image'];
-const ENDING = 'Keep the house, windows, doors, fence line and yard size exactly as in the photo. Photorealistic, late-afternoon light, eye level, no people, no text.';
+// Keep every existing structure as it is (orchestrator-81 11-23): a sales tool that swaps someone's fence or redraws their
+// house misrepresents their yard. Only the landscaping asked for may differ.
+const KEEP = 'Keep everything that already exists exactly as it is in the photo: the house and any other buildings (walls, roof, siding, colors, windows, doors), '
+  + 'the fence (same material, color, height and position; a chain-link fence stays chain-link), existing trees, existing paving, steps and walls, '
+  + 'the neighbors\' houses, the yard size and the camera angle. Do not replace, restyle or remove any of them, and do not add fences or walls that were not asked for. Only the changes asked for may differ.';
+const ENDING = `${KEEP} Photorealistic, late-afternoon light, eye level, no people, no text.`;
 
 // The chip lists (from the owner's prototype) and what each one asks the image model for.
 const GROUPS = [
