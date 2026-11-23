@@ -3,7 +3,8 @@
 // need the raw body for the signature check.
 //   POST  Cal.com webhook (BOOKING_CREATED / BOOKING_RESCHEDULED / BOOKING_CANCELLED). Trust: a valid
 //         x-cal-signature-256 (hex HMAC-SHA256 of the raw body with CAL_WEBHOOK_SECRET). Anything else: 401, nothing stored.
-//   GET   ?since=<ISO>  ops' hourly desk sync (Bearer BOOKING_READ_SECRET): bookings changed since then, oldest first.
+//   GET   ?since=<ISO>  ops' desk sync (Bearer BOOKING_READ_SECRET): bookings changed AT or after then, oldest first.
+//         Inclusive on purpose: a row on a page edge comes back twice rather than never (ops dedupes on uid + updated_at).
 // Each booking is the lead's own written request for a call; Cal.com keeps the full record (what they typed, and when).
 // Cal.com sends each webhook once and does not retry on an error reply (independent review of #89, from its source), so a
 // store failure here sends Wyatt an alert (no personal data) to check his Cal.com bookings list by hand.
@@ -83,7 +84,7 @@ async function store(rec) {
 }
 
 async function since(t) {
-  const uids = await Q.pipe([['ZRANGEBYSCORE', `${B}:t`, `(${t}`, '+inf', 'LIMIT', 0, MAX_LIST + 1]]).then(x => x[0] || []);
+  const uids = await Q.pipe([['ZRANGEBYSCORE', `${B}:t`, t, '+inf', 'LIMIT', 0, MAX_LIST + 1]]).then(x => x[0] || []);
   if (!uids.length) return [];
   const rows = await Q.pipe(uids.map(u => ['HGETALL', `${B}:b:${u}`]));
   return rows.map(x => { const o = {}; const a = x || []; for (let i = 0; i < a.length; i += 2) o[a[i]] = a[i + 1]; return o; }).filter(o => o.uid);
