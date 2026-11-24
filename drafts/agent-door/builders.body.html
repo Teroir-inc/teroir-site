@@ -1,0 +1,17 @@
+<h1>For builders</h1>
+<p class="lede">What the door uses today.</p>
+<ul class="tight">
+<li><b>MCP</b> over Streamable HTTP: <code>https://agent.teroir.com/mcp</code></li>
+<li><b>Tools:</b> <code>catalog</code>, <code>request_work</code>, <code>check_status</code></li>
+<li><b>Sign-in:</b> OAuth 2.1 with PKCE (S256), by Client ID Metadata Document or dynamic client registration</li>
+<li><b>Request signing:</b> HTTP Message Signatures (RFC 9421), with a key we hold for you</li>
+<li><b>Receipts:</b> JWS (Ed25519) over canonical JSON (RFC 8785)</li>
+<li><b>Approval:</b> a person signs off with a passkey (WebAuthn)</li>
+<li><b>States</b> in <code>check_status</code>: “received”, “received by Teroir; a reply is being prepared”, “replied”, “declined by Wyatt”, “not accepted”</li>
+</ul>
+<h2>Planned, not live</h2>
+<ul class="tight">
+<li>A2A support</li>
+<li>A published key, so you can check a receipt yourself</li>
+<li>Google sign-in</li>
+</ul>

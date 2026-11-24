@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light dark">
+<title>How Teroir's agent door works</title><meta name="description" content="How a request moves through Teroir's agent door.">
+<style>:root{--bg:#fbfaf7;--fg:#1d1d1b;--mute:#5b5b57;--line:#dcd9d0;--card:#ffffff;--code:#efece4;--accent:#2f5d50;--accent-bg:#e3eee9;--bubble:#2f5d50;--bubble-fg:#ffffff;--ok:#2f6d3a}
+@media (prefers-color-scheme: dark){:root{--bg:#161615;--fg:#ecebe6;--mute:#a7a59d;--line:#34332f;--card:#1f1f1d;--code:#24231f;--accent:#8fc1b1;--accent-bg:#22302b;--bubble:#3d6e60;--bubble-fg:#ffffff;--ok:#8fd09a}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--fg);font:17px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+main{max-width:58rem;margin:0 auto;padding:2rem 16px 4rem}
+h1{font-size:clamp(1.5rem,4.5vw,2.1rem);line-height:1.2;margin:0 0 .4rem;letter-spacing:-.01em}
+h2{font-size:1.15rem;margin:2.2rem 0 .6rem}
+.lede{color:var(--mute);margin:0 0 1.5rem;max-width:36rem}
+a{color:var(--accent)}
+code{background:var(--code);padding:.15rem .4rem;border-radius:5px;font-size:.88em;word-break:break-all}
+nav{display:flex;gap:1.2rem;flex-wrap:wrap;margin:2.5rem 0 0;padding-top:1rem;border-top:1px solid var(--line);font-weight:600}
+.flow{list-style:none;margin:1.5rem 0 0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);gap:1.6rem}
+.flow li{position:relative;border:1px solid var(--line);background:var(--card);border-radius:14px;padding:1rem .7rem;text-align:center;display:flex;flex-direction:column;align-items:center;gap:.3rem}
+.flow li svg{width:2rem;height:2rem;color:var(--accent)}
+.flow b{font-size:.95rem;line-height:1.2}.flow span{font-size:.85rem;color:var(--mute);line-height:1.3}
+.flow li.key{border:2px solid var(--accent);background:var(--accent-bg)}
+.flow li:not(:last-child)::after{content:"";position:absolute;right:-1.25rem;top:50%;width:.8rem;height:.8rem;border-top:2.5px solid var(--accent);border-right:2.5px solid var(--accent);transform:translateY(-50%) rotate(45deg)}
+@media (max-width:44rem){
+.flow{grid-template-columns:1fr;gap:1.5rem;max-width:22rem}
+.flow li{flex-direction:row;text-align:left;flex-wrap:wrap;column-gap:.6rem}
+.flow li svg{flex:none}.flow span{flex-basis:100%;padding-left:2.6rem;margin-top:-.3rem}
+.flow li:not(:last-child)::after{right:auto;left:50%;top:auto;bottom:-1.15rem;transform:translateX(-50%) rotate(135deg)}
+}
+.safe{list-style:none;margin:0;padding:0;display:grid;gap:.7rem;grid-template-columns:repeat(auto-fit,minmax(14rem,1fr))}
+.safe li{display:flex;gap:.7rem;align-items:center;border:1px solid var(--line);border-radius:12px;padding:.8rem .9rem;background:var(--card);font-weight:600;font-size:.97rem}
+.safe svg{width:1.8rem;height:1.8rem;flex:none;color:var(--accent)}
+.data{margin-top:2rem;font-size:.85rem;color:var(--mute);max-width:40rem}
+</style></head><body><main>
+<h1>How it works</h1>
+<p class="lede">One request, five steps. No reply goes out until a person approves it.</p>
+
+<ol class="flow" aria-label="How a request moves">
+<li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4h16v12H7l-3 3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><b>Your agent</b><span>sends a request</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 3h14v18H5zM15 12h.01" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><b>The door</b><span>checks fixed rules</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11 12 4l9 7M6 9.5V20h12V9.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><b>.BOS for property managers</b><span>Teroir's AI agent drafts the reply</span></li>
+<li class="key"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5 10 17l9-10" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg><b>The owner approves</b><span>Wyatt, with Face ID</span></li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2 4 5v6c0 5 3.4 9.5 8 11 4.6-1.5 8-6 8-11V5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><b>Your agent</b><span>gets the reply + a signed receipt</span></li>
+</ol>
+
+<h2>Why it's safe</h2>
+<ul class="safe">
+<li><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M4 21c1-4.5 4.5-6.5 8-6.5s7 2 8 6.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>A person approves every reply.</li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h12v20l-3-2-3 2-3-2-3 2zM9 8h6M9 12h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"/></svg>Every reply comes with a receipt Teroir signs.</li>
+<li><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M8 10V7a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.8"/></svg>Invite only. Wyatt can close the door in one tap.</li>
+</ul>
+
+<p class="data">Your data: our agent runs on Claude, made by Anthropic. Anthropic gets the text of your request to write the draft. Your files are not sent. Requests are stored with Cloudflare. We delete them there 30 days after the request is finished, or sooner if you ask. We keep a signed business record of the exchange. You can ask us to erase it.</p>
+
+<nav><a href="/connect">Connect</a><a href="/how-it-works">How it works</a><a href="/for-builders">For builders</a></nav>
+</main></body></html>
